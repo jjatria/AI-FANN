@@ -4,7 +4,7 @@
     "version" : "0.0.1", 
     "auth": "github:perlpilot",
     "license" : "Artistic-2.0",
-    "description" : "Perl 6 binding to the Fast Artificial Neural Network library", 
+    "description" : "Raku binding to the Fast Artificial Neural Network library", 
     "tags" : [ "AI", "Neural Network" ],
     "depends" : [ ], 
     "test-depends" : [ ], 
@@ -19,10 +19,10 @@
         "AI::FANN::Raw::IO"         : "lib/AI/FANN/Raw/IO.pm6"
     },
     "source-type" : "git",
-    "source-url" : "https://github.com/perlpilot/p6-AI-FANN.git",
+    "source-url" : "https://github.com/raku-community-modules/AI-FANN.git",
     "support": {
-        "source": "https://github.com/perlpilot/p6-AI-FANN.git",
-        "bugtracker" : "https://github.com/perlpilot/p6-AI-FANN/issues"
+        "source": "https://github.com/raku-community-modules/AI-FANN.git",
+        "bugtracker" : "https://github.com/raku-community-modules/AI-FANN/issues"
     },
     "authors"       : [
         "Jonathan Scott Duff <duff@pobox.com>"
