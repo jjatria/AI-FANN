@@ -56,6 +56,9 @@ class AI::FANN {
         AI::FANN::NetType.^enum_from_value: fann_get_network_type($!fann);
     }
 
+    method print-connections ( --> Nil ) { fann_print_connections($!fann) }
+    method print-parameters  ( --> Nil ) { fann_print_parameters($!fann) }
+
     method layer-array {
         my $out = CArray[uint32].allocate($.num-layers);
         fann_get_layer_array($!fann, $out);

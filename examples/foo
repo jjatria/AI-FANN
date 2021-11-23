@@ -1,16 +1,11 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 
-use NativeCall;
-use lib 'lib';
-use AI::FANN::Raw;
+use AI::FANN;
 
-my CArray[uint32] $layers = CArray[uint32].new(2, 3, 1 );
-my fann $s = fann_create_shortcut_array(3, $layers);
+my $s = AI::FANN.new: layers => [ 2, 3, 1 ], :shortcut;
 
-fann_print_parameters($s);
-fann_print_connections($s);
-my $x = fann_get_network_type($s);
-say "network type = $x";
+$s.print-parameters;
+$s.print-connections;
 
-my $l = fann_get_num_layers($s);
-say "layers = $l";
+say "network type = $s.network-type()";
+say "layers = $s.num-layers()";
