@@ -26,7 +26,7 @@ subtest 'Standard' => {
     is-deeply $nn.bias-array, @layers.List, 'bias-array';
 
     is-deeply $nn.connection-array.map(*.^name),
-        [ 'AI::FANN::Raw::Base::fann_connection' xx $nn.total-connections ].List,
+        [ 'AI::FANN::Connection' xx $nn.total-connections ].List,
         'connection-array';
 }
 
@@ -48,7 +48,7 @@ subtest 'Sparse' => {
     is-deeply $nn.bias-array, @layers.List, 'bias-array';
 
     is-deeply $nn.connection-array.map(*.^name),
-        [ 'AI::FANN::Raw::Base::fann_connection' xx $nn.total-connections ].List,
+        [ 'AI::FANN::Connection' xx $nn.total-connections ].List,
         'connection-array';
 }
 
@@ -70,7 +70,7 @@ subtest 'Shortcut' => {
     is-deeply $nn.bias-array, @layers.List, 'bias-array';
 
     is-deeply $nn.connection-array.map(*.^name),
-        [ 'AI::FANN::Raw::Base::fann_connection' xx $nn.total-connections ].List,
+        [ 'AI::FANN::Connection' xx $nn.total-connections ].List,
         'connection-array';
 }
 

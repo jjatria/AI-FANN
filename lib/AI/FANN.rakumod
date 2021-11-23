@@ -1,6 +1,7 @@
 use NativeCall;
 use AI::FANN::Raw;
 use AI::FANN::Constants ();
+use AI::FANN::Connection;
 
 # See https://stackoverflow.com/a/43554058/807650
 my role StructArray[Mu:U \T where .REPR eq 'CStruct'] does Positional[T] {
@@ -72,7 +73,7 @@ class AI::FANN {
     }
 
     method connection-array {
-        my $out = StructArray[fann_connection].new($.total-connections);
+        my $out = StructArray[AI::FANN::Connection].new($.total-connections);
         fann_get_connection_array($!fann, $out.pointer);
         [ $out[ ^$out.elems ] ];
     }
