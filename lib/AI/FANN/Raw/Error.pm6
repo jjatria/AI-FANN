@@ -1,4 +1,3 @@
-
 unit module AI::FANN::Raw::Error;
 
 use NativeCall;

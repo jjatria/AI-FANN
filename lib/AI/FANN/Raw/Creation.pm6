@@ -6,7 +6,7 @@ use AI::FANN::Raw::Base;
 ## http://leenissen.dk/fann/html/files/fann-h.html
 ## FANN Creation/Execution
 
-sub fann_create_standard_array(uint32 $num_layers, CArray[int32] $layers is rw ) 
+sub fann_create_standard_array(uint32 $num_layers, CArray[int32] $layers is rw )
     returns fann is export is native(&fannlib) {*}
 
 sub fann_create_standard(uint32 $num_layers, *@neurons) is export {
@@ -19,7 +19,7 @@ sub fann_create_sparse(float $connection_rate, uint32 $num_layers, *@neurons) re
     return fann_create_sparse_array($connection_rate, $num_layers, $layers);
 }
 
-sub fann_create_sparse_array(float $connection_rate, uint32 $num_layers, CArray[int32] $layers is rw ) 
+sub fann_create_sparse_array(float $connection_rate, uint32 $num_layers, CArray[int32] $layers is rw )
     returns fann is export is native(&fannlib) {*}
 
 sub fann_create_shortcut(uint32 $num_layers, *@neurons) returns fann is export {
@@ -27,7 +27,7 @@ sub fann_create_shortcut(uint32 $num_layers, *@neurons) returns fann is export {
     return fann_create_shortcut_array($num_layers, $layers);
 }
 
-sub fann_create_shortcut_array(uint32 $num_layers, CArray[int32] $layers is rw ) 
+sub fann_create_shortcut_array(uint32 $num_layers, CArray[int32] $layers is rw )
     returns fann is export is native(&fannlib) {*}
 
 sub fann_destroy(fann) is export is native(&fannlib) {*}
@@ -52,10 +52,10 @@ sub fann_get_connection_array(fann, Pointer) is export is native(&fannlib) {*}
 
 sub fann_set_weight_array(fann, fann_connection, uint32) is export is native(&fannlib) {*}
 sub fann_set_weight(fann, uint32, uint32, float) is export is native(&fannlib) {*}
+
 sub fann_set_user_data(fann, Pointer) is export is native(&fannlib) {*}
 sub fann_get_user_data(fann) returns Pointer[void] is export is native(&fannlib) {*}
 
 # not found in my version of FANN
 #sub fann_get_decimal_point(fann) returns uint32 is export is native(&fannlib) {*}
 #sub fann_get_multiplier(fann) returns uint32 is export is native(&fannlib) {*}
-

@@ -2,7 +2,7 @@ unit module AI::FANN::Raw::Base;
 
 use NativeCall;
 
-sub fannlib is export { 'libfann.so' } 
+sub fannlib is export { 'libfann.so' }
 
 constant float                  is export = num32;
 constant fann_type              is export = num32;
@@ -20,4 +20,3 @@ class fann_connection is repr('CStruct') is export {
 class fann              is repr('CPointer') is export {*}
 class fann_train_data   is repr('CPointer') is export {*}
 class fann_error        is repr('CPointer') is export {*}
-

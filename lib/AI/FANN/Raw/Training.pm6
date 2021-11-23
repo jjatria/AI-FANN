@@ -39,24 +39,16 @@ sub fann_scale_input(fann, fann_type is rw) is export is native(&fannlib) {*}
 sub fann_scale_output(fann, fann_type is rw) is export is native(&fannlib) {*}
 sub fann_descale_input(fann, fann_type is rw) is export is native(&fannlib) {*}
 sub fann_descale_output(fann, fann_type is rw) is export is native(&fannlib) {*}
-sub fann_scale_input_train_data(fann_train_data, fann_type, fann_type is rw) is export is native(&fannlib) {*}
-sub fann_scale_output_train_data(fann_train_data, fann_type, fann_type is rw) is export is native(&fannlib) {*}
-sub fann_scale_train_data(fann_train_data, fann_type, fann_type is rw) is export is native(&fannlib) {*}
-sub fann_merge_train_data(fann_train_data, fann_train_data) is export is native(&fannlib) {*}
-sub fann_duplicate_train_data(fann_train_data) returns fann_train_data is export is native(&fannlib) {*}
-sub fann_subset_train_data(fann_train_data, uint32, uint32) returns fann_train_data is export is native(&fannlib) {*}
-sub fann_length_train_data(fann_train_data) returns uint32 is export is native(&fannlib) {*}
-sub fann_num_input_train_data(fann_train_data) returns uint32 is export is native(&fannlib) {*}
-sub fann_num_output_train_data(fann_train_data) returns uint32 is export is native(&fannlib) {*}
-sub fann_save_train(fann_train_data, Str) returns uint32 is export is native(&fannlib) {*}
-sub fann_save_train_to_fixed(fann_train_data, Str, uint32) returns uint32 is export is native(&fannlib) {*}
 
 sub fann_get_training_algorithm(fann) returns fann_train is export is native(&fannlib) {*}
 sub fann_set_training_algorithm(fann, fann_train) is export is native(&fannlib) {*}
+
 sub fann_get_learning_rate(fann) returns float is export is native(&fannlib) {*}
 sub fann_set_learning_rate(fann, float) is export is native(&fannlib) {*}
+
 sub fann_get_learning_momentum(fann) returns float is export is native(&fannlib) {*}
 sub fann_set_learning_momentum(fann, float) is export is native(&fannlib) {*}
+
 sub fann_get_activation_function(fann, int32, int32) returns fann_activationfunc is export is native(&fannlib) {*}
 sub fann_set_activation_function(fann, fann_activationfunc, int32, int32) returns fann_activationfunc is export is native(&fannlib) {*}
 
@@ -66,6 +58,7 @@ sub fann_set_activation_function_output(fann, fann_activationfunc) is export is 
 
 sub fann_get_activation_steepness(fann, int32, int32) returns fann_type is export is native(&fannlib) {*}
 sub fann_set_activation_steepness(fann, fann_type, int32, int32) is export is native(&fannlib) {*}
+
 sub fann_set_activation_steepness_layer(fann, fann_type, int32) is export is native(&fannlib) {*}
 sub fann_set_activation_steepness_hidden(fann, fann_type) is export is native(&fannlib) {*}
 sub fann_set_activation_steepness_output(fann, fann_type) is export is native(&fannlib) {*}
@@ -86,6 +79,7 @@ sub fann_set_quickprop_decay(fann, float) is export is native(&fannlib) {*}
 
 sub fann_get_quickprop_mu(fann) returns float is export is native(&fannlib) {*}
 sub fann_set_quickprop_mu(fann, float) is export is native(&fannlib) {*}
+
 sub fann_get_rprop_increase_factor(fann) returns float is export is native(&fannlib) {*}
 sub fann_set_rprop_increase_factor(fann, float) is export is native(&fannlib) {*}
 
@@ -112,3 +106,21 @@ sub fann_set_sarprop_step_error_shift(fann, float) is export is native(&fannlib)
 
 sub fann_get_sarprop_temperature(fann) returns float is export is native(&fannlib) {*}
 sub fann_set_sarprop_temperature(fann, float) is export is native(&fannlib) {*}
+
+# Training data methods
+
+sub fann_scale_input_train_data(fann_train_data, fann_type, fann_type is rw) is export is native(&fannlib) {*}
+sub fann_scale_output_train_data(fann_train_data, fann_type, fann_type is rw) is export is native(&fannlib) {*}
+sub fann_scale_train_data(fann_train_data, fann_type, fann_type is rw) is export is native(&fannlib) {*}
+
+sub fann_merge_train_data(fann_train_data, fann_train_data) is export is native(&fannlib) {*}
+
+sub fann_duplicate_train_data(fann_train_data) returns fann_train_data is export is native(&fannlib) {*}
+sub fann_subset_train_data(fann_train_data, uint32, uint32) returns fann_train_data is export is native(&fannlib) {*}
+
+sub fann_length_train_data(fann_train_data) returns uint32 is export is native(&fannlib) {*}
+sub fann_num_input_train_data(fann_train_data) returns uint32 is export is native(&fannlib) {*}
+sub fann_num_output_train_data(fann_train_data) returns uint32 is export is native(&fannlib) {*}
+
+sub fann_save_train(fann_train_data, Str) returns uint32 is export is native(&fannlib) {*}
+sub fann_save_train_to_fixed(fann_train_data, Str, uint32) returns uint32 is export is native(&fannlib) {*}
