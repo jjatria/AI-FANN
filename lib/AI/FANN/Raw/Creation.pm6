@@ -48,7 +48,7 @@ sub fann_get_connection_rate(fann) returns float is export is native(&fannlib) {
 sub fann_get_num_layers(fann) returns uint32 is export is native(&fannlib) {*}
 sub fann_get_layer_array(fann, CArray[uint32] is rw) is export is native(&fannlib) {*}
 sub fann_get_bias_array(fann, CArray[uint32] is rw) is export is native(&fannlib) {*}
-sub fann_get_connection_array(fann, CArray[fann_connection] is rw) is export is native(&fannlib) {*}
+sub fann_get_connection_array(fann, Pointer) is export is native(&fannlib) {*}
 
 sub fann_set_weight_array(fann, fann_connection, uint32) is export is native(&fannlib) {*}
 sub fann_set_weight(fann, uint32, uint32, float) is export is native(&fannlib) {*}

@@ -18,6 +18,24 @@ sub array_match($a,$b) {
     return $success;
 }
 
+# See https://stackoverflow.com/a/43554058/807650
+my role StructArray[Mu:U \T where .REPR eq 'CStruct'] does Positional[T] {
+    has $.bytes;
+    has $.elems;
+
+    method new(UInt \n) {
+        self.bless(bytes => buf8.allocate(n * nativesizeof T), elems => n);
+    }
+
+    method AT-POS(UInt \i where ^$!elems) {
+        nativecast(T, Pointer.new(nativecast(Pointer, $!bytes) + i * nativesizeof T));
+    }
+
+    method pointer {
+        nativecast(Pointer[T], $!bytes);
+    }
+}
+
 {
     my CArray[uint32] $layers .= new(|@layers);
     my fann $nn = fann_create_standard_array(+@layers, $layers);
@@ -54,9 +72,9 @@ sub array_match($a,$b) {
     fann_get_bias_array($nn, $bias-out);
     ok $bias-out, 'fann_get_bias_array';
 
-    my CArray[fann_connection] $connection-out = CArray[fann_connection].allocate($total-connections);
-    fann_get_connection_array($nn, $connection-out);
-    ok $connection-out, 'fann_get_connection_array';
+    my $connection-out = StructArray[fann_connection].new($total-connections);
+    fann_get_connection_array($nn, $connection-out.pointer);
+    is $connection-out.elems, 51, 'fann_get_connection_array';
 }
 
 
