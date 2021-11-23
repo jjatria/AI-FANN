@@ -19,6 +19,8 @@ subtest 'Standard' => {
     is $nn.total-connections, 51, 'total-connections';
     is $nn.network-type, FANN_NETTYPE_LAYER, 'network-type';
     is $nn.connection-rate, 1, 'connection-rate';
+    is $nn.activation-function( layer => 1, neuron => 0 ),
+        FANN_SIGMOID_STEPWISE, 'activation-function';
 
     is-deeply $nn.layer-array, @layers.List, 'layer-array';
     is-deeply $nn.bias-array, @layers.List, 'bias-array';
@@ -39,6 +41,8 @@ subtest 'Sparse' => {
     is $nn.total-connections, 42, 'total-connections';
     is $nn.network-type, FANN_NETTYPE_LAYER, 'network-type';
     is $nn.connection-rate, 0.75, 'connection-rate';
+    is $nn.activation-function( layer => 1, neuron => 0 ),
+        FANN_SIGMOID_STEPWISE, 'activation-function';
 
     is-deeply $nn.layer-array, @layers.List, 'layer-array';
     is-deeply $nn.bias-array, @layers.List, 'bias-array';
@@ -59,6 +63,8 @@ subtest 'Shortcut' => {
     is $nn.total-connections, 86, 'total-connections';
     is $nn.network-type, FANN_NETTYPE_SHORTCUT, 'network-type';
     is $nn.connection-rate, 1, 'connection-rate';
+    is $nn.activation-function( layer => 1, neuron => 0 ),
+        FANN_SIGMOID_STEPWISE, 'activation-function';
 
     is-deeply $nn.layer-array, @layers.List, 'layer-array';
     is-deeply $nn.bias-array, @layers.List, 'bias-array';

@@ -74,6 +74,15 @@ class AI::FANN {
         [ $out[ ^$out.elems ] ];
     }
 
+    method activation-function (
+        :$layer!,
+        :$neuron!,
+        --> AI::FANN::ActivationFunc
+    ) {
+        AI::FANN::ActivationFunc.^enum_from_value:
+            fann_get_activation_function( $!fann, $layer, $neuron );
+    }
+
     method destroy { $.DESTROY }
 
     submethod DESTROY { fann_destroy($!fann) if $!fann; $!fann = Nil }
