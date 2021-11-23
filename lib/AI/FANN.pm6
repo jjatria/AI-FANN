@@ -83,6 +83,62 @@ class AI::FANN {
             fann_get_activation_function( $!fann, $layer, $neuron );
     }
 
+    method run ( :@input ) {
+        fann_run( $!fann, CArray[float].new( |@input.map(*.Num) ) );
+    }
+
+    method save ( IO() :$path --> Bool() ) {
+        !fann_save($!fann, "$path")
+    }
+
+    method set-activation-function (
+        $function,
+        Bool() :$hidden is copy,
+        Bool() :$output is copy,
+        Int    :$layer,
+        Int    :$neuron,
+    ) {
+        if $layer.defined {
+            return fann_set_activation_function( $!fann, $function, $layer, $neuron )
+                if $neuron.defined;
+
+            return fann_set_activation_function_layer( $!fann, $function, $layer );
+        }
+
+        $hidden = $output = True unless $hidden || $output;
+
+        fann_set_activation_function_hidden( $!fann, $function ) if $hidden;
+        fann_set_activation_function_output( $!fann, $function ) if $output;
+    }
+
+    multi method train ( :$input!, :$output! ) {
+        fann_train( $!fann, $input, $output )
+    }
+
+    multi method train (
+        :$data,
+        IO() :$path,
+        :$max-epochs!,
+        :$epochs-between-reports!,
+        Num() :$desired-error!,
+    ) {
+        return fann_train_on_data(
+            $!fann,
+            $data,
+            $max-epochs,
+            $epochs-between-reports,
+            $desired-error,
+        ) if $data;
+
+        fann_train_on_file(
+            $!fann,
+            "$path",
+            $max-epochs,
+            $epochs-between-reports,
+            $desired-error,
+        );
+    }
+
     method destroy { $.DESTROY }
 
     submethod DESTROY { fann_destroy($!fann) if $!fann; $!fann = Nil }

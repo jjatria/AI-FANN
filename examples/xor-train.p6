@@ -1,24 +1,21 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 
+use AI::FANN;
 use AI::FANN::Constants;
 
-my $dir = $*PROGRAM.parent.Str;
+my $dir = $*PROGRAM.parent;
 
-my $num_input = 2;
-my $num_output = 1;
-my $num_layers = 3;
-my $num_neurons_hidden = 3;
-my num32 $desired_error = 0.001.Num;
-my uint32 $max_epochs = 500000;
-my uint32 $epochs_between_reports = 1000;
+my $ann = AI::FANN.new: layers => [ 2, 3, 1 ];
 
-my fann $ann = fann_create_standard($num_layers, $num_input, $num_neurons_hidden, $num_output);
-fann_set_activation_function_hidden($ann, FANN_SIGMOID_SYMMETRIC);
-fann_set_activation_function_output($ann, FANN_SIGMOID_SYMMETRIC);
+END $ann.destroy;
 
-fann_train_on_file($ann, "$dir/data/xor.data", $max_epochs, $epochs_between_reports, $desired_error);
+$ann.set-activation-function: FANN_SIGMOID_SYMMETRIC, :hidden, :output;
 
-fann_save($ann, "$dir/output/xor_float.net");
+$ann.train:
+    path                   => $dir.child('/data/xor.data'),
+    desired-error          => 0.001,
+    max-epochs             => 500_000,
+    epochs-between-reports => 1_000;
 
-fann_destroy($ann);
-
+$ann.save: path => $dir.child('/output/xor_float.net')
+    or note 'Could not save network data';

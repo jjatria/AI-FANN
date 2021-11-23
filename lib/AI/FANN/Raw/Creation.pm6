@@ -32,7 +32,7 @@ sub fann_create_shortcut_array(uint32 $num_layers, CArray[int32] $layers is rw )
 
 sub fann_destroy(fann) is export is native(&fannlib) {*}
 sub fann_copy(fann) returns fann is export is native(&fannlib) {*}
-sub fann_run(fann, CArray[float] is rw) returns fann is export is native(&fannlib) {*}
+sub fann_run(fann, CArray[float] is rw) returns CArray[fann_type] is export is native(&fannlib) {*}
 sub fann_randomize_weights(fann, float, float) is export is native(&fannlib) {*}
 sub fann_init_weights(fann, fann_train_data) is export is native(&fannlib) {*}
 

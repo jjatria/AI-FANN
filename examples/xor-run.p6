@@ -1,17 +1,18 @@
-#!/usr/bin/env perl6
+#!/usr/bin/env raku
 
-use NativeCall;
-use AI::FANN::Raw;
+use AI::FANN;
 
-my $dir = $*PROGRAM.parent.Str;
+my $ann = AI::FANN.new:
+    path => $*PROGRAM.parent.child('output/xor_float.net');
 
-my fann $ann = fann_create_from_file("$dir/output/xor_float.net");
+END $ann.destroy;
 
-my CArray[float] $input = CArray[float].new(-1.Num, 1.Num);
-
-my $calc_out = fann_run($ann, $input);
-
-put "($input[0], $input[1]) -> $calc_out[0]";
-
-fann_destroy($ann);
-
+for (
+    [ -1,  1 ],
+    [ -1, -1 ],
+    [  1,  1 ],
+    [  1, -1 ],
+) -> @input {
+    my $output = $ann.run: :@input;
+    say '(% d, % d) -> % f'.sprintf: @input[0], @input[1], $output[0];
+}
