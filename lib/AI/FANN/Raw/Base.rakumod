@@ -2,8 +2,6 @@ unit module AI::FANN::Raw::Base;
 
 use NativeCall;
 
-sub fannlib is export { 'libfann.so' }
-
 constant float                  is export = num32;
 constant fann_type              is export = num32;
 constant fann_activationfunc    is export = int32;
