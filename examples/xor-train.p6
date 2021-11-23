@@ -1,6 +1,6 @@
 #!/usr/bin/env perl6
 
-use AI::FANN::Raw;
+use AI::FANN::Constants;
 
 my $dir = $*PROGRAM.parent.Str;
 

@@ -3,18 +3,8 @@ unit module AI::FANN::Raw::Training;
 use NativeCall;
 use AI::FANN::Raw::Base;
 
-
 constant fann_errorfunc is export = int32;
-enum fann_errorfunc_enum is export «
-    FANN_ERRORFUNC_LINEAR
-    FANN_ERRORFUNC_TANH
-»;
-
-constant fann_stopfunc is export = int32;
-enum fann_stopfunc_enum is export «
-    FANN_STOPFUNC_MSE
-    FANN_STOPFUNC_BIT
-»;
+constant fann_stopfunc  is export = int32;
 
 ## http://leenissen.dk/fann/html/files/fann_train-h.html
 ## FANN Training

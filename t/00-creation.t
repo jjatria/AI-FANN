@@ -1,6 +1,7 @@
 #!/usr/bin/env perl6
 
 use Test;
+use AI::FANN::Constants;
 use AI::FANN::Raw;
 use NativeCall;
 

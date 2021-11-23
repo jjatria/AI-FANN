@@ -10,6 +10,7 @@
     "test-depends" : [ ], 
     "provides" : { 
         "AI::FANN"                  : "lib/AI/FANN.pm6",
+        "AI::FANN::Constants"       : "lib/AI/FANN/Constants.pm6",
         "AI::FANN::Raw"             : "lib/AI/FANN/Raw.pm6",
         "AI::FANN::Raw::Base"       : "lib/AI/FANN/Raw/Base.pm6",
         "AI::FANN::Raw::Creation"   : "lib/AI/FANN/Raw/Creation.pm6",
