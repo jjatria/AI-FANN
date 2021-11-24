@@ -1,0 +1,64 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO: Figure out how to install libfann in other OSes
+        os: [ ubuntu-latest ]
+
+        # Variants of the latest Raku
+        raku: [
+            '2020.12'
+        ]
+
+        include:
+          # A full run with coverage
+          - os: ubuntu-latest
+            raku: '2021.10'
+            cover: true
+
+    runs-on: ${{ matrix.os }}
+
+    name: v${{ matrix.raku }} on ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: Raku/setup-raku@v1
+        with:
+          raku-version: ${{ matrix.raku }}
+
+      - if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+            sudo apt-get update
+            sudo apt-get install -y libfann-dev
+
+      - run: |
+          raku -v
+          zef install --/test 'App::Prove6:auth<cpan:LEONT>'
+          zef install --deps-only --/test .
+
+      - if: ${{ matrix.cover }}
+        run: zef install --/test 'App::RaCoCo:auth<zef:atroxaper>'
+
+      - if: ${{ !matrix.cover }}
+        run: prove6 -l
+
+      - if: ${{ matrix.cover }}
+        run: racoco --exec='prove6 -l' --fix-compunit --html
+
+      - if: ${{ matrix.cover }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: Coverage
+          path: .racoco/**/*.html
