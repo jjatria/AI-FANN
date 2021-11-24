@@ -51,6 +51,11 @@ class AI::FANN {
 
         method length ( --> Int ) { fann_length_train_data($!data) }
 
+        method scale ( Range:D $range  --> Nil ) {
+            die 'Cannot use an infinite range to set scale' if $range.infinite;
+            fann_scale_train_data( $!data, |$range.minmax».Num )
+        }
+
         method destroy ( --> Nil ) { $.DESTROY }
 
         submethod DESTROY { fann_destroy_train($!data) if $!data; $!data = Nil }
@@ -82,6 +87,7 @@ class AI::FANN {
     method num-output        ( --> Int ) { fann_get_num_output($!fann) }
     method total-connections ( --> Int ) { fann_get_total_connections($!fann) }
     method total-neurons     ( --> Int ) { fann_get_total_neurons($!fann) }
+    method bit-fail          ( --> Int ) { fann_get_bit_fail($!fann) }
 
     method network-type      ( --> AI::FANN::NetType ) {
         AI::FANN::NetType.^enum_from_value: fann_get_network_type($!fann);
@@ -107,6 +113,12 @@ class AI::FANN {
 
     method print-connections ( --> Nil ) { fann_print_connections($!fann) }
     method print-parameters  ( --> Nil ) { fann_print_parameters($!fann) }
+
+    method randomise-weights (|c) { $.randomize-weights: |c } # We love our British users
+    method randomize-weights ( Range:D $range  --> Nil ) {
+        die 'Cannot use an infinite range to randomize weights' if $range.infinite;
+        fann_randomize_weights($!fann, |$range.minmax».Num)
+    }
 
     multi method run ( CArray[fann_type] :$input --> CArray[fann_type] ) {
         fann_run( $!fann, $input )
@@ -167,7 +179,108 @@ class AI::FANN {
         $function;
     }
 
-    multi method test ( :@input!, :@output! --> Nil ) {
+    multi method training-algorithm ( --> AI::FANN::Train ) {
+        AI::FANN::Train.^enum_from_value: fann_get_training_algorithm($!fann);
+    }
+
+    multi method training-algorithm (
+        AI::FANN::Train $algorithm,
+        --> AI::FANN::Train
+    ) {
+        fann_set_training_algorithm( $!fann, $algorithm );
+        $algorithm;
+    }
+
+    multi method train-error-function ( --> AI::FANN::ErrorFunc ) {
+        AI::FANN::ErrorFunc.^enum_from_value: fann_get_train_error_function($!fann);
+    }
+
+    multi method train-error-function (
+        AI::FANN::ErrorFunc $function,
+        --> AI::FANN::ErrorFunc
+    ) {
+        fann_set_train_error_function( $!fann, $function );
+        $function;
+    }
+
+    multi method train-stop-function ( --> AI::FANN::StopFunc ) {
+        AI::FANN::StopFunc.^enum_from_value: fann_get_train_stop_function($!fann);
+    }
+
+    multi method train-stop-function (
+        AI::FANN::StopFunc $function,
+        --> AI::FANN::StopFunc
+    ) {
+        fann_set_train_stop_function( $!fann, $function );
+        $function;
+    }
+
+    multi method bit-fail-limit ( --> Num ) {
+        fann_get_bit_fail_limit($!fann);
+    }
+
+    multi method bit-fail-limit ( Num() $limit --> Num ) {
+        fann_set_bit_fail_limit( $!fann, $limit );
+        $limit;
+    }
+
+    multi method cascade-num-candidate-groups ( --> Int ) {
+        fann_get_cascade_num_candidate_groups($!fann);
+    }
+
+    multi method cascade-num-candidate-groups (
+        Int:D $groups,
+        --> Int
+    ) {
+        fann_set_cascade_num_candidate_groups( $!fann, $groups );
+        $groups;
+    }
+
+    multi method cascade-activation-steepnesses ( --> List ) {
+        fann_get_cascade_activation_steepnesses($!fann).list;
+    }
+
+    multi method cascade-activation-steepnesses (
+        CArray[fann_type] $steepnesses,
+        --> Nil
+    ) {
+        fann_set_cascade_activation_steepnesses( $!fann, $steepnesses, $steepnesses.elems )
+    }
+
+    multi method cascade-activation-steepnesses (
+        *@steepnesses,
+        --> Nil
+    ) {
+        fann_set_cascade_activation_steepnesses(
+            $!fann,
+            CArray[fann_type].new(|@steepnesses».Num),
+            @steepnesses.elems
+        );
+    }
+
+    multi method cascade-activation-functions ( --> List ) {
+        fann_get_cascade_activation_functions($!fann).list;
+    }
+
+    multi method cascade-activation-functions (
+        CArray[fann_activationfunc] $functions,
+        --> Nil
+    ) {
+        fann_set_cascade_activation_functions( $!fann, $functions, $functions.elems )
+    }
+
+    multi method cascade-activation-functions (
+        *@functions,
+        --> Nil
+    ) {
+        fann_set_cascade_activation_functions(
+            $!fann,
+            CArray[fann_activationfunc].new(|@functions».Int),
+            @functions.elems
+        );
+    }
+
+    multi method train ( :@input!, :@output! --> Nil ) {
         fann_train( $!fann,
             CArray[fann_type].new(|@input».Num),
             CArray[fann_type].new(|@output».Num),
@@ -210,6 +323,38 @@ class AI::FANN {
             "$path",
             $max-epochs,
             $epochs-between-reports,
+            $desired-error,
+        );
+    }
+
+    multi method cascade-train (
+        TrainData :$data,
+                  :$max-neurons,
+                  :$neurons-between-reports,
+        Num()     :$desired-error,
+        --> Nil
+    ) {
+        fann_cascadetrain_on_data(
+            $!fann,
+            $data!AI::FANN::TrainData::data,
+            $max-neurons,
+            $neurons-between-reports,
+            $desired-error,
+        );
+    }
+
+    multi method cascade-train (
+        IO()  :$path,
+              :$max-neurons,
+              :$neurons-between-reports,
+        Num() :$desired-error,
+        --> Nil
+    ) {
+        fann_cascadetrain_on_file(
+            $!fann,
+            "$path",
+            $max-neurons,
+            $neurons-between-reports,
             $desired-error,
         );
     }
