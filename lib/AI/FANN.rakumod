@@ -41,12 +41,11 @@ class AI::FANN {
             Int :$num-data!,
             Int :$num-input!,
             Int :$num-output!,
-            --> TrainData
         ) {
             $!data = fann_create_train( $num-data, $num-input, $num-output );
         }
 
-        multi method BUILD ( IO() :$path --> TrainData ) {
+        multi method BUILD ( IO() :$path ) {
             $!data = fann_read_train_from_file( "$path" );
         }
 
