@@ -126,7 +126,7 @@ class AI::FANN {
 
     proto method activation-function ( :$layer, :$neuron, | ) {
         die "Invalid layer index: $layer. Cannot access the activation function of the input layer"
-            if $layer <= 0;
+            if $layer.defined && $layer <= 0;
         {*}
     }
 
