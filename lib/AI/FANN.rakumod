@@ -1,7 +1,6 @@
 use NativeCall;
 use AI::FANN::Raw;
 use AI::FANN::Constants ();
-use AI::FANN::Connection;
 
 # See https://stackoverflow.com/a/43554058/807650
 my role StructArray[Mu:U \T where .REPR eq 'CStruct'] does Positional[T] {
@@ -23,6 +22,12 @@ my role StructArray[Mu:U \T where .REPR eq 'CStruct'] does Positional[T] {
 
 class AI::FANN {
     has fann $!fann is built;
+
+    class Connection is repr('CStruct') {
+        has uint32    $.from-neuron;
+        has uint32    $.to-neuron;
+        has fann_type $.weight;
+    }
 
     class TrainData {
         trusts AI::FANN;
