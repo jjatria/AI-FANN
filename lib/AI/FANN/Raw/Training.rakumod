@@ -12,7 +12,7 @@ constant fann_stopfunc  is export = int32;
 ## FANN Training
 
 sub fann_train(fann, fann_type is rw, fann_type is rw) is export is native(LIB) {*}
-sub fann_test(fann, fann_type is rw, fann_type is rw) is export is native(LIB) {*}
+sub fann_test(fann, CArray[fann_type], CArray[fann_type]) is export is native(LIB) {*}
 sub fann_get_MSE(fann) returns float is export is native(LIB) {*}
 sub fann_get_bit_fail(fann) returns uint32 is export is native(LIB) {*}
 sub fann_reset_MSE(fann) is export is native(LIB) {*}
@@ -28,7 +28,7 @@ sub fann_read_train_from_file(Str) returns fann_train_data is export is native(L
 sub fann_create_train(uint32, uint32, uint32) returns fann_train_data is export is native(LIB) {*}
 sub fann_train_data(uint32, uint32, uint32, & (uint32, uint32,uint32,fann_type)) returns fann_train_data is export is native(LIB) {*}
 
-# sub fann_destroy_train(fann_train_data) is export is native(LIB) {*}
+sub fann_destroy_train(fann_train_data) is export is native(LIB) {*}
 sub fann_shuffle_train_data(fann_train_data) is export is native(LIB) {*}
 sub fann_scale_train(fann,fann_train_data) is export is native(LIB) {*}
 sub fann_descale_train(fann,fann_train_data) is export is native(LIB) {*}

@@ -24,6 +24,34 @@ my role StructArray[Mu:U \T where .REPR eq 'CStruct'] does Positional[T] {
 class AI::FANN {
     has fann $!fann is built;
 
+    class TrainData {
+        trusts AI::FANN;
+
+        has fann_train_data $!data is built
+            handles < num-data num-input num-output input output >;
+
+        method !data { $!data }
+
+        multi method new (
+            Int :$num-data!,
+            Int :$num-input!,
+            Int :$num-output!,
+            --> TrainData
+        ) {
+            self.bless: data => fann_create_train( $num-data, $num-input, $num-output );
+        }
+
+        multi method new ( IO() :$path --> TrainData ) {
+            self.bless: data => fann_read_train_from_file( "$path" );
+        }
+
+        method length { fann_length_train_data($!data) }
+
+        method destroy { $.DESTROY }
+
+        submethod DESTROY { fann_destroy_train($!data) if $!data; $!data = Nil }
+    }
+
     multi method new ( IO() :$path! --> AI::FANN ) {
         self.bless: fann => fann_create_from_file("$path");
     }
@@ -95,6 +123,10 @@ class AI::FANN {
         !fann_save($!fann, "$path")
     }
 
+    method reset-MSE ( --> Nil ) { fann_reset_MSE($!fann) }
+
+    method get-MSE ( --> Num ) { fann_get_MSE($!fann) }
+
     method set-activation-function (
         $function,
         Bool() :$hidden is copy,
@@ -120,7 +152,7 @@ class AI::FANN {
     }
 
     multi method train (
-        :$data,
+        TrainData :$data,
         IO() :$path,
         :$max-epochs!,
         :$epochs-between-reports!,
@@ -128,7 +160,7 @@ class AI::FANN {
     ) {
         return fann_train_on_data(
             $!fann,
-            $data,
+            $data!AI::FANN::TrainData::data,
             $max-epochs,
             $epochs-between-reports,
             $desired-error,
@@ -142,6 +174,8 @@ class AI::FANN {
             $desired-error,
         );
     }
+
+    method test ( :$input!, :$output! ) { fann_test( $!fann, $input, $output ) }
 
     method destroy { $.DESTROY }
 
