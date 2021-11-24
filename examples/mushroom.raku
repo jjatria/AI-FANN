@@ -13,7 +13,6 @@ my $data = AI::FANN::TrainData.new:
 my $ann = AI::FANN.new:
     layers => [ $data.num-input, 32, $data.num-output ];
 
-
 say 'Training network.';
 
 $ann.set-activation-function: :hidden, FANN_SIGMOID_SYMMETRIC;
@@ -26,16 +25,10 @@ $ann.train: :$data,
 
 say 'Testing network.';
 
-my $test = AI::FANN::TrainData.new:
-    path => $dir.child('data/mushroom.test');
+$ann.reset-error;
+$ann.test: path => $dir.child('data/mushroom.test');
 
-
-$ann.reset-MSE;
-for ^$test.length {
-    $ann.test: input => $test.input[$_], output => $test.output[$_];
-}
-
-say 'MSE error on test data: %f'.sprintf: $ann.get-MSE;
+say 'MSE error on test data: %f'.sprintf: $ann.mean-square-error;
 
 say 'Saving network.';
 
@@ -44,5 +37,4 @@ $ann.save: path => $dir.child('mushroom_float.net');
 say 'Cleaning up.';
 
 $data.destroy;
-$test.destroy;
 $ann.destroy;
