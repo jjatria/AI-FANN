@@ -113,7 +113,7 @@ class AI::FANN {
     }
 
     multi method run ( :@input --> List ) {
-        fann_run( $!fann, CArray[fann_type].new( |@input.map(*.Num) ) ).list
+        fann_run( $!fann, CArray[fann_type].new( |@input».Num ) ).list
     }
 
     method save ( IO() :$path --> Bool() ) {
@@ -169,8 +169,8 @@ class AI::FANN {
 
     multi method test ( :@input!, :@output! --> Nil ) {
         fann_train( $!fann,
-            CArray[fann_type].new(|@input.map(*.Num)),
-            CArray[fann_type].new(|@output.map(*.Num)),
+            CArray[fann_type].new(|@input».Num),
+            CArray[fann_type].new(|@output».Num),
         );
     }
 
@@ -216,8 +216,8 @@ class AI::FANN {
 
     multi method test ( :@input!, :@output! --> Nil ) {
         fann_test( $!fann,
-            CArray[fann_type].new(|@input.map(*.Num)),
-            CArray[fann_type].new(|@output.map(*.Num)),
+            CArray[fann_type].new(|@input».Num),
+            CArray[fann_type].new(|@output».Num),
         );
     }
 
