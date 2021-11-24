@@ -57,7 +57,3 @@ sub fann_set_weight(fann, uint32, uint32, float) is export is native(LIB) {*}
 
 sub fann_set_user_data(fann, Pointer) is export is native(LIB) {*}
 sub fann_get_user_data(fann) returns Pointer[void] is export is native(LIB) {*}
-
-# not found in my version of FANN
-#sub fann_get_decimal_point(fann) returns uint32 is export is native(LIB) {*}
-#sub fann_get_multiplier(fann) returns uint32 is export is native(LIB) {*}

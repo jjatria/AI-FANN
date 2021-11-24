@@ -83,8 +83,6 @@ class AI::FANN {
     method num-output        ( --> Int ) { fann_get_num_output($!fann) }
     method total-connections ( --> Int ) { fann_get_total_connections($!fann) }
     method total-neurons     ( --> Int ) { fann_get_total_neurons($!fann) }
-  # method decimal-point     ( --> Int ) { fann_get_decimal_point($!fann) }
-  # method multiplier        ( --> Int ) { fann_get_multiplier($!fann) }
 
     method network-type      ( --> AI::FANN::NetType ) {
         AI::FANN::NetType.^enum_from_value: fann_get_network_type($!fann);
