@@ -27,22 +27,22 @@ class AI::FANN {
     class TrainData {
         trusts AI::FANN;
 
-        has fann_train_data $!data is built
+        has fann_train_data $!data
             handles < num-data num-input num-output input output >;
 
         method !data { $!data }
 
-        multi method new (
+        multi method BUILD (
             Int :$num-data!,
             Int :$num-input!,
             Int :$num-output!,
             --> TrainData
         ) {
-            self.bless: data => fann_create_train( $num-data, $num-input, $num-output );
+            $!data = fann_create_train( $num-data, $num-input, $num-output );
         }
 
-        multi method new ( IO() :$path --> TrainData ) {
-            self.bless: data => fann_read_train_from_file( "$path" );
+        multi method BUILD ( IO() :$path --> TrainData ) {
+            $!data = fann_read_train_from_file( "$path" );
         }
 
         method length { fann_length_train_data($!data) }
@@ -52,24 +52,21 @@ class AI::FANN {
         submethod DESTROY { fann_destroy_train($!data) if $!data; $!data = Nil }
     }
 
-    multi method new ( IO() :$path! --> AI::FANN ) {
-        self.bless: fann => fann_create_from_file("$path");
+    multi method BUILD ( IO() :$path! ) {
+        $!fann = fann_create_from_file("$path");
     }
 
-    multi method new (
+    multi method BUILD (
         :@layers!,
         Bool() :$shortcut,
         Num()  :connection-rate($rate),
-        --> AI::FANN
     ) {
         my $layers = CArray[uint32].new: |@layers;
         my $n      = @layers.elems;
 
-        my $fann = $shortcut     ?? fann_create_shortcut_array(      $n, $layers )
-                !! $rate.defined ?? fann_create_sparse_array( $rate, $n, $layers )
-                !!                  fann_create_standard_array(      $n, $layers );
-
-        self.bless: :$fann;
+        $!fann = $shortcut     ?? fann_create_shortcut_array(      $n, $layers )
+              !! $rate.defined ?? fann_create_sparse_array( $rate, $n, $layers )
+              !!                  fann_create_standard_array(      $n, $layers );
     }
 
     method connection-rate   ( --> Num ) { fann_get_connection_rate($!fann) }
