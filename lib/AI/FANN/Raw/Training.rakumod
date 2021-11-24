@@ -12,7 +12,7 @@ constant fann_stopfunc  is export = int32;
 ## FANN Training
 
 sub fann_train(fann, fann_type is rw, fann_type is rw) is export is native(LIB) {*}
-sub fann_test(fann, CArray[fann_type], CArray[fann_type]) is export is native(LIB) {*}
+sub fann_test(fann, CArray[fann_type], CArray[fann_type]) returns CArray[fann_type] is export is native(LIB) {*}
 sub fann_get_MSE(fann) returns float is export is native(LIB) {*}
 sub fann_get_bit_fail(fann) returns uint32 is export is native(LIB) {*}
 sub fann_reset_MSE(fann) is export is native(LIB) {*}
@@ -20,7 +20,7 @@ sub fann_reset_MSE(fann) is export is native(LIB) {*}
 sub fann_train_on_data(fann, fann_train_data, uint32, uint32, float) is export is native(LIB) {*}
 sub fann_train_on_file(fann, Str, uint32, uint32, float) is export is native(LIB) {*}
 sub fann_train_epoch(fann, fann_train_data) is export is native(LIB) {*}
-sub fann_test_data(fann, fann_train_data) is export is native(LIB) {*}
+sub fann_test_data(fann, fann_train_data) returns float is export is native(LIB) {*}
 
 ## Training Data Manipulation
 

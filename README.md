@@ -326,26 +326,28 @@ these training algorithms.
     multi method test (
         CArray[num32] :$input!,
         CArray[num32] :$output!,
-    ) returns Nil
+    ) returns CArray[num32]
 
     multi method test (
         :@input!,
         :@output!,
-    ) returns Nil
+    ) returns List
 
     multi method test (
         AI::FANN::TrainData :$data!
-    ) returns Nil
+    ) returns Num
 
     multi method train (
         IO() :$path!,
-    ) returns Nil
+    ) returns Num
 
 Test the network with a set of inputs and desired outputs. This operation
 updates the mean square error, but does not change the network in any way.
 
 Inputs and outputs can be passed as CArray[num32] objects, or as arrays of
 numeric values, which will be converted internally to their C representation.
+
+These candidates return the same as the equivalent invokations of [run](#run).
 
 Two more calling patterns are offered as shortcuts.
 
@@ -356,6 +358,8 @@ contains.
 Alternatively, the `path` parameter can be set to a value that can be coerced
 to a [IO::Path] object. In this case, an AI::FANN::TrainData will be
 internally read from the contents of this file and used as above.
+
+These candidates return the updated mean square error for the network.
 
 ### reset-error
 

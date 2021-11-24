@@ -214,31 +214,28 @@ class AI::FANN {
         );
     }
 
-    multi method test ( :@input!, :@output! --> Nil ) {
+    multi method test ( :@input!, :@output! --> List ) {
         fann_test( $!fann,
             CArray[fann_type].new(|@input».Num),
             CArray[fann_type].new(|@output».Num),
-        );
+        ).list;
     }
 
     multi method test (
         CArray[fann_type] :$input!,
         CArray[fann_type] :$output!,
-        --> Nil
+        --> CArray[fann_type]
     ) {
         fann_test( $!fann, $input, $output )
     }
 
-    multi method test ( TrainData :$data --> Nil ) {
-        fann_test( $!fann, $data.input[$_], $data.output[$_] )
-            for ^$data.length;
+    multi method test ( TrainData :$data --> Num ) {
+        fann_test_data( $!fann, $data!AI::FANN::TrainData::data )
     }
 
-    multi method test ( IO() :$path --> Nil ) {
+    multi method test ( IO() :$path --> Num ) {
         my $data = AI::FANN::TrainData.new: :$path;
-
         $.test: :$data;
-
         $data.destroy;
     }
 
