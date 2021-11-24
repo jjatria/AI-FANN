@@ -1,32 +1,43 @@
 {
-    "perl": "6.*",
-    "name" : "AI::FANN",
-    "version" : "0.0.1",
-    "auth": "github:perlpilot",
-    "license" : "Artistic-2.0",
-    "description" : "Raku binding to the Fast Artificial Neural Network library",
-    "tags" : [ "AI", "Neural Network" ],
-    "depends" : [ ],
-    "test-depends" : [ ],
-    "provides" : {
-        "AI::FANN"                  : "lib/AI/FANN.rakumod",
-        "AI::FANN::Constants"       : "lib/AI/FANN/Constants.rakumod",
-        "AI::FANN::Connection"      : "lib/AI/FANN/Connection.rakumod",
-        "AI::FANN::Raw"             : "lib/AI/FANN/Raw.rakumod",
-        "AI::FANN::Raw::Base"       : "lib/AI/FANN/Raw/Base.rakumod",
-        "AI::FANN::Raw::Creation"   : "lib/AI/FANN/Raw/Creation.rakumod",
-        "AI::FANN::Raw::Training"   : "lib/AI/FANN/Raw/Training.rakumod",
-        "AI::FANN::Raw::Cascade"    : "lib/AI/FANN/Raw/Cascade.rakumod",
-        "AI::FANN::Raw::Error"      : "lib/AI/FANN/Raw/Error.rakumod",
-        "AI::FANN::Raw::IO"         : "lib/AI/FANN/Raw/IO.rakumod"
+    "perl": "6.d",
+    "name": "AI::FANN",
+    "version": "0.1.0",
+    "auth": "zef:jjatria",
+    "license": "Artistic-2.0",
+    "description": "Raku binding to the Fast Artificial Neural Network library",
+    "tags": [ "AI", "Neural Network" ],
+    "depends": {
+        "build": {
+            "requires": [
+                "fann:from<native>"
+            ]
+        },
+        "test": {
+            "requires": [
+                "Test"
+            ]
+        }
     },
-    "source-type" : "git",
-    "source-url" : "https://github.com/raku-community-modules/AI-FANN.git",
+    "provides": {
+        "AI::FANN":                "lib/AI/FANN.rakumod",
+        "AI::FANN::Constants":     "lib/AI/FANN/Constants.rakumod",
+        "AI::FANN::Connection":    "lib/AI/FANN/Connection.rakumod",
+        "AI::FANN::Raw":           "lib/AI/FANN/Raw.rakumod",
+        "AI::FANN::Raw::Base":     "lib/AI/FANN/Raw/Base.rakumod",
+        "AI::FANN::Raw::Creation": "lib/AI/FANN/Raw/Creation.rakumod",
+        "AI::FANN::Raw::Training": "lib/AI/FANN/Raw/Training.rakumod",
+        "AI::FANN::Raw::Cascade":  "lib/AI/FANN/Raw/Cascade.rakumod",
+        "AI::FANN::Raw::Error":    "lib/AI/FANN/Raw/Error.rakumod",
+        "AI::FANN::Raw::IO":       "lib/AI/FANN/Raw/IO.rakumod"
+    },
+    "source-type": "git",
+    "source-url": "https://github.com/jjatria/AI-FANN.git",
     "support": {
-        "source": "https://github.com/raku-community-modules/AI-FANN.git",
-        "bugtracker" : "https://github.com/raku-community-modules/AI-FANN/issues"
+        "source": "https://github.com/jjatria/AI-FANN.git",
+        "bugtracker": "https://github.com/jjatria/AI-FANN/issues"
     },
-    "authors"       : [
-        "Jonathan Scott Duff <duff@pobox.com>"
+    "authors": [
+        "Jonathan Scott Duff <duff@pobox.com>",
+        "José Joaquín Atria <jjatria@cpan.org>"
     ]
 }
