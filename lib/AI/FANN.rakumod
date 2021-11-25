@@ -120,15 +120,20 @@ class AI::FANN {
         fann_randomize_weights($!fann, |$range.minmax».Num)
     }
 
-    multi method run ( CArray[fann_type] :$input --> CArray[fann_type] ) {
+    multi method run ( CArray[fann_type] :$input! --> CArray[fann_type] ) {
         fann_run( $!fann, $input )
     }
 
-    multi method run ( :@input --> List ) {
-        fann_run( $!fann, CArray[fann_type].new( |@input».Num ) ).list
+    multi method run ( :@input! --> List ) {
+        [
+            fann_run(
+                $!fann,
+                CArray[fann_type].new( |@input».Num )
+            ).[ ^$.num-output ]
+        ]
     }
 
-    method save ( IO() :$path --> Bool() ) {
+    method save ( IO() :$path! --> Bool() ) {
         !fann_save($!fann, "$path")
     }
 
@@ -306,10 +311,10 @@ class AI::FANN {
     }
 
     multi method train (
-        TrainData :$data,
-                  :$max-epochs,
-                  :$epochs-between-reports,
-        Num()     :$desired-error,
+        TrainData :$data!,
+                  :$max-epochs!,
+                  :$epochs-between-reports!,
+        Num()     :$desired-error!,
         --> ::?CLASS:D
     ) {
         fann_train_on_data(
@@ -323,10 +328,10 @@ class AI::FANN {
     }
 
     multi method train (
-        IO()  :$path,
-              :$max-epochs,
-              :$epochs-between-reports,
-        Num() :$desired-error,
+        IO()  :$path!,
+              :$max-epochs!,
+              :$epochs-between-reports!,
+        Num() :$desired-error!,
         --> ::?CLASS:D
     ) {
         fann_train_on_file(
@@ -340,10 +345,10 @@ class AI::FANN {
     }
 
     multi method cascade-train (
-        TrainData :$data,
-                  :$max-neurons,
-                  :$neurons-between-reports,
-        Num()     :$desired-error,
+        TrainData :$data!,
+                  :$max-neurons!,
+                  :$neurons-between-reports!,
+        Num()     :$desired-error!,
         --> ::?CLASS:D
     ) {
         fann_cascadetrain_on_data(
@@ -357,10 +362,10 @@ class AI::FANN {
     }
 
     multi method cascade-train (
-        IO()  :$path,
-              :$max-neurons,
-              :$neurons-between-reports,
-        Num() :$desired-error,
+        IO()  :$path!,
+              :$max-neurons!,
+              :$neurons-between-reports!,
+        Num() :$desired-error!,
         --> ::?CLASS:D
     ) {
         fann_cascadetrain_on_file(

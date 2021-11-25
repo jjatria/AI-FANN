@@ -9,7 +9,7 @@ my $ann = AI::FANN.new: layers => [ 2, 3, 1 ];
 
 END $ann.destroy;
 
-$ann.set-activation-function: FANN_SIGMOID_SYMMETRIC, :hidden, :output;
+$ann.activation-function: FANN_SIGMOID_SYMMETRIC, :hidden, :output;
 
 $ann.train:
     path                   => $dir.child('/data/xor.data'),

@@ -224,11 +224,11 @@ Prints all of the parameters and options of the network.
 
     # fann_run
     multi method run (
-        CArray[num32] :$input
+        CArray[num32] :$input!
     ) returns CArray[num32]
 
     multi method run (
-        :@input
+        :@input!
     ) returns List
 
 Run the input through the neural network, returning an array of outputs. The
@@ -248,7 +248,7 @@ to its C representation, and the return value will be a [List] object.
 ### save
 
     # fann_save
-    method save ( IO() :$path ) returns Bool
+    method save ( IO() :$path! ) returns Bool
 
 Save the entire network to a configuration file.
 
@@ -521,7 +521,7 @@ with one shortcut connected neuron in each.
 
     # fann_cascadetrain_on_data
     multi method cascade-train (
-        AI::FANN::TrainData :$data,
+        AI::FANN::TrainData :$data!,
                             :$max-neurons!,
                             :$neurons-between-reports!,
         Num()               :$desired-error!,
@@ -529,7 +529,7 @@ with one shortcut connected neuron in each.
 
     # fann_cascadetrain_on_file
     multi method cascade-train (
-        IO()  :$path,
+        IO()  :$path!,
               :$max-neurons!,
               :$neurons-between-reports!,
         Num() :$desired-error!,

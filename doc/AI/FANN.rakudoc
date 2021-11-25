@@ -255,7 +255,7 @@ L<List|https://docs.raku.org/type/List> object.
 =head3 save
 
     # fann_save
-    method save ( IO() :$path ) returns Bool
+    method save ( IO() :$path! ) returns Bool
 
 Save the entire network to a configuration file.
 
