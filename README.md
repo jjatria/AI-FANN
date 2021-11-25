@@ -263,6 +263,105 @@ are also not saved.
 
 ## Training
 
+The methods in this section support fixed topology training.
+
+When using this method of training, the size and topology of the ANN is
+determined in advance and the training alters the weights in order to minimize
+the difference between the desired output values and the actual output values.
+
+For evolving topology training, see the [Cascade Training](#cascade-training)
+section below.
+
+### train
+
+    # fann_train
+    multi method train (
+        CArray[num32] :$input!,
+        CArray[num32] :$output!,
+    ) returns self
+
+    multi method train (
+        :@input!,
+        :@output!,
+    ) returns self
+
+    # fann_train_on_data
+    multi method train (
+        AI::FANN::TrainData :$data!,
+                            :$max-epochs!,
+                            :$epochs-between-reports!,
+        Num()               :$desired-error!,
+    ) returns self
+
+    # fann_train_on_file
+    multi method train (
+        IO()  :$path!,
+              :$max-epochs!,
+              :$epochs-between-reports!,
+        Num() :$desired-error!,
+    ) returns self
+
+This method is used to train the neural network.
+
+The first two candidates train a single iteration using the specified set of
+inputs and desired outputs in the `input` and `output` parameters. Inputs
+and outputs can be passed as [CArray[num32]][CArray] objects, or as arrays
+of numeric values, which will be converted internally to their C
+representation.
+
+Since only one pattern is presented, training done this way is always
+incremental training (`FANN_TRAIN_INCREMENTAL` in the AI::FANN::Train enum).
+
+The last two candidates train instead on an entire dataset, for a period of
+time. The first one takes an AI::FANN::TrainData object in the `data`
+parameter, while the second generates one internally from the file specified
+in the `path` parameter.
+
+In both cases, the training uses the algorithm set with
+[training-algorithm](#training-algorithm) (NYI), and the parameters set for
+these training algorithms.
+
+### test
+
+    # fann_test
+    multi method test (
+        CArray[num32] :$input!,
+        CArray[num32] :$output!,
+    ) returns CArray[num32]
+
+    multi method test (
+        :@input!,
+        :@output!,
+    ) returns List
+
+    multi method test (
+        AI::FANN::TrainData :$data!
+    ) returns Num
+
+    multi method train (
+        IO() :$path!,
+    ) returns Num
+
+Test the network with a set of inputs and desired outputs. This operation
+updates the mean square error, but does not change the network in any way.
+
+Inputs and outputs can be passed as CArray[num32] objects, or as arrays of
+numeric values, which will be converted internally to their C representation.
+
+These candidates return the same as the equivalent invokations of [run](#run).
+
+Two more calling patterns are offered as shortcuts.
+
+A AI::FANN::TrainData object can be passed as the `data` parameter, in which
+case the network will be tested with all the input and output data it
+contains.
+
+Alternatively, the `path` parameter can be set to a value that can be coerced
+to a [IO::Path] object. In this case, an AI::FANN::TrainData will be
+internally read from the contents of this file and used as above.
+
+These candidates return the updated mean square error for the network.
+
 ### activation-function
 
     # fann_get_activation_function
@@ -393,96 +492,6 @@ activation functions can use the same limit.
 
 The default bit fail limit is 0.35.
 
-### train
-
-    # fann_train
-    multi method train (
-        CArray[num32] :$input!,
-        CArray[num32] :$output!,
-    ) returns self
-
-    multi method train (
-        :@input!,
-        :@output!,
-    ) returns self
-
-    # fann_train_on_data
-    multi method train (
-        AI::FANN::TrainData :$data!,
-                            :$max-epochs!,
-                            :$epochs-between-reports!,
-        Num()               :$desired-error!,
-    ) returns self
-
-    # fann_train_on_file
-    multi method train (
-        IO()  :$path!,
-              :$max-epochs!,
-              :$epochs-between-reports!,
-        Num() :$desired-error!,
-    ) returns self
-
-This method is used to train the neural network.
-
-The first two candidates train a single iteration using the specified set of
-inputs and desired outputs in the `input` and `output` parameters. Inputs
-and outputs can be passed as [CArray[num32]][CArray] objects, or as arrays
-of numeric values, which will be converted internally to their C
-representation.
-
-Since only one pattern is presented, training done this way is always
-incremental training (`FANN_TRAIN_INCREMENTAL` in the AI::FANN::Train enum).
-
-The last two candidates train instead on an entire dataset, for a period of
-time. The first one takes an AI::FANN::TrainData object in the `data`
-parameter, while the second generates one internally from the file specified
-in the `path` parameter.
-
-In both cases, the training uses the algorithm set with
-[training-algorithm](#training-algorithm) (NYI), and the parameters set for
-these training algorithms.
-
-### test
-
-    # fann_test
-    multi method test (
-        CArray[num32] :$input!,
-        CArray[num32] :$output!,
-    ) returns CArray[num32]
-
-    multi method test (
-        :@input!,
-        :@output!,
-    ) returns List
-
-    multi method test (
-        AI::FANN::TrainData :$data!
-    ) returns Num
-
-    multi method train (
-        IO() :$path!,
-    ) returns Num
-
-Test the network with a set of inputs and desired outputs. This operation
-updates the mean square error, but does not change the network in any way.
-
-Inputs and outputs can be passed as CArray[num32] objects, or as arrays of
-numeric values, which will be converted internally to their C representation.
-
-These candidates return the same as the equivalent invokations of [run](#run).
-
-Two more calling patterns are offered as shortcuts.
-
-A AI::FANN::TrainData object can be passed as the `data` parameter, in which
-case the network will be tested with all the input and output data it
-contains.
-
-Alternatively, the `path` parameter can be set to a value that can be coerced
-to a [IO::Path] object. In this case, an AI::FANN::TrainData will be
-internally read from the contents of this file and used as above.
-
-These candidates return the updated mean square error for the network.
-
 ### reset-error
 
     # fann_reset_MSE
@@ -516,6 +525,9 @@ connections are trained and new candidate neurons are prepared. The candidate
 neurons are created as shortcut connected neurons in a new hidden layer, which
 means that the final neural network will consist of a number of hidden layers
 with one shortcut connected neuron in each.
+
+For methods suporting ordinary, or fixed topology training, see the
+[Training](#training) section above.
 
 ### cascade-train
 
