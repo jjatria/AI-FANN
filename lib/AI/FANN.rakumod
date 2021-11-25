@@ -89,7 +89,7 @@ class AI::FANN {
     method total-neurons     ( --> Int ) { fann_get_total_neurons($!fann) }
     method bit-fail          ( --> Int ) { fann_get_bit_fail($!fann) }
 
-    method network-type      ( --> AI::FANN::NetType ) {
+    method network-type ( --> AI::FANN::NetType ) {
         AI::FANN::NetType.^enum_from_value: fann_get_network_type($!fann);
     }
 
@@ -132,7 +132,7 @@ class AI::FANN {
         !fann_save($!fann, "$path")
     }
 
-    method reset-error ( --> Nil ) { fann_reset_MSE($!fann) }
+    method reset-error ( --> ::?CLASS:D ) { fann_reset_MSE($!fann); self }
 
     method mean-square-error ( --> Num ) { fann_get_MSE($!fann) }
 
@@ -155,28 +155,27 @@ class AI::FANN {
         AI::FANN::ActivationFunc $function!,
         Int:D                   :$layer!,
         Int                     :$neuron,
-        --> AI::FANN::ActivationFunc
+        --> ::?CLASS:D
     ) {
-        return fann_set_activation_function( $!fann, $function, $layer, $neuron )
-            if $neuron.defined;
+        $neuron.defined
+            ?? fann_set_activation_function( $!fann, $function, $layer, $neuron )
+            !! fann_set_activation_function_layer( $!fann, $function, $layer );
 
-        fann_set_activation_function_layer( $!fann, $function, $layer );
-
-        $function;
+        self;
     }
 
     multi method activation-function (
         AI::FANN::ActivationFunc $function!,
         Bool()                  :$hidden is copy,
         Bool()                  :$output is copy,
-        --> AI::FANN::ActivationFunc
+        --> ::?CLASS:D
     ) {
         $hidden = $output = True unless $hidden || $output;
 
         fann_set_activation_function_hidden( $!fann, $function ) if $hidden;
         fann_set_activation_function_output( $!fann, $function ) if $output;
 
-        $function;
+        self;
     }
 
     multi method training-algorithm ( --> AI::FANN::Train ) {
@@ -185,10 +184,10 @@ class AI::FANN {
 
     multi method training-algorithm (
         AI::FANN::Train $algorithm,
-        --> AI::FANN::Train
+        --> ::?CLASS:D
     ) {
         fann_set_training_algorithm( $!fann, $algorithm );
-        $algorithm;
+        self;
     }
 
     multi method train-error-function ( --> AI::FANN::ErrorFunc ) {
@@ -197,10 +196,10 @@ class AI::FANN {
 
     multi method train-error-function (
         AI::FANN::ErrorFunc $function,
-        --> AI::FANN::ErrorFunc
+        --> ::?CLASS:D
     ) {
         fann_set_train_error_function( $!fann, $function );
-        $function;
+        self;
     }
 
     multi method train-stop-function ( --> AI::FANN::StopFunc ) {
@@ -209,19 +208,22 @@ class AI::FANN {
 
     multi method train-stop-function (
         AI::FANN::StopFunc $function,
-        --> AI::FANN::StopFunc
+        --> ::?CLASS:D
     ) {
         fann_set_train_stop_function( $!fann, $function );
-        $function;
+        self;
     }
 
     multi method bit-fail-limit ( --> Num ) {
         fann_get_bit_fail_limit($!fann);
     }
 
-    multi method bit-fail-limit ( Num() $limit --> Num ) {
+    multi method bit-fail-limit (
+        Num() $limit,
+        --> ::?CLASS:D
+    ) {
         fann_set_bit_fail_limit( $!fann, $limit );
-        $limit;
+        self;
     }
 
     multi method cascade-num-candidate-groups ( --> Int ) {
@@ -230,10 +232,10 @@ class AI::FANN {
 
     multi method cascade-num-candidate-groups (
         Int:D $groups,
-        --> Int
+        --> ::?CLASS:D
     ) {
         fann_set_cascade_num_candidate_groups( $!fann, $groups );
-        $groups;
+        self;
     }
 
     multi method cascade-activation-steepnesses ( --> List ) {
@@ -242,20 +244,23 @@ class AI::FANN {
 
     multi method cascade-activation-steepnesses (
         CArray[fann_type] $steepnesses,
-        --> Nil
+        --> ::?CLASS:D
     ) {
-        fann_set_cascade_activation_steepnesses( $!fann, $steepnesses, $steepnesses.elems )
+        fann_set_cascade_activation_steepnesses(
+            $!fann, $steepnesses, $steepnesses.elems );
+        self;
     }
 
     multi method cascade-activation-steepnesses (
         *@steepnesses,
-        --> Nil
+        --> ::?CLASS:D
     ) {
         fann_set_cascade_activation_steepnesses(
             $!fann,
             CArray[fann_type].new(|@steepnesses».Num),
             @steepnesses.elems
         );
+        self;
     }
 
     multi method cascade-activation-functions ( --> List ) {
@@ -264,35 +269,40 @@ class AI::FANN {
 
     multi method cascade-activation-functions (
         CArray[fann_activationfunc] $functions,
-        --> Nil
+        --> ::?CLASS:D
     ) {
-        fann_set_cascade_activation_functions( $!fann, $functions, $functions.elems )
+        fann_set_cascade_activation_functions(
+            $!fann, $functions, $functions.elems );
+        self;
     }
 
     multi method cascade-activation-functions (
         *@functions,
-        --> Nil
+        --> ::?CLASS:D
     ) {
         fann_set_cascade_activation_functions(
             $!fann,
             CArray[fann_activationfunc].new(|@functions».Int),
             @functions.elems
         );
+        self;
     }
 
-    multi method train ( :@input!, :@output! --> Nil ) {
+    multi method train ( :@input!, :@output! --> ::?CLASS:D ) {
         fann_train( $!fann,
             CArray[fann_type].new(|@input».Num),
             CArray[fann_type].new(|@output».Num),
         );
+        self;
     }
 
     multi method train (
         CArray[fann_type] :$input!,
         CArray[fann_type] :$output!,
-        --> Nil
+        --> ::?CLASS:D
     ) {
-        fann_train( $!fann, $input, $output )
+        fann_train( $!fann, $input, $output );
+        self;
     }
 
     multi method train (
@@ -300,7 +310,7 @@ class AI::FANN {
                   :$max-epochs,
                   :$epochs-between-reports,
         Num()     :$desired-error,
-        --> Nil
+        --> ::?CLASS:D
     ) {
         fann_train_on_data(
             $!fann,
@@ -309,6 +319,7 @@ class AI::FANN {
             $epochs-between-reports,
             $desired-error,
         );
+        self;
     }
 
     multi method train (
@@ -316,7 +327,7 @@ class AI::FANN {
               :$max-epochs,
               :$epochs-between-reports,
         Num() :$desired-error,
-        --> Nil
+        --> ::?CLASS:D
     ) {
         fann_train_on_file(
             $!fann,
@@ -325,6 +336,7 @@ class AI::FANN {
             $epochs-between-reports,
             $desired-error,
         );
+        self;
     }
 
     multi method cascade-train (
@@ -332,7 +344,7 @@ class AI::FANN {
                   :$max-neurons,
                   :$neurons-between-reports,
         Num()     :$desired-error,
-        --> Nil
+        --> ::?CLASS:D
     ) {
         fann_cascadetrain_on_data(
             $!fann,
@@ -341,6 +353,7 @@ class AI::FANN {
             $neurons-between-reports,
             $desired-error,
         );
+        self;
     }
 
     multi method cascade-train (
@@ -348,7 +361,7 @@ class AI::FANN {
               :$max-neurons,
               :$neurons-between-reports,
         Num() :$desired-error,
-        --> Nil
+        --> ::?CLASS:D
     ) {
         fann_cascadetrain_on_file(
             $!fann,
@@ -357,6 +370,7 @@ class AI::FANN {
             $neurons-between-reports,
             $desired-error,
         );
+        self;
     }
 
     multi method test ( :@input!, :@output! --> List ) {
@@ -371,17 +385,17 @@ class AI::FANN {
         CArray[fann_type] :$output!,
         --> CArray[fann_type]
     ) {
-        fann_test( $!fann, $input, $output )
+        fann_test( $!fann, $input, $output );
     }
 
-    multi method test ( TrainData :$data --> Num ) {
-        fann_test_data( $!fann, $data!AI::FANN::TrainData::data )
+    multi method test ( TrainData :$data! --> Num ) {
+        fann_test_data( $!fann, $data!AI::FANN::TrainData::data );
     }
 
-    multi method test ( IO() :$path --> Num ) {
+    multi method test ( IO() :$path! --> Num ) {
         my $data = AI::FANN::TrainData.new: :$path;
+        LEAVE $data.destroy;
         $.test: :$data;
-        $data.destroy;
     }
 
     method destroy ( --> Nil ) { $.DESTROY }

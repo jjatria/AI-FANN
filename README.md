@@ -15,13 +15,37 @@ AI::FANN
 
 # METHODS
 
-The methods described below follow roughly the same structure as that used
-in the documentation of [`libfann`](http://libfann.github.io/fann/docs).
+Methods described below include readers, mutators, and methods that operate
+on the internal state of the network in more complex ways.
+
+Some methods, like [num-inputs](#num-inputs) are only for reading the
+internal state of the network, and will always return the value that was
+requested.
+
+Other methods, like [activation-function](#activation-function) will act as
+both readers and mutators depending on the arguments that are passed.
+
+When acting as readers, named parameters may be used to specify the scope
+of the reading. Some of these may be mandatory.
+
+When acting as mutators, the new value should be passed as one or more
+positional arguments, with any named parameters specifying the possible scope
+of the mutation. All mutators always return the calling object, to allow
+for chaining. These will be marked in the signatures as `returns self`.
+
+Most other methods, like [reset-error](#reset-error) or [train](#train), will
+also return the calling object, and may take named parameters. Some methods
+have different return values, like [test](#test) or [save](#save) that reflect
+the result of the operation. In all cases, the signature should specify the
+return value.
+
+The sections below follow roughly the same structure as that used
+in the documentation of [libfann](http://libfann.github.io/fann/docs).
 
 Whenever possible, the underlying method that is being called will be
 indicated next to the method signatures.
 
-Please refer to the `libfann` documentation for additional details.
+Please refer to the libfann documentation for additional details.
 
 ## Creation and Execution
 
@@ -159,7 +183,7 @@ Get the connections in the network.
 ### print-connections
 
     # fann_print_connections
-    method print-connections returns Nil
+    method print-connections returns self
 
 Will print the connections of the network in a compact matrix, for easy
 viewing of its internals.
@@ -192,7 +216,7 @@ neurons that connections can go to.
 ### print-parameters
 
     # fann_print_parameters
-    method print-parameters returns Nil
+    method print-parameters returns self
 
 Prints all of the parameters and options of the network.
 
@@ -253,7 +277,7 @@ are also not saved.
         AI::FANN::ActivationFunc $function!,
         Int                     :$layer!,
         Int                     :$neuron,
-    ) returns AI::FANN:;ActivationFunc
+    ) returns self
 
     # fann_set_activation_function_hidden
     # fann_set_activation_function_output
@@ -261,7 +285,7 @@ are also not saved.
         AI::FANN::ActivationFunc $function!,
         Bool()                  :$hidden,
         Bool()                  :$output,
-    ) returns AI::FANN:;ActivationFunc
+    ) returns self
 
 If called with no positional arguments, this method returns the activation
 function for neuron number and layer specified in the `neuron` and `layer`
@@ -292,7 +316,7 @@ will be modified.
     # fann_set_training_algorithm
     multi method training-algorithm (
         AI::FANN::Train $algorithm,
-    ) returns AI::FANN::Train
+    ) returns self
 
 If called with no positional arguments, this method returns the training
 algorithm as per the AI::FANN::Train enum. The training algorithm is used
@@ -315,7 +339,7 @@ The default training algorithm is `FANN_TRAIN_RPROP`.
     # fann_set_train_error_function
     multi method train-error-function (
         AI::FANN::ErrorFunc $function,
-    ) returns AI::FANN::ErrorFunc
+    ) returns self
 
 If called with no positional arguments, this method returns the error function
 used during training as per the AI::FANN::ErrorFunc enum.
@@ -333,7 +357,7 @@ The default training error function if `FANN_ERRORFUNC_TANH`.
     # fann_set_train_stop_function
     multi method train-stop-function (
         AI::FANN::StopFunc $function,
-    ) returns AI::FANN::StopFunc
+    ) returns self
 
 If called with no positional arguments, this method returns the stop function
 used during training as per the AI::FANN::StopFunc enum.
@@ -351,7 +375,7 @@ The default training stop function if `FANN_STOPFUNC_MSE`.
     # fann_set_bit_fail_limit
     multi method bit-fail-limit (
         Num() $limit,
-    ) returns Num
+    ) returns self
 
 If called with no positional arguments, this method returns the bit fail limit
 used during training. If called with a positional argument, it will be coerced
@@ -375,12 +399,12 @@ The default bit fail limit is 0.35.
     multi method train (
         CArray[num32] :$input!,
         CArray[num32] :$output!,
-    ) returns Nil
+    ) returns self
 
     multi method train (
         :@input!,
         :@output!,
-    ) returns Nil
+    ) returns self
 
     # fann_train_on_data
     multi method train (
@@ -388,7 +412,7 @@ The default bit fail limit is 0.35.
                             :$max-epochs!,
                             :$epochs-between-reports!,
         Num()               :$desired-error!,
-    ) returns Nil
+    ) returns self
 
     # fann_train_on_file
     multi method train (
@@ -396,7 +420,7 @@ The default bit fail limit is 0.35.
               :$max-epochs!,
               :$epochs-between-reports!,
         Num() :$desired-error!,
-    ) returns Nil
+    ) returns self
 
 This method is used to train the neural network.
 
@@ -462,7 +486,7 @@ These candidates return the updated mean square error for the network.
 ### reset-error
 
     # fann_reset_MSE
-    method reset-error returns Nil
+    method reset-error returns self
 
 Resets the mean square error from the network, and the number of bits that
 fail.
@@ -501,7 +525,7 @@ with one shortcut connected neuron in each.
                             :$max-neurons!,
                             :$neurons-between-reports!,
         Num()               :$desired-error!,
-    ) returns Nil
+    ) returns self
 
     # fann_cascadetrain_on_file
     multi method cascade-train (
@@ -509,7 +533,7 @@ with one shortcut connected neuron in each.
               :$max-neurons!,
               :$neurons-between-reports!,
         Num() :$desired-error!,
-    ) returns Nil
+    ) returns self
 
 Trains the network on an entire dataset for a period of time using the
 Cascade2 training algorithm. The dataset can be passed as an
@@ -531,7 +555,7 @@ be used when invoking [new](#new), like this
     multi method cascade-num-candidates returns Int
 
     # fann_set_cascade_num_candidates
-    multi method cascade-num-candidates ( Int $groups ) returns Int
+    multi method cascade-num-candidates ( Int $groups ) returns self
 
 If called with no positional arguments, this method returns the number of
 candidates used during training. If called with an Int as a positional
@@ -564,7 +588,7 @@ The default number of candidates is 6x4x2 = 48
     multi method cascade-num-candidate-groups returns Int
 
     # fann_set_cascade_num_candidate_groups
-    multi method cascade-num-candidate-groups ( Int $groups ) returns Int
+    multi method cascade-num-candidate-groups ( Int $groups ) returns self
 
 If called with no positional arguments, this method returns the number of
 candidate groups used during training. If called with an Int as a positional
@@ -590,11 +614,11 @@ The default number of candidate groups is 2
     # fann_set_cascade_activation_steepnesses
     multi method cascade-activation-steepnesses (
         CArray[num32] $steepnesses,
-    ) returns Nil
+    ) returns self
 
     multi method cascade-activation-steepnesses (
         *@steepnesses,
-    ) returns Nil
+    ) returns self
 
 If called with no positional arguments, this method returns the array of
 activation steepnesses used by the candidates. See
@@ -621,11 +645,11 @@ The default activation steepnesses are [ 0.25, 0.50, 0.75, 1.00 ].
     # fann_set_cascade_activation_functions
     multi method cascade-activation-functions (
         CArray[num32] $functions,
-    ) returns Nil
+    ) returns self
 
     multi method cascade-activation-functions (
         *@functions,
-    ) returns Nil
+    ) returns self
 
 If called with no positional arguments, this method returns the array of
 activation functions used by the candidates. See
