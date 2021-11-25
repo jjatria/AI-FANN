@@ -41,6 +41,23 @@ subtest 'Standard' => {
     is-deeply $nn.connection-array.map(*.^name),
         [ 'AI::FANN::Connection' xx $nn.total-connections ].List,
         'connection-array';
+
+    subtest 'activation-function' => {
+        my &get-hidden = { .activation-function: neuron => 0, layer => 1 };
+        my &get-output = { .activation-function: neuron => 0, layer => @layers.elems - 1 };
+
+        is $nn.&get-hidden, FANN_SIGMOID_STEPWISE, 'getter';
+
+        is $nn.activation-function( FANN_SIGMOID,   :hidden ).&get-hidden, FANN_SIGMOID,  'hidden setter';
+        is $nn.activation-function( FANN_GAUSSIAN,  :output ).&get-output, FANN_GAUSSIAN, 'output setter';
+        is $nn.activation-function( FANN_ELLIOT, layer => 1 ).&get-hidden, FANN_ELLIOT,   'layer setter';
+
+        ok $nn.activation-function( FANN_THRESHOLD, layer => 1, neuron => 0 );
+        is $nn.&get-hidden, FANN_THRESHOLD, 'setter';
+
+        is $nn.activation-function( neuron => 2, layer => 1 ),
+            FANN_ELLIOT, 'other neurons remain untouched';
+    }
 }
 
 subtest 'Sparse' => {
