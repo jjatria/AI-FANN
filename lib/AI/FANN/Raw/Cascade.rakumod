@@ -43,7 +43,7 @@ sub fann_get_cascade_num_candidates(fann) returns uint32 is export is native(LIB
 sub fann_get_cascade_activation_functions(fann) returns fann_activationfunc is export is native(LIB) {*}
 sub fann_set_cascade_activation_functions(fann, CArray[fann_activationfunc], uint32) is export is native(LIB) {*}
 
-sub fann_get_cascade_activation_steepnesses(fann) returns fann_type is export is native(LIB) {*}
+sub fann_get_cascade_activation_steepnesses(fann) returns CArray[fann_type] is export is native(LIB) {*}
 sub fann_set_cascade_activation_steepnesses(fann, CArray[fann_type], uint32) is export is native(LIB) {*}
 
 sub fann_get_cascade_activation_functions_count(fann) returns uint32 is export is native(LIB) {*}

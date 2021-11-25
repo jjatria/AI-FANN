@@ -6,7 +6,81 @@ use AI::FANN;
 my $ann = AI::FANN.new: layers => [ 2, 3, 1 ];
 END $ann.destroy;
 
-throws-like { $ann.activation-function: layer => 0, neuron => 1 },
-    X::AdHoc, message => /'Cannot access the activation function of the input layer'/;
+subtest 'new' => sub {
+    throws-like { AI::FANN.new: path => 'missing' },
+        X::AdHoc, message => "Cannot read from file: 'missing'";
+}
+
+subtest 'save' => sub {
+    throws-like {
+        AI::FANN.new( layers => [ 1, 1 ] )
+            .save: path => $*HOME.parent.child('forbidden') # Hopefully...
+    }, X::AdHoc, message => /'Cannot write to file: '/;
+}
+
+subtest 'activation-function' => sub {
+    throws-like { $ann.activation-function: layer => -1, neuron => 1 },
+        X::OutOfRange, what => 'Layer index', range => '1 2';
+
+    throws-like { $ann.activation-function: layer => 0, neuron => 1 },
+        X::OutOfRange, what => 'Layer index', range => '1 2';
+
+    throws-like { $ann.activation-function: layer => 4, neuron => 1 },
+        X::OutOfRange, what => 'Layer index', range => '1 2';
+
+    throws-like { $ann.activation-function: layer => 1, neuron => 4 },
+        X::OutOfRange, what => 'Neuron index', range => '0 1 2 3';
+
+    throws-like { $ann.activation-function: layer => 1, neuron => -1 },
+        X::OutOfRange, what => 'Neuron index', range => '0 1 2 3';
+
+    throws-like { $ann.activation-function: 42, :hidden },
+        X::AdHoc, message => 'Invalid activation function: must be a value in AI::FANN::ActivationFunc';
+
+    lives-ok { $ann.activation-function: 5, :hidden },
+        'Accepts plain numeric values';
+}
+
+subtest 'training-algorithm' => {
+    throws-like { $ann.training-algorithm: 42 },
+        X::AdHoc, message => 'Invalid training algorithm: must be a value in AI::FANN::Train';
+}
+
+subtest 'train-error-function' => {
+    throws-like { $ann.train-error-function: 42 },
+        X::AdHoc, message => 'Invalid error function: must be a value in AI::FANN::ErrorFunc';
+}
+
+subtest 'train-stop-function' => {
+    throws-like { $ann.train-stop-function: 42 },
+        X::AdHoc, message => 'Invalid stop function: must be a value in AI::FANN::StopFunc';
+}
+
+subtest 'train' => {
+    throws-like {
+        $ann.train:
+            path                   => 'missing',
+            max-epochs             => 1,
+            epochs-between-reports => 1,
+            desired-error          => 1;
+
+    }, X::AdHoc, message => "Cannot read from file: 'missing'";
+}
+
+subtest 'cascade-train' => {
+    throws-like {
+        $ann.cascade-train:
+            path                    => 'missing',
+            max-neurons             => 1,
+            neurons-between-reports => 1,
+            desired-error           => 1;
+
+    }, X::AdHoc, message => "Cannot read from file: 'missing'";
+}
+
+subtest 'test' => {
+    throws-like { $ann.test: path => 'missing' },
+        X::AdHoc, message => "Cannot read from file: 'missing'";
+}
 
 done-testing;

@@ -22,6 +22,7 @@ my role StructArray[Mu:U \T where .REPR eq 'CStruct'] does Positional[T] {
 
 class AI::FANN {
     has fann $!fann is built;
+    has $!layers; # Used for error reporting
 
     class Connection is repr('CStruct') {
         has uint32    $.from-neuron;
@@ -45,7 +46,8 @@ class AI::FANN {
             $!data = fann_create_train( $num-data, $num-input, $num-output );
         }
 
-        multi method BUILD ( IO() :$path ) {
+        multi method BUILD ( IO() :$path! ) {
+            die "Cannot read from file: '$path'" unless $path.r;
             $!data = fann_read_train_from_file( "$path" );
         }
 
@@ -62,6 +64,7 @@ class AI::FANN {
     }
 
     multi method BUILD ( IO() :$path! ) {
+        die "Cannot read from file: '$path'" unless $path.r;
         $!fann = fann_create_from_file("$path");
     }
 
@@ -75,6 +78,7 @@ class AI::FANN {
 
         my $layers = CArray[uint32].new: |@layers;
         my $n      = @layers.elems;
+        $!layers   = @layers;
 
         $!fann = $shortcut     ?? fann_create_shortcut_array(      $n, $layers )
               !! $rate.defined ?? fann_create_sparse_array( $rate, $n, $layers )
@@ -124,16 +128,13 @@ class AI::FANN {
         fann_run( $!fann, $input )
     }
 
-    multi method run ( :@input! --> List ) {
-        [
-            fann_run(
-                $!fann,
-                CArray[fann_type].new( |@input».Num )
-            ).[ ^$.num-output ]
-        ]
+    multi method run ( :@input! --> List() ) {
+        .[ ^$.num-output ]
+            with fann_run( $!fann, CArray[fann_type].new: |@input».Num )
     }
 
     method save ( IO() :$path! --> Bool() ) {
+        die "Cannot write to file: '$path'" unless $path.w;
         !fann_save($!fann, "$path")
     }
 
@@ -142,8 +143,24 @@ class AI::FANN {
     method mean-square-error ( --> Num ) { fann_get_MSE($!fann) }
 
     proto method activation-function ( :$layer, :$neuron, | ) {
-        die "Invalid layer index: $layer. Cannot access the activation function of the input layer"
-            if $layer.defined && $layer <= 0;
+        $!layers //= $.layer-array;
+
+        X::OutOfRange.new(
+           what  => 'Layer index',
+           got   => $layer,
+           range => 1..^$!layers.elems,
+        ).throw if $layer.defined && $layer !~~ 1..^$!layers.elems;
+
+        if $neuron.defined {
+            die "Cannot set :neuron without setting :layer" unless $layer.defined;
+
+            X::OutOfRange.new(
+               what  => 'Neuron index',
+               got   => $neuron,
+               range => 0..$!layers[$layer],
+            ).throw unless $neuron ~~ 0..$!layers[$layer];
+        }
+
         {*}
     }
 
@@ -183,6 +200,12 @@ class AI::FANN {
         self;
     }
 
+    multi method activation-function ( $other, |c ) {
+        my $value = AI::FANN::ActivationFunc.^enum_from_value($other)
+           or die "Invalid activation function: must be a value in AI::FANN::ActivationFunc";
+        nextwith( $value, |c );
+    }
+
     multi method training-algorithm ( --> AI::FANN::Train ) {
         AI::FANN::Train.^enum_from_value: fann_get_training_algorithm($!fann);
     }
@@ -193,6 +216,12 @@ class AI::FANN {
     ) {
         fann_set_training_algorithm( $!fann, $algorithm );
         self;
+    }
+
+    multi method training-algorithm ( $other, |c ) {
+        my $value = AI::FANN::Train.^enum_from_value($other)
+           or die "Invalid training algorithm: must be a value in AI::FANN::Train";
+        nextwith( $value, |c );
     }
 
     multi method train-error-function ( --> AI::FANN::ErrorFunc ) {
@@ -207,6 +236,12 @@ class AI::FANN {
         self;
     }
 
+    multi method train-error-function ( $other, |c ) {
+        my $value = AI::FANN::ErrorFunc.^enum_from_value($other)
+           or die "Invalid error function: must be a value in AI::FANN::ErrorFunc";
+        nextwith( $value, |c );
+    }
+
     multi method train-stop-function ( --> AI::FANN::StopFunc ) {
         AI::FANN::StopFunc.^enum_from_value: fann_get_train_stop_function($!fann);
     }
@@ -217,6 +252,12 @@ class AI::FANN {
     ) {
         fann_set_train_stop_function( $!fann, $function );
         self;
+    }
+
+    multi method train-stop-function ( $other, |c ) {
+        my $value = AI::FANN::StopFunc.^enum_from_value($other)
+           or die "Invalid stop function: must be a value in AI::FANN::StopFunc";
+        nextwith( $value, |c );
     }
 
     multi method bit-fail-limit ( --> Num ) {
@@ -243,8 +284,13 @@ class AI::FANN {
         self;
     }
 
-    multi method cascade-activation-steepnesses ( --> List ) {
-        fann_get_cascade_activation_steepnesses($!fann).list;
+    multi method cascade-activation-steepnesses-count ( --> Int ) {
+        fann_get_cascade_activation_steepnesses_count($!fann);
+    }
+
+    multi method cascade-activation-steepnesses ( --> List() ) {
+        .[ ^$.cascade-activation-steepnesses-count ]
+            with fann_get_cascade_activation_steepnesses($!fann)
     }
 
     multi method cascade-activation-steepnesses (
@@ -268,8 +314,9 @@ class AI::FANN {
         self;
     }
 
-    multi method cascade-activation-functions ( --> List ) {
-        fann_get_cascade_activation_functions($!fann).list;
+    multi method cascade-activation-functions ( --> List() ) {
+        .[ ^$.cascade-activation-functions-count ]
+            with fann_get_cascade_activation_functions($!fann)
     }
 
     multi method cascade-activation-functions (
@@ -311,10 +358,10 @@ class AI::FANN {
     }
 
     multi method train (
-        TrainData :$data!,
-                  :$max-epochs!,
-                  :$epochs-between-reports!,
-        Num()     :$desired-error!,
+        TrainData:D :$data!,
+                    :$max-epochs!,
+                    :$epochs-between-reports!,
+        Num()       :$desired-error!,
         --> ::?CLASS:D
     ) {
         fann_train_on_data(
@@ -334,6 +381,7 @@ class AI::FANN {
         Num() :$desired-error!,
         --> ::?CLASS:D
     ) {
+        die "Cannot read from file: '$path'" unless $path.r;
         fann_train_on_file(
             $!fann,
             "$path",
@@ -345,10 +393,10 @@ class AI::FANN {
     }
 
     multi method cascade-train (
-        TrainData :$data!,
-                  :$max-neurons!,
-                  :$neurons-between-reports!,
-        Num()     :$desired-error!,
+        TrainData:D :$data!,
+                    :$max-neurons!,
+                    :$neurons-between-reports!,
+        Num()       :$desired-error!,
         --> ::?CLASS:D
     ) {
         fann_cascadetrain_on_data(
@@ -368,6 +416,7 @@ class AI::FANN {
         Num() :$desired-error!,
         --> ::?CLASS:D
     ) {
+        die "Cannot read from file: '$path'" unless $path.r;
         fann_cascadetrain_on_file(
             $!fann,
             "$path",
@@ -378,11 +427,11 @@ class AI::FANN {
         self;
     }
 
-    multi method test ( :@input!, :@output! --> List ) {
+    multi method test ( :@input!, :@output! --> List() ) {
         fann_test( $!fann,
             CArray[fann_type].new(|@input».Num),
             CArray[fann_type].new(|@output».Num),
-        ).list;
+        ).[ ^$.num-output ]
     }
 
     multi method test (
@@ -393,13 +442,13 @@ class AI::FANN {
         fann_test( $!fann, $input, $output );
     }
 
-    multi method test ( TrainData :$data! --> Num ) {
+    multi method test ( TrainData:D :$data! --> Num ) {
         fann_test_data( $!fann, $data!AI::FANN::TrainData::data );
     }
 
     multi method test ( IO() :$path! --> Num ) {
         my $data = AI::FANN::TrainData.new: :$path;
-        LEAVE $data.destroy;
+        LEAVE $data.?destroy;
         $.test: :$data;
     }
 
