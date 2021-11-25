@@ -69,6 +69,19 @@ the input layer to the output layer.
 The `connection-rate` and `shortcut` parameters are not compatible, and using
 both is an error.
 
+### bit-fail
+
+    # fann_get_bit_fail
+    method but-fail returns Int
+
+Returns the number of fail bits, or the number of output neurons which
+differ more than the bit fail limit (see [bit-fail-limit](#bit-fail-limit)).
+The bits are counted in all of the training data, so this number can be
+higher than the number of training data.
+
+This value is reset by [reset-error](#reset-error) and updated by all the
+same functions which also update the mean square error (eg. [test](#test)).
+
 ### connection-rate
 
     # fann_get_connection_rate
@@ -271,6 +284,91 @@ When setting the activation function using the `layer` parameter, the `neuron`
 parameter is optional. If none is set, all neurons in the specified layer
 will be modified.
 
+### training-algorithm
+
+    # fann_get_training_algorithm
+    multi method training-algorithm returns AI::FANN::Train
+
+    # fann_set_training_algorithm
+    multi method training-algorithm (
+        AI::FANN::Train $algorithm,
+    ) returns AI::FANN::Train
+
+If called with no positional arguments, this method returns the training
+algorithm as per the AI::FANN::Train enum. The training algorithm is used
+eg. when running [train](#train) or [cascade-train](#cascade-train) with
+a AI::FANN::TrainData object.
+
+If a member of that enum is passed as the first positional argument, this
+method instead sets that as the new training algorithm and returns it.
+
+Note that only `FANN_TRAIN_RPROP` and `FANN_TRAIN_QUICKPROP` are allowed
+during cascade training.
+
+The default training algorithm is `FANN_TRAIN_RPROP`.
+
+### train-error-function
+
+    # fann_get_train_error_function
+    multi method train-error-function returns AI::FANN::ErrorFunc
+
+    # fann_set_train_error_function
+    multi method train-error-function (
+        AI::FANN::ErrorFunc $function,
+    ) returns AI::FANN::ErrorFunc
+
+If called with no positional arguments, this method returns the error function
+used during training as per the AI::FANN::ErrorFunc enum.
+
+If a member of that enum is passed as the first positional argument, this
+method instead sets that as the new training error function and returns it.
+
+The default training error function if `FANN_ERRORFUNC_TANH`.
+
+### train-stop-function
+
+    # fann_get_train_stop_function
+    multi method train-stop-function returns AI::FANN::StopFunc
+
+    # fann_set_train_stop_function
+    multi method train-stop-function (
+        AI::FANN::StopFunc $function,
+    ) returns AI::FANN::StopFunc
+
+If called with no positional arguments, this method returns the stop function
+used during training as per the AI::FANN::StopFunc enum.
+
+If a member of that enum is passed as the first positional argument, this
+method instead sets that as the new training stop function and returns it.
+
+The default training stop function if `FANN_STOPFUNC_MSE`.
+
+### bit-fail-limit
+
+    # fann_get_bit_fail_limit
+    multi method bit-fail-limit returns Num
+
+    # fann_set_bit_fail_limit
+    multi method bit-fail-limit (
+        Num() $limit,
+    ) returns Num
+
+If called with no positional arguments, this method returns the bit fail limit
+used during training. If called with a positional argument, it will be coerced
+to a [Num] and set as the new limit. In that case, this method returns the
+value that has been set.
+
+The bit fail limit is used during training when the stop function is set to
+`FANN_STOPFUNC_BIT` (see [train-stop-function](#train-stop-function)).
+
+The limit is the maximum accepted difference between the desired output and
+the actual output during training. Each output that diverges more than this
+limit is counted as an error bit. This difference is divided by two when
+dealing with symmetric activation functions, so that symmetric and asymmetric
+activation functions can use the same limit.
+
+The default bit fail limit is 0.35.
+
 ### train
 
     # fann_train
@@ -379,6 +477,174 @@ training or testing (see [train](#train) and [test](#test) above), and can
 therefore sometimes be a bit off if the weights have been changed since the
 last calculation of the value.
 
+## Cascade Training
+
+Cascade training differs from ordinary training in that it starts with an
+empty neural network and then adds neurons one by one, while it trains the
+neural network. The main benefit of this approach is that you do not have to
+guess the number of hidden layers and neurons prior to training, but cascade
+training has also proved better at solving some problems.
+
+The basic idea of cascade training is that a number of candidate neurons are
+trained separate from the real network, then the most promising of these
+candidate neurons is inserted into the neural network. Then the output
+connections are trained and new candidate neurons are prepared. The candidate
+neurons are created as shortcut connected neurons in a new hidden layer, which
+means that the final neural network will consist of a number of hidden layers
+with one shortcut connected neuron in each.
+
+### cascade-train
+
+    # fann_cascadetrain_on_data
+    multi method cascade-train (
+        AI::FANN::TrainData :$data,
+                            :$max-neurons!,
+                            :$neurons-between-reports!,
+        Num()               :$desired-error!,
+    ) returns Nil
+
+    # fann_cascadetrain_on_file
+    multi method cascade-train (
+        IO()  :$path,
+              :$max-neurons!,
+              :$neurons-between-reports!,
+        Num() :$desired-error!,
+    ) returns Nil
+
+Trains the network on an entire dataset for a period of time using the
+Cascade2 training algorithm. The dataset can be passed as an
+AI::FANN::TrainData object in the `data` parameter. Alternatively, if
+the `path` is set, it will be coerced to an [IO::Path] object and the
+training data will be read from there instead.
+
+This algorithm adds neurons to the neural network while training, which means
+that it needs to start with an ANN without any hidden layers. The neural
+network should also use shortcut connections, so the `shortcut` flag should
+be used when invoking [new](#new), like this
+
+    my $ann = AI::FANN.new: :shortcut,
+        layers => [ $data.num-input, $data.num-output ];
+
+### cascade-num-candidates
+
+    # fann_get_cascade_num_candidates
+    multi method cascade-num-candidates returns Int
+
+    # fann_set_cascade_num_candidates
+    multi method cascade-num-candidates ( Int $groups ) returns Int
+
+If called with no positional arguments, this method returns the number of
+candidates used during training. If called with an Int as a positional
+argument, it will be set as the new value. In that case, this method returns
+the value that has been set.
+
+The number of candidates is calculated by multiplying the value returned by
+[cascade-activation-functions-count](#cascade-activation-functions-count),
+[cascade-activation-steepnesses-count](#cascade-activation-steepnesses-count),
+and [cascade-num-candidate-groups](#cascade-num-candidate-groups).
+
+The actual candidates is defined by the
+[cascade-activation-functions](#cascade-activation-functions) and
+[cascade-activation-steepnesses](#cascade-activation-steepnesses) arrays.
+These arrays define the activation functions and activation steepnesses used
+for the candidate neurons. If there are 2 activation functions in the
+activation function array and 3 steepnesses in the steepness array, then there
+will be 2x3=6 different candidates which will be trained. These 6 different
+candidates can be copied into several candidate groups, where the only
+difference between these groups is the initial weights. If the number of
+groups is set to 2, then the number of candidate neurons will be 2x3x2=12.
+The number of candidate groups can be set with
+[cascade-num-candidate-groups](#cascade-num-candidate-groups).
+
+The default number of candidates is 6x4x2 = 48
+
+### cascade-num-candidate-groups
+
+    # fann_get_cascade_num_candidate_groups
+    multi method cascade-num-candidate-groups returns Int
+
+    # fann_set_cascade_num_candidate_groups
+    multi method cascade-num-candidate-groups ( Int $groups ) returns Int
+
+If called with no positional arguments, this method returns the number of
+candidate groups used during training. If called with an Int as a positional
+argument, it will be set as the new value. In that case, this method returns
+the value that has been set.
+
+The number of candidate groups is the number of groups of identical candidates
+which will be used during training.
+
+This number can be used to have more candidates without having to define new
+parameters for the candidates.
+
+See [cascade-num-candidates](#cascade-num-candidates) for a description of
+which candidate neurons will be generated by this parameter.
+
+The default number of candidate groups is 2
+
+### cascade-activation-steepnesses
+
+    # fann_get_cascade_activation_steepnesses
+    multi method cascade-activation-steepnesses returns List
+
+    # fann_set_cascade_activation_steepnesses
+    multi method cascade-activation-steepnesses (
+        CArray[num32] $steepnesses,
+    ) returns Nil
+
+    multi method cascade-activation-steepnesses (
+        *@steepnesses,
+    ) returns Nil
+
+If called with no positional arguments, this method returns the array of
+activation steepnesses used by the candidates. See
+[cascade-num-candidates](#cascade-num-candidates) for a description of which
+candidate neurons will be generated by this array.
+
+If called with a [CArray[num32]][CArray] object as the first positional
+argument, this method will instead use that as the new value. Alternatively,
+the values that would be in that array can be passed as positional arguments
+and they'll be internally converted to a C representation to use instead.
+
+In either case, the new array must be just as long as defined by the count
+(see [cascade-activation-steepnesses-count](#cascade-activation-steepnesses-count)).
+
+When used as a setter, this method returns [Nil].
+
+The default activation steepnesses are [ 0.25, 0.50, 0.75, 1.00 ].
+
+### cascade-activation-functions
+
+    # fann_get_cascade_activation_functions
+    multi method cascade-activation-functions returns List
+
+    # fann_set_cascade_activation_functions
+    multi method cascade-activation-functions (
+        CArray[num32] $functions,
+    ) returns Nil
+
+    multi method cascade-activation-functions (
+        *@functions,
+    ) returns Nil
+
+If called with no positional arguments, this method returns the array of
+activation functions used by the candidates. See
+[cascade-num-candidates](#cascade-num-candidates) for a description of which
+candidate neurons will be generated by this array.
+
+If called with a [CArray[num32]][CArray] object as the first positional
+argument, this method will instead use that as the new value. Alternatively,
+the values that would be in that array can be passed as positional arguments
+and they'll be internally converted to a C representation to use instead.
+
+In either case, the new array must be just as long as defined by the count
+(see [cascade-activation-functions-count](#cascade-activation-functions-count)).
+
+The default activation functions are [ `FANN_SIGMOID`,
+`FANN_SIGMOID_SYMMETRIC`, `FANN_GAUSSIAN`, `FANN_GAUSSIAN_SYMMETRIC`,
+`FANN_ELLIOT`, `FANN_ELLIOT_SYMMETRIC`, `FANN_SIN_SYMMETRIC`,
+`FANN_COS_SYMMETRIC`, `FANN_SIN`, `FANN_COS` ].
+
 ## COPYRIGHT AND LICENSE
 
 Copyright 2021 José Joaquín Atria
@@ -386,6 +652,7 @@ Copyright 2021 José Joaquín Atria
 This library is free software; you can redistribute it and/or modify it under
 the Artistic License 2.0.
 
+[Nil]: https://docs.raku.org/type/Nil
 [List]: https://docs.raku.org/type/List
 [Array]: https://docs.raku.org/type/Array
 [IO::Path]: https://docs.raku.org/type/IO::Path
