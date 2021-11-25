@@ -3,7 +3,7 @@
 use AI::FANN;
 
 my $ann = AI::FANN.new:
-    path => $*PROGRAM.parent.child('output/xor_float.net');
+    path => $*PROGRAM.parent.child('output/xor-float.net');
 
 END $ann.destroy;
 

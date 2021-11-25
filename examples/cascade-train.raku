@@ -52,7 +52,7 @@ $ann.bit-fail-limit: 0.9;
 $ann.train-stop-function: FANN_STOPFUNC_BIT;
 $ann.print-parameters;
 
-$ann.save: path => $dir.child('cascade_train2.net');
+$ann.save: path => $dir.child('output/cascade-train2.net');
 
 say 'Training network.';
 
@@ -75,6 +75,6 @@ say Q:b'\nTrain error: %f, Train bit-fail: %d, Test error: %f, Test bit-fail: %d
 
 say 'Saving network.';
 
-$ann.save: path => $dir.child('cascade_train.net');
+$ann.save: path => $dir.child('output/cascade-train.net');
 
 say 'Cleaning up.';
