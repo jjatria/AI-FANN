@@ -58,8 +58,6 @@ class AI::FANN {
             $!data = $data;
         }
 
-        method length ( --> Int ) { fann_length_train_data($!data) }
-
         method subset ( Int $pos, Int $length --> TrainData ) {
             self.new: data => fann_subset_train_data( $!data, $pos, $length );
         }

@@ -1,0 +1,113 @@
+=begin pod
+
+=head1 NAME
+
+AI::FANN::TrainData
+
+=head1 SYNOPSIS
+
+    # Load a train data set from disk...
+    $data = AI::FANN::TrainData.new:
+        path => 'path/to/train.data';
+
+    # ...or generate it procedurally
+    $data = AI::FANN::TrainData.new:
+        num-data    => 66_000,
+        num-inputs  => 728,
+        num-outputs => 10,
+        callback    => &callback;
+
+=head1 DESCRIPTION
+
+=head1 METHODS
+
+=head2 new
+
+    multi method new (
+        Int :$num-data!,
+        Int :$num-input!,
+        Int :$num-output!,
+            :&callback,
+    ) returns AI::FANN::TrainData
+
+    multi method new (
+        IO() :$path,
+    ) returns AI::FANN::TrainData
+
+    multi method new (
+        :@pairs,
+    ) returns AI::FANN::TrainData
+
+=head2 num-data
+
+    method num-data returns Int
+
+Returns the number of training patterns in the dataset.
+
+=head2 num-input
+
+    method num-input returns Int
+
+Returns the number of inputs in each of the training patterns.
+
+=head2 num-output
+
+    method num-output returns Int
+
+Returns the number of outputs in each of the training patterns.
+
+=head2 input
+
+    method input returns CArray[CArray[num32]]
+
+Returns the pointer to the input array of arrays.
+
+=head2 output
+
+    method output returns CArray[CArray[num32]]
+
+Returns the pointer to the output array of arrays.
+
+=head2 subset
+
+    method subset (
+        Int $pos,
+        Int $length,
+    ) returns AI::FANN::TrainData
+
+Returns an copy of a subset of the calling AI::FANN::TrainData with C<$length>
+elements, starting with the element at position C<$pos>.
+
+=head2 scale
+
+    method scale (
+        Range:D $range,
+    ) returns self
+
+Scales the inputs and outputs in the training data to the specified range.
+
+A simplified scaling method, which is mostly useful in examples where it's
+known that all the data will be in one range and it should be transformed to
+another range.
+
+It is not recommended to use this on subsets of data as the complete input
+range might not be available in that subset.
+
+For more powerful scaling, please consider the L<scale|/AI/FANN#scale> method
+for AI::FANN.
+
+=head2 destroy
+
+    method destroy returns Nil
+
+Destroy the internal representation of this dataset. This is called
+automatically by the garbage collector, but can be called manually.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2021 José Joaquín Atria
+
+This library is free software; you can redistribute it and/or modify it under
+the Artistic License 2.0.
+
+=end pod
