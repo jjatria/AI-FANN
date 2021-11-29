@@ -250,6 +250,13 @@ L<Array|https://docs.raku.org/type/Array>, it will be internally converted to
 its C representation, and the return value will be a
 L<List|https://docs.raku.org/type/List> object.
 
+=head3 destroy
+
+    method destroy returns Nil
+
+Destroy the internal representation of this dataset. This is called
+automatically by the garbage collector, but can be called manually.
+
 =head2 File Input / Output
 
 =head3 save

@@ -243,6 +243,13 @@ to call this method.
 If the input is passed as a [List] or [Array], it will be internally converted
 to its C representation, and the return value will be a [List] object.
 
+### destroy
+
+    method destroy returns Nil
+
+Destroy the internal representation of this dataset. This is called
+automatically by the garbage collector, but can be called manually.
+
 ## File Input / Output
 
 ### save
