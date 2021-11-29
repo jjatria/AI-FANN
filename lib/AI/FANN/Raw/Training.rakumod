@@ -26,6 +26,7 @@ sub fann_test_data(fann, fann_train_data) returns float is export is native(LIB)
 
 sub fann_read_train_from_file(Str) returns fann_train_data is export is native(LIB) {*}
 sub fann_create_train(uint32, uint32, uint32) returns fann_train_data is export is native(LIB) {*}
+sub fann_create_train_from_callback(uint32, uint32, uint32, & ( uint32, uint32, uint32, CArray[fann_type], CArray[fann_type] ) ) returns fann_train_data is export is native(LIB) {*}
 sub fann_train_data(uint32, uint32, uint32, & (uint32, uint32,uint32,fann_type)) returns fann_train_data is export is native(LIB) {*}
 
 sub fann_destroy_train(fann_train_data) is export is native(LIB) {*}

@@ -42,8 +42,11 @@ class AI::FANN {
             Int :$num-data!,
             Int :$num-input!,
             Int :$num-output!,
+                :&callback
         ) {
-            $!data = fann_create_train( $num-data, $num-input, $num-output );
+            $!data = &callback
+                ?? fann_create_train_from_callback( $num-data, $num-input, $num-output, &callback )
+                !! fann_create_train( $num-data, $num-input, $num-output );
         }
 
         multi method BUILD ( IO() :$path! ) {
