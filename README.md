@@ -492,6 +492,25 @@ activation functions can use the same limit.
 
 The default bit fail limit is 0.35.
 
+### learning-rate
+
+    multi method learning-rate returns Num
+
+    multi method learning-rate (
+        Num() $rate,
+    ) returns self
+
+If called with no positional arguments, this method returns the learning rate
+used during training. If called with a positional argument, it will be coerced
+to a [Num] and set as the new learning rate.
+
+The learning rate is used to determine how aggressive training should be for
+some of the training algorithms (`FANN_TRAIN_INCREMENTAL`, `FANN_TRAIN_BATCH`,
+`FANN_TRAIN_QUICKPROP`). Do however note that it is not used in
+`FANN_TRAIN_RPROP`.
+
+The default learning rate is 0.7.
+
 ### reset-error
 
     # fann_reset_MSE

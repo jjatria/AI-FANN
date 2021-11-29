@@ -272,6 +272,18 @@ class AI::FANN {
         self;
     }
 
+    multi method learning-rate ( --> Num ) {
+        fann_get_learning_rate($!fann);
+    }
+
+    multi method learning-rate (
+        Num() $rate,
+        --> ::?CLASS:D
+    ) {
+        fann_set_learning_rate( $!fann, $rate );
+        self;
+    }
+
     multi method cascade-num-candidate-groups ( --> Int ) {
         fann_get_cascade_num_candidate_groups($!fann);
     }
