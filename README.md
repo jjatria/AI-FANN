@@ -96,7 +96,7 @@ both is an error.
 ### bit-fail
 
     # fann_get_bit_fail
-    method but-fail returns Int
+    method bit-fail returns Int
 
 Returns the number of fail bits, or the number of output neurons which
 differ more than the bit fail limit (see [bit-fail-limit](#bit-fail-limit)).
