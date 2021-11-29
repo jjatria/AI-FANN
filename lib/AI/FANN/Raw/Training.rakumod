@@ -42,8 +42,8 @@ sub fann_scale_output(fann, fann_type is rw) is export is native(LIB) {*}
 sub fann_descale_input(fann, fann_type is rw) is export is native(LIB) {*}
 sub fann_descale_output(fann, fann_type is rw) is export is native(LIB) {*}
 
-sub fann_get_training_algorithm(fann) returns fann_train is export is native(LIB) {*}
-sub fann_set_training_algorithm(fann, fann_train) is export is native(LIB) {*}
+sub fann_get_training_algorithm(fann) returns fann_train_enum is export is native(LIB) {*}
+sub fann_set_training_algorithm(fann, fann_train_enum) is export is native(LIB) {*}
 
 sub fann_get_learning_rate(fann) returns float is export is native(LIB) {*}
 sub fann_set_learning_rate(fann, float) is export is native(LIB) {*}
@@ -51,12 +51,12 @@ sub fann_set_learning_rate(fann, float) is export is native(LIB) {*}
 sub fann_get_learning_momentum(fann) returns float is export is native(LIB) {*}
 sub fann_set_learning_momentum(fann, float) is export is native(LIB) {*}
 
-sub fann_get_activation_function(fann, int32, int32) returns fann_activationfunc is export is native(LIB) {*}
-sub fann_set_activation_function(fann, fann_activationfunc, int32, int32) returns fann_activationfunc is export is native(LIB) {*}
+sub fann_get_activation_function(fann, int32, int32) returns fann_activationfunc_enum is export is native(LIB) {*}
+sub fann_set_activation_function(fann, fann_activationfunc_enum, int32, int32) returns fann_activationfunc_enum is export is native(LIB) {*}
 
-sub fann_set_activation_function_layer(fann, fann_activationfunc, int32) is export is native(LIB) {*}
-sub fann_set_activation_function_hidden(fann, fann_activationfunc) is export is native(LIB) {*}
-sub fann_set_activation_function_output(fann, fann_activationfunc) is export is native(LIB) {*}
+sub fann_set_activation_function_layer(fann, fann_activationfunc_enum, int32) is export is native(LIB) {*}
+sub fann_set_activation_function_hidden(fann, fann_activationfunc_enum) is export is native(LIB) {*}
+sub fann_set_activation_function_output(fann, fann_activationfunc_enum) is export is native(LIB) {*}
 
 sub fann_get_activation_steepness(fann, int32, int32) returns fann_type is export is native(LIB) {*}
 sub fann_set_activation_steepness(fann, fann_type, int32, int32) is export is native(LIB) {*}

@@ -332,7 +332,7 @@ class AI::FANN {
     }
 
     multi method cascade-activation-functions (
-        CArray[fann_activationfunc] $functions,
+        CArray[fann_activationfunc_enum] $functions,
         --> ::?CLASS:D
     ) {
         fann_set_cascade_activation_functions(
@@ -346,7 +346,7 @@ class AI::FANN {
     ) {
         fann_set_cascade_activation_functions(
             $!fann,
-            CArray[fann_activationfunc].new(|@functions».Int),
+            CArray[fann_activationfunc_enum].new(|@functions».Int),
             @functions.elems
         );
         self;
