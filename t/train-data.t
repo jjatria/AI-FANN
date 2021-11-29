@@ -6,10 +6,10 @@ use AI::FANN;
 subtest 'Create ' => {
     ok $_ = AI::FANN::TrainData.new(
         pairs => [
-            [ -1,  1 ] => [ 0 ],
-            [ -1, -1 ] => [ 0 ],
-            [  1,  1 ] => [ 1 ],
-            [ -1,  1 ] => [ 1 ],
+            [ -1, -1 ] => [ -1 ],
+            [ -1,  1 ] => [  1 ],
+            [  1, -1 ] => [  1 ],
+            [  1,  1 ] => [ -1 ],
         ],
     ), 'Create from pairs';
 
@@ -21,10 +21,10 @@ subtest 'Create ' => {
 subtest 'Create from pairs' => {
     ok $_ = AI::FANN::TrainData.new(
         pairs => [
-            [ -1,  1 ] => [ 0 ],
-            [ -1, -1 ] => [ 0 ],
-            [  1,  1 ] => [ 1 ],
-            [ -1,  1 ] => [ 1 ],
+            [ -1, -1 ] => [ -1 ],
+            [ -1,  1 ] => [  1 ],
+            [  1, -1 ] => [  1 ],
+            [  1,  1 ] => [ -1 ],
         ],
     ), 'Create from pairs';
 
