@@ -54,6 +54,38 @@ class AI::FANN {
             $!data = fann_read_train_from_file( "$path" );
         }
 
+        multi method BUILD ( :@pairs! ) {
+            my ( $inputs, $outputs );
+
+            for @pairs.kv -> $i, $_ {
+                die 'Values in :pairs must be Pair objects' unless $_ ~~ Pair;
+
+                my @have = .key.List;
+                my @want = .value.List;
+
+                die 'Data must have at least one input'  unless @have.elems;
+                die 'Data must have at least one output' unless @want.elems;
+
+                if $i == 0 {
+                    $inputs  = @have.elems;
+                    $outputs = @want.elems;
+
+                    $!data = fann_create_train(
+                        @pairs.elems,
+                        $inputs,
+                        $outputs,
+                    );
+                }
+                else {
+                    die 'Number of inputs must be consistent'  if $inputs  != @have.elems;
+                    die 'Number of outputs must be consistent' if $outputs != @want.elems;
+                }
+
+                $!data.input[$i]  = CArray[num32].new: |@have».Num;
+                $!data.output[$i] = CArray[num32].new: |@want».Num;
+            }
+        }
+
         multi method BUILD ( fann_train_data :$data! ) {
             $!data = $data;
         }
