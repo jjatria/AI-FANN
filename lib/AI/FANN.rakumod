@@ -21,7 +21,7 @@ my role StructArray[Mu:U \T where .REPR eq 'CStruct'] does Positional[T] {
 }
 
 class AI::FANN {
-    has fann $!fann is built;
+    has fann $!fann;
     has $!layers; # Used for error reporting
 
     class Connection is repr('CStruct') {
