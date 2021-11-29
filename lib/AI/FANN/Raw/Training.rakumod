@@ -11,7 +11,7 @@ constant fann_stopfunc  is export = int32;
 ## http://leenissen.dk/fann/html/files/fann_train-h.html
 ## FANN Training
 
-sub fann_train(fann, fann_type is rw, fann_type is rw) is export is native(LIB) {*}
+sub fann_train(fann, CArray[fann_type], CArray[fann_type]) is export is native(LIB) {*}
 sub fann_test(fann, CArray[fann_type], CArray[fann_type]) returns CArray[fann_type] is export is native(LIB) {*}
 sub fann_get_MSE(fann) returns float is export is native(LIB) {*}
 sub fann_get_bit_fail(fann) returns uint32 is export is native(LIB) {*}
