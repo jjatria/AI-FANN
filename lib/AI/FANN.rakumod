@@ -100,6 +100,11 @@ class AI::FANN {
             self;
         }
 
+        method shuffle ( --> ::?CLASS:D ) {
+            fann_shuffle_train_data($!data);
+            self;
+        }
+
         method destroy ( --> Nil ) { $.DESTROY }
 
         submethod DESTROY { fann_destroy_train($!data) if $!data; $!data = Nil }

@@ -24,6 +24,8 @@ subtest 'Create ' => {
 
     is .input[2][0,1],    [  1, -1 ], 'Can scale input data';
     is .output[0,1]».[0], [ -1,  1 ], 'Can scale output data';
+
+    is .shuffle, $_, 'Shuffle returns self';
 }
 
 subtest 'Create from pairs' => {

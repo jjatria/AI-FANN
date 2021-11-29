@@ -96,6 +96,13 @@ range might not be available in that subset.
 For more powerful scaling, please consider the L<scale|/AI/FANN#scale> method
 for AI::FANN.
 
+=head2 shuffle
+
+    method shuffle returns self
+
+Shuffles training data, randomizing the order. This is recommended for
+incremental training, while it has no influence during batch training.
+
 =head2 destroy
 
     method destroy returns Nil
