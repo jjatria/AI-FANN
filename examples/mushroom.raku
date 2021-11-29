@@ -30,7 +30,7 @@ say 'MSE error on test data: %f'.sprintf: $ann.mean-square-error;
 
 say 'Saving network.';
 
-$ann.save: path => $dir.child('output/mushroom-float.net');
+$ann.save: $dir.child('output/mushroom-float.net');
 
 say 'Cleaning up.';
 

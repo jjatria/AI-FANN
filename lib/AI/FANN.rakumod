@@ -126,8 +126,15 @@ class AI::FANN {
         [ $out[ ^$out.elems ] ];
     }
 
-    method print-connections ( --> Nil ) { fann_print_connections($!fann) }
-    method print-parameters  ( --> Nil ) { fann_print_parameters($!fann) }
+    method print-connections ( --> ::?CLASS:D ) {
+        fann_print_connections($!fann);
+        self;
+    }
+
+    method print-parameters ( --> ::?CLASS:D ) {
+        fann_print_parameters($!fann);
+        self;
+    }
 
     method randomise-weights (|c) { $.randomize-weights: |c } # We love our British users
     method randomize-weights ( Range:D $range  --> Nil ) {
@@ -135,16 +142,16 @@ class AI::FANN {
         fann_randomize_weights($!fann, |$range.minmax».Num)
     }
 
-    multi method run ( CArray[fann_type] :$input! --> CArray[fann_type] ) {
+    multi method run ( CArray[fann_type] $input --> CArray[fann_type] ) {
         fann_run( $!fann, $input )
     }
 
-    multi method run ( :@input! --> List() ) {
+    multi method run ( *@input --> List() ) {
         .[ ^$.num-output ]
             with fann_run( $!fann, CArray[fann_type].new: |@input».Num )
     }
 
-    method save ( IO() :$path! --> Bool() ) {
+    method save ( IO() $path --> Bool() ) {
         die "Cannot write to file: '$path'" unless $path.w;
         !fann_save($!fann, "$path")
     }
@@ -363,7 +370,7 @@ class AI::FANN {
         self;
     }
 
-    multi method train ( :@input!, :@output! --> ::?CLASS:D ) {
+    multi method train ( @input, @output --> ::?CLASS:D ) {
         fann_train( $!fann,
             CArray[fann_type].new(|@input».Num),
             CArray[fann_type].new(|@output».Num),
@@ -372,8 +379,8 @@ class AI::FANN {
     }
 
     multi method train (
-        CArray[fann_type] :$input!,
-        CArray[fann_type] :$output!,
+        CArray[fann_type] $input,
+        CArray[fann_type] $output,
         --> ::?CLASS:D
     ) {
         fann_train( $!fann, $input, $output );
@@ -381,10 +388,10 @@ class AI::FANN {
     }
 
     multi method train (
-        TrainData:D :$data!,
-                    :$max-epochs!,
-                    :$epochs-between-reports!,
-        Num()       :$desired-error!,
+        TrainData:D $data,
+        Int() :$max-epochs!,
+        Int() :$epochs-between-reports!,
+        Num() :$desired-error!,
         --> ::?CLASS:D
     ) {
         fann_train_on_data(
@@ -398,9 +405,9 @@ class AI::FANN {
     }
 
     multi method train (
-        IO()  :$path!,
-              :$max-epochs!,
-              :$epochs-between-reports!,
+        IO()   $path,
+        Int() :$max-epochs!,
+        Int() :$epochs-between-reports!,
         Num() :$desired-error!,
         --> ::?CLASS:D
     ) {
@@ -416,10 +423,10 @@ class AI::FANN {
     }
 
     multi method cascade-train (
-        TrainData:D :$data!,
-                    :$max-neurons!,
-                    :$neurons-between-reports!,
-        Num()       :$desired-error!,
+        TrainData:D $data,
+        Int() :$max-neurons!,
+        Int() :$neurons-between-reports!,
+        Num() :$desired-error!,
         --> ::?CLASS:D
     ) {
         fann_cascadetrain_on_data(
@@ -433,9 +440,9 @@ class AI::FANN {
     }
 
     multi method cascade-train (
-        IO()  :$path!,
-              :$max-neurons!,
-              :$neurons-between-reports!,
+        IO()   $path,
+        Int() :$max-neurons!,
+        Int() :$neurons-between-reports!,
         Num() :$desired-error!,
         --> ::?CLASS:D
     ) {
@@ -450,7 +457,7 @@ class AI::FANN {
         self;
     }
 
-    multi method test ( :@input!, :@output! --> List() ) {
+    multi method test ( @input, @output --> List() ) {
         fann_test( $!fann,
             CArray[fann_type].new(|@input».Num),
             CArray[fann_type].new(|@output».Num),
@@ -458,18 +465,18 @@ class AI::FANN {
     }
 
     multi method test (
-        CArray[fann_type] :$input!,
-        CArray[fann_type] :$output!,
+        CArray[fann_type] $input,
+        CArray[fann_type] $output,
         --> CArray[fann_type]
     ) {
         fann_test( $!fann, $input, $output );
     }
 
-    multi method test ( TrainData:D :$data! --> Num ) {
+    multi method test ( TrainData:D $data --> Num ) {
         fann_test_data( $!fann, $data!AI::FANN::TrainData::data );
     }
 
-    multi method test ( IO() :$path! --> Num ) {
+    multi method test ( IO() $path --> Num ) {
         my $data = AI::FANN::TrainData.new: :$path;
         LEAVE $data.?destroy;
         $.test: :$data;

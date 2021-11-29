@@ -187,7 +187,7 @@ Get the connections in the network.
 =head3 print-connections
 
     # fann_print_connections
-    method print-connections returns Nil
+    method print-connections returns self
 
 Will print the connections of the network in a compact matrix, for easy
 viewing of its internals.
@@ -228,11 +228,11 @@ Prints all of the parameters and options of the network.
 
     # fann_run
     multi method run (
-        CArray[num32] :$input
+        CArray[num32] $input,
     ) returns CArray[num32]
 
     multi method run (
-        :@input
+        *@input,
     ) returns List
 
 Run the input through the neural network, returning an array of outputs. The
@@ -255,7 +255,7 @@ L<List|https://docs.raku.org/type/List> object.
 =head3 save
 
     # fann_save
-    method save ( IO() :$path! ) returns Bool
+    method save ( IO() $path ) returns Bool
 
 Save the entire network to a configuration file.
 
@@ -281,30 +281,30 @@ section below.
 
 =head3 train
 
-    # fann_train
     multi method train (
-        CArray[num32] :$input!,
-        CArray[num32] :$output!,
+        @input,
+        @output,
     ) returns self
 
+    # fann_train
     multi method train (
-        :@input!,
-        :@output!,
+        CArray[num32] $input,
+        CArray[num32] $output,
     ) returns self
 
     # fann_train_on_data
     multi method train (
-        AI::FANN::TrainData :$data!,
-                            :$max-epochs!,
-                            :$epochs-between-reports!,
-        Num()               :$desired-error!,
+        AI::FANN::TrainData $data,
+        Int() :$max-epochs!,
+        Int() :$epochs-between-reports!,
+        Num() :$desired-error!,
     ) returns self
 
     # fann_train_on_file
     multi method train (
-        IO()  :$path!,
-              :$max-epochs!,
-              :$epochs-between-reports!,
+        IO() $path,
+        Int() :$max-epochs!,
+        Int() :$epochs-between-reports!,
         Num() :$desired-error!,
     ) returns self
 
@@ -331,23 +331,23 @@ these training algorithms.
 
 =head3 test
 
+    multi method test (
+        @input,
+        @output,
+    ) returns List
+
     # fann_test
     multi method test (
-        CArray[num32] :$input!,
-        CArray[num32] :$output!,
+        CArray[num32] $input,
+        CArray[num32] $output,
     ) returns CArray[num32]
 
     multi method test (
-        :@input!,
-        :@output!,
-    ) returns List
-
-    multi method test (
-        AI::FANN::TrainData :$data!
+        AI::FANN::TrainData $data,
     ) returns Num
 
     multi method train (
-        IO() :$path!,
+        IO() $path,
     ) returns Num
 
 Test the network with a set of inputs and desired outputs. This operation
@@ -377,24 +377,24 @@ These candidates return the updated mean square error for the network.
 
     # fann_get_activation_function
     multi method activation-function (
-        Int :$layer!,
-        Int :$neuron!,
+        Int    :$layer!,
+        Int    :$neuron!,
     ) returns AI::FANN::ActivationFunc
 
     # fann_set_activation_function
     # fann_set_activation_function_layer
     multi method activation-function (
-        AI::FANN::ActivationFunc $function!,
-        Int                     :$layer!,
-        Int                     :$neuron,
+        AI::FANN::ActivationFunc $function,
+        Int    :$layer!,
+        Int    :$neuron,
     ) returns self
 
     # fann_set_activation_function_hidden
     # fann_set_activation_function_output
     multi method activation-function (
-        AI::FANN::ActivationFunc $function!,
-        Bool()                  :$hidden,
-        Bool()                  :$output,
+        AI::FANN::ActivationFunc $function,
+        Bool() :$hidden,
+        Bool() :$output,
     ) returns self
 
 If called with no positional arguments, this method returns the activation
@@ -563,17 +563,17 @@ L<Training|#training> section above.
 
     # fann_cascadetrain_on_data
     multi method cascade-train (
-        AI::FANN::TrainData :$data,
-                            :$max-neurons!,
-                            :$neurons-between-reports!,
-        Num()               :$desired-error!,
+        AI::FANN::TrainData:D $data,
+        Int() :$max-neurons!,
+        Int() :$neurons-between-reports!,
+        Num() :$desired-error!,
     ) returns self
 
     # fann_cascadetrain_on_file
     multi method cascade-train (
-        IO()  :$path,
-              :$max-neurons!,
-              :$neurons-between-reports!,
+        IO() $path,
+        Int() :$max-neurons!,
+        Int() :$neurons-between-reports!,
         Num() :$desired-error!,
     ) returns self
 

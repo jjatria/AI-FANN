@@ -40,5 +40,5 @@ $ann.train: :$data,
     max-epochs             => 500_000,
     epochs-between-reports => 1_000;
 
-$ann.save: path => $dir.child('output/xor-float.net')
+$ann.save: $dir.child('output/xor-float.net')
     or note 'Could not save network data';

@@ -13,8 +13,8 @@ subtest 'new' => sub {
 
 subtest 'save' => sub {
     throws-like {
-        AI::FANN.new( layers => [ 1, 1 ] )
-            .save: path => $*HOME.parent.child('forbidden') # Hopefully...
+        AI::FANN.new( layers => [ 1, 1 ] ).save:
+            $*HOME.parent.child('forbidden') # Hopefully...
     }, X::AdHoc, message => /'Cannot write to file: '/;
 }
 
@@ -58,8 +58,7 @@ subtest 'train-stop-function' => {
 
 subtest 'train' => {
     throws-like {
-        $ann.train:
-            path                   => 'missing',
+        $ann.train: 'missing',
             max-epochs             => 1,
             epochs-between-reports => 1,
             desired-error          => 1;
@@ -69,8 +68,7 @@ subtest 'train' => {
 
 subtest 'cascade-train' => {
     throws-like {
-        $ann.cascade-train:
-            path                    => 'missing',
+        $ann.cascade-train: 'missing',
             max-neurons             => 1,
             neurons-between-reports => 1,
             desired-error           => 1;
@@ -79,7 +77,7 @@ subtest 'cascade-train' => {
 }
 
 subtest 'test' => {
-    throws-like { $ann.test: path => 'missing' },
+    throws-like { $ann.test: 'missing' },
         X::AdHoc, message => "Cannot read from file: 'missing'";
 }
 

@@ -224,11 +224,11 @@ Prints all of the parameters and options of the network.
 
     # fann_run
     multi method run (
-        CArray[num32] :$input!
+        CArray[num32] $input
     ) returns CArray[num32]
 
     multi method run (
-        :@input!
+        *@input
     ) returns List
 
 Run the input through the neural network, returning an array of outputs. The
@@ -248,7 +248,7 @@ to its C representation, and the return value will be a [List] object.
 ### save
 
     # fann_save
-    method save ( IO() :$path! ) returns Bool
+    method save ( IO() $path ) returns Bool
 
 Save the entire network to a configuration file.
 
@@ -274,30 +274,30 @@ section below.
 
 ### train
 
-    # fann_train
     multi method train (
-        CArray[num32] :$input!,
-        CArray[num32] :$output!,
+        @input,
+        @output,
     ) returns self
 
+    # fann_train
     multi method train (
-        :@input!,
-        :@output!,
+        CArray[num32] $input,
+        CArray[num32] $output,
     ) returns self
 
     # fann_train_on_data
     multi method train (
-        AI::FANN::TrainData :$data!,
-                            :$max-epochs!,
-                            :$epochs-between-reports!,
-        Num()               :$desired-error!,
+        AI::FANN::TrainData:D $data,
+        Int() :$max-epochs!,
+        Int() :$epochs-between-reports!,
+        Num() :$desired-error!,
     ) returns self
 
     # fann_train_on_file
     multi method train (
-        IO()  :$path!,
-              :$max-epochs!,
-              :$epochs-between-reports!,
+        IO() $path,
+        Int() :$max-epochs!,
+        Int() :$epochs-between-reports!,
         Num() :$desired-error!,
     ) returns self
 
@@ -323,23 +323,23 @@ these training algorithms.
 
 ### test
 
+    multi method test (
+        @input,
+        @output,
+    ) returns List
+
     # fann_test
     multi method test (
-        CArray[num32] :$input!,
-        CArray[num32] :$output!,
+        CArray[num32] $input,
+        CArray[num32] $output,
     ) returns CArray[num32]
 
     multi method test (
-        :@input!,
-        :@output!,
-    ) returns List
-
-    multi method test (
-        AI::FANN::TrainData :$data!
+        AI::FANN::TrainData $data,
     ) returns Num
 
     multi method train (
-        IO() :$path!,
+        IO() $path,
     ) returns Num
 
 Test the network with a set of inputs and desired outputs. This operation
@@ -366,24 +366,24 @@ These candidates return the updated mean square error for the network.
 
     # fann_get_activation_function
     multi method activation-function (
-        Int :$layer!,
-        Int :$neuron!,
+        Int    :$layer!,
+        Int    :$neuron!,
     ) returns AI::FANN::ActivationFunc
 
     # fann_set_activation_function
     # fann_set_activation_function_layer
     multi method activation-function (
-        AI::FANN::ActivationFunc $function!,
-        Int                     :$layer!,
-        Int                     :$neuron,
+        AI::FANN::ActivationFunc $function,
+        Int    :$layer!,
+        Int    :$neuron,
     ) returns self
 
     # fann_set_activation_function_hidden
     # fann_set_activation_function_output
     multi method activation-function (
-        AI::FANN::ActivationFunc $function!,
-        Bool()                  :$hidden,
-        Bool()                  :$output,
+        AI::FANN::ActivationFunc $function,
+        Bool() :$hidden,
+        Bool() :$output,
     ) returns self
 
 If called with no positional arguments, this method returns the activation
@@ -552,17 +552,17 @@ For methods suporting ordinary, or fixed topology training, see the
 
     # fann_cascadetrain_on_data
     multi method cascade-train (
-        AI::FANN::TrainData :$data!,
-                            :$max-neurons!,
-                            :$neurons-between-reports!,
-        Num()               :$desired-error!,
+        AI::FANN::TrainData:D $data,
+        Int() :$max-neurons!,
+        Int() :$neurons-between-reports!,
+        Num() :$desired-error!,
     ) returns self
 
     # fann_cascadetrain_on_file
     multi method cascade-train (
-        IO()  :$path!,
-              :$max-neurons!,
-              :$neurons-between-reports!,
+        IO() $path,
+        Int() :$max-neurons!,
+        Int() :$neurons-between-reports!,
         Num() :$desired-error!,
     ) returns self
 
@@ -664,8 +664,6 @@ and they'll be internally converted to a C representation to use instead.
 In either case, the new array must be just as long as defined by the count
 (see [cascade-activation-steepnesses-count](#cascade-activation-steepnesses-count)).
 
-When used as a setter, this method returns [Nil].
-
 The default activation steepnesses are [ 0.25, 0.50, 0.75, 1.00 ].
 
 ### cascade-activation-functions
@@ -707,7 +705,6 @@ Copyright 2021 José Joaquín Atria
 This library is free software; you can redistribute it and/or modify it under
 the Artistic License 2.0.
 
-[Nil]: https://docs.raku.org/type/Nil
 [List]: https://docs.raku.org/type/List
 [Array]: https://docs.raku.org/type/Array
 [IO::Path]: https://docs.raku.org/type/IO::Path

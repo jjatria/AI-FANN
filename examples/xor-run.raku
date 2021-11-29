@@ -13,6 +13,6 @@ for (
     [  1,  1 ],
     [  1, -1 ],
 ) -> @input {
-    my $output = $ann.run: :@input;
+    my $output = $ann.run: @input;
     say '(% d, % d) -> % f'.sprintf: @input[0], @input[1], $output[0];
 }
