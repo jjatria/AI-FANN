@@ -6,16 +6,24 @@ use AI::FANN;
 subtest 'Create ' => {
     ok $_ = AI::FANN::TrainData.new(
         pairs => [
-            [ -1, -1 ] => [ -1 ],
-            [ -1,  1 ] => [  1 ],
-            [  1, -1 ] => [  1 ],
-            [  1,  1 ] => [ -1 ],
+            [   0,   0 ] => [   0 ],
+            [   0, 255 ] => [ 255 ],
+            [ 255,   0 ] => [ 255 ],
+            [ 255, 255 ] => [   0 ],
         ],
     ), 'Create from pairs';
 
     is .num-input,  2, 'Num input';
     is .num-output, 1, 'Num output';
     is .num-data,   4, 'Num data';
+
+    is .input[2][0,1],    [ 255, 0 ], 'Can set input data';
+    is .output[0,1]».[0], [ 0, 255 ], 'Can set output data';
+
+    is .scale( -1..1 ), $_, 'Scale returns self';
+
+    is .input[2][0,1],    [  1, -1 ], 'Can scale input data';
+    is .output[0,1]».[0], [ -1,  1 ], 'Can scale output data';
 }
 
 subtest 'Create from pairs' => {
