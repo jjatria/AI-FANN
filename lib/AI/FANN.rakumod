@@ -51,7 +51,15 @@ class AI::FANN {
             $!data = fann_read_train_from_file( "$path" );
         }
 
+        multi method BUILD ( fann_train_data :$data! ) {
+            $!data = $data;
+        }
+
         method length ( --> Int ) { fann_length_train_data($!data) }
+
+        method subset ( Int $pos, Int $length --> TrainData ) {
+            self.new: data => fann_subset_train_data( $!data, $pos, $length );
+        }
 
         method scale ( Range:D $range  --> Nil ) {
             die 'Cannot use an infinite range to set scale' if $range.infinite;
