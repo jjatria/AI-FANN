@@ -107,8 +107,13 @@ subtest 'Standard' => {
     is $nn.randomize-weights(1..2), $nn, 'randomize-weights returns self';
 
     given $nn.connection-array {
-        is $_».weight.min.round(0.1), 1, 'Scaled minimum weight';
-        is $_».weight.max.round(0.1), 2, 'Scaled maximum weight';
+        is $_».weight.min.round(1), 1, 'Scaled minimum weight';
+        is $_».weight.max.round(1), 2, 'Scaled maximum weight';
+    }
+
+    with $nn.clone {
+        is .num-input, $nn.num-input, 'Can clone network';
+        .?destroy;
     }
 }
 

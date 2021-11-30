@@ -174,6 +174,10 @@ class AI::FANN {
               !!                  fann_create_standard_array(      $n, $layers );
     }
 
+    multi method BUILD ( fann :$fann! ) {
+        $!fann = $fann;
+    }
+
     method connection-rate   ( --> Num ) { fann_get_connection_rate($!fann) }
     method num-input         ( --> Int ) { fann_get_num_input($!fann) }
     method num-layers        ( --> Int ) { fann_get_num_layers($!fann) }
@@ -228,6 +232,10 @@ class AI::FANN {
     multi method run ( *@input --> List() ) {
         .[ ^$.num-output ]
             with fann_run( $!fann, CArray[fann_type].new: |@input».Num )
+    }
+
+    method clone ( --> AI::FANN ) {
+        self.new: fann => fann_copy($!fann);
     }
 
     method save ( IO() $path --> Bool() ) {

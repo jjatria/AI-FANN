@@ -271,6 +271,13 @@ neurons that connections can go to.
 
 Prints all of the parameters and options of the network.
 
+### clone
+
+    # fann_copy
+    method clone returns AI::FANN
+
+Returns an exact copy of the calling AI::FANN object.
+
 ### destroy
 
     method destroy returns Nil
