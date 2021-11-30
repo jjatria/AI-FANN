@@ -97,6 +97,19 @@ subtest 'Standard' => {
         is $nn.learning-momentum, 0, 'getter';
         is $nn.learning-momentum(1).learning-momentum, 1, 'setter';
     }
+
+    given $nn.connection-array {
+        is $_».weight.min.round(0.1), -0.1, 'Minimum weight ~-0.1';
+        is $_».weight.max.round(0.1),  0.1, 'Maximum weight ~+0.1';
+    }
+
+    is $nn.randomise-weights(1..2), $nn, 'randomise-weights returns self';
+    is $nn.randomize-weights(1..2), $nn, 'randomize-weights returns self';
+
+    given $nn.connection-array {
+        is $_».weight.min.round(0.1), 1, 'Scaled minimum weight';
+        is $_».weight.max.round(0.1), 2, 'Scaled maximum weight';
+    }
 }
 
 subtest 'Sparse' => {

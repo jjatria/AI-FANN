@@ -210,6 +210,34 @@ Get the number of bias in each layer in the network.
 
 Get the connections in the network.
 
+=head3 randomize-weights
+
+    # fann_randomize_weights
+    method randomize-weights (
+        Range:D $range,
+    ) returns self
+
+Give each connection a random weight between the endpoints of the specified
+L<Range|https://docs.raku.org/type/Range> object.
+
+From the beginning the weights are random between -0.1 and 0.1.
+
+This method is an alias for L<randomise-weights|#randomise-weights>.
+
+=head3 randomise-weights
+
+    # fann_randomize_weights
+    method randomise-weights (
+        Range:D $range,
+    ) returns self
+
+Give each connection a random weight between the endpoints of the specified
+L<Range|https://docs.raku.org/type/Range> object.
+
+From the beginning the weights are random between -0.1 and 0.1.
+
+This method is an alias for L<randomize-weights|#randomize-weights>.
+
 =head3 print-connections
 
     # fann_print_connections

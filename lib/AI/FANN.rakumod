@@ -214,10 +214,11 @@ class AI::FANN {
         self;
     }
 
-    method randomise-weights (|c) { $.randomize-weights: |c } # We love our British users
-    method randomize-weights ( Range:D $range  --> Nil ) {
+    method randomise-weights ( |c --> AI::FANN ) { $.randomize-weights: |c } # We love our British users
+    method randomize-weights ( Range:D $range  --> AI::FANN ) {
         die 'Cannot use an infinite range to randomize weights' if $range.infinite;
-        fann_randomize_weights($!fann, |$range.minmax».Num)
+        fann_randomize_weights($!fann, |$range.minmax».Num);
+        self;
     }
 
     multi method run ( CArray[fann_type] $input --> CArray[fann_type] ) {

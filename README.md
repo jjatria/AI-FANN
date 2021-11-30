@@ -203,6 +203,34 @@ Get the number of bias in each layer in the network.
 
 Get the connections in the network.
 
+### randomize-weights
+
+    # fann_randomize_weights
+    method randomize-weights (
+        Range:D $range,
+    ) returns self
+
+Give each connection a random weight between the endpoints of the specified
+[Range] object.
+
+From the beginning the weights are random between -0.1 and 0.1.
+
+This method is an alias for [randomise-weights](#randomise-weights).
+
+### randomise-weights
+
+    # fann_randomize_weights
+    method randomise-weights (
+        Range:D $range,
+    ) returns self
+
+Give each connection a random weight between the endpoints of the specified
+[Range] object.
+
+From the beginning the weights are random between -0.1 and 0.1.
+
+This method is an alias for [randomize-weights](#randomize-weights).
+
 ### print-connections
 
     # fann_print_connections
