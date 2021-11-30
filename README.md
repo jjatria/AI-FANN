@@ -325,7 +325,7 @@ parameter, while the second generates one internally from the file specified
 in the `path` parameter.
 
 In both cases, the training uses the algorithm set with
-[training-algorithm](#training-algorithm) (NYI), and the parameters set for
+[training-algorithm](#training-algorithm), and the parameters set for
 these training algorithms.
 
 ### test

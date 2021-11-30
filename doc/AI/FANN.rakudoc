@@ -333,7 +333,7 @@ parameter, while the second generates one internally from the file specified
 in the C<path> parameter.
 
 In both cases, the training uses the algorithm set with
-L<training-algorithm|#training-algorithm> (NYI), and the parameters set for
+L<training-algorithm|#training-algorithm>, and the parameters set for
 these training algorithms.
 
 =head3 test
