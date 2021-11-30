@@ -38,6 +38,17 @@ AI::FANN::TrainData
         :@pairs,
     ) returns AI::FANN::TrainData
 
+    # fann_merge_train_data
+    multi method new (
+        :@data where { .all ~~ TrainData:D },
+    ) returns AI::FANN::TrainData
+
+=head2 clone
+
+    method clone returns AI::FANN::TrainData
+
+Returns an exact copy of the calling AI::FANN::TrainData object.
+
 =head2 num-data
 
     method num-data returns Int
@@ -115,6 +126,13 @@ for AI::FANN.
 
 Shuffles training data, randomizing the order. This is recommended for
 incremental training, while it has no influence during batch training.
+
+=head2 save
+
+    method save ( IO() $path ) returns Bool
+
+Save the training structure to a file at the specified location. This file
+is suitable to be used as the C<:path> argument to the constructor.
 
 =head2 destroy
 

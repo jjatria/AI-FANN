@@ -116,7 +116,7 @@ sub fann_scale_input_train_data(fann_train_data, fann_type, fann_type) is export
 sub fann_scale_output_train_data(fann_train_data, fann_type, fann_type) is export is native(LIB) {*}
 sub fann_scale_train_data(fann_train_data, fann_type, fann_type) is export is native(LIB) {*}
 
-sub fann_merge_train_data(fann_train_data, fann_train_data) is export is native(LIB) {*}
+sub fann_merge_train_data(fann_train_data, fann_train_data) returns fann_train_data is export is native(LIB) {*}
 
 sub fann_duplicate_train_data(fann_train_data) returns fann_train_data is export is native(LIB) {*}
 sub fann_subset_train_data(fann_train_data, uint32, uint32) returns fann_train_data is export is native(LIB) {*}

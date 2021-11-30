@@ -86,12 +86,37 @@ class AI::FANN {
             }
         }
 
+        multi method BUILD ( :@data! where { .all ~~ TrainData:D } ) {
+            $!data = @data.reduce: {
+                fann_merge_train_data(
+                    $^a!AI::FANN::TrainData::data,
+                    $^b!AI::FANN::TrainData::data,
+                );
+            }
+        }
+
         multi method BUILD ( fann_train_data :$data! ) {
             $!data = $data;
         }
 
         method subset ( Int $pos, Int $length --> TrainData ) {
+            X::OutOfRange.new(
+               what  => 'Subset position',
+               got   => $pos,
+               range => ^$.num-data,
+            ).throw if $pos !~~ ^$.num-data;
+
+            X::OutOfRange.new(
+               what  => 'Subset length',
+               got   => $length,
+               range => 1..( $.num-data - $pos ),
+            ).throw if $length !~~ 1..( $.num-data - $pos );
+
             self.new: data => fann_subset_train_data( $!data, $pos, $length );
+        }
+
+        method clone ( --> TrainData ) {
+            self.new: data => fann_duplicate_train_data($!data);
         }
 
         method scale (
@@ -110,6 +135,11 @@ class AI::FANN {
             }
 
             self;
+        }
+
+        method save ( IO() $path --> Bool() ) {
+            die "Cannot write to file: '$path'" unless $path.w;
+            !fann_save_train("$!data");
         }
 
         method shuffle ( --> ::?CLASS:D ) {
