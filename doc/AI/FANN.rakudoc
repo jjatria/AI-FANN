@@ -20,7 +20,7 @@ AI::FANN
 Methods described below include readers, mutators, and methods that operate
 on the internal state of the network in more complex ways.
 
-Some methods, like L<num-inputs|#num-inputs> are only for reading the
+Some methods, like L<num-input|#num-input> are only for reading the
 internal state of the network, and will always return the value that was
 requested.
 

@@ -12,10 +12,10 @@ AI::FANN::TrainData
 
     # ...or generate it procedurally
     $data = AI::FANN::TrainData.new:
-        num-data    => 66_000,
-        num-inputs  => 728,
-        num-outputs => 10,
-        callback    => &callback;
+        num-data   => 66_000,
+        num-input  => 728,
+        num-output => 10,
+        callback   => &callback;
 
 =head1 DESCRIPTION
 
