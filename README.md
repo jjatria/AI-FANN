@@ -518,6 +518,25 @@ some of the training algorithms (`FANN_TRAIN_INCREMENTAL`, `FANN_TRAIN_BATCH`,
 
 The default learning rate is 0.7.
 
+### learning-momentum
+
+    multi method learning-momentum returns Num
+
+    multi method learning-momentum (
+        Num() $momentum,
+    ) returns self
+
+If called with no positional arguments, this method returns the learning
+momentum used during training. If called with a positional argument, it will
+be coerced to a [Num] and set as the new learning momentum.
+
+The learning momentum can be used to speed up `FANN_TRAIN_INCREMENTAL`
+training. Too high a momentum will however not benefit training. Setting the
+momentum to 0 will be the same as not using the momentum parameter. The
+recommended value of this parameter is between 0 and 1.
+
+The default momentum is 0.
+
 ### reset-error
 
     # fann_reset_MSE

@@ -380,6 +380,18 @@ class AI::FANN {
         self;
     }
 
+    multi method learning-momentum ( --> Num ) {
+        fann_get_learning_momentum($!fann);
+    }
+
+    multi method learning-momentum (
+        Num() $momentum,
+        --> ::?CLASS:D
+    ) {
+        fann_set_learning_momentum( $!fann, $momentum );
+        self;
+    }
+
     multi method cascade-num-candidate-groups ( --> Int ) {
         fann_get_cascade_num_candidate_groups($!fann);
     }
