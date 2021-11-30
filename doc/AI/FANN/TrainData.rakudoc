@@ -23,6 +23,8 @@ AI::FANN::TrainData
 
 =head2 new
 
+    # fann_read_train
+    # fann_read_train_from_callback
     multi method new (
         Int :$num-data!,
         Int :$num-input!,
@@ -30,6 +32,7 @@ AI::FANN::TrainData
             :&callback,
     ) returns AI::FANN::TrainData
 
+    # fann_read_train_from_file
     multi method new (
         IO() :$path,
     ) returns AI::FANN::TrainData
@@ -45,6 +48,7 @@ AI::FANN::TrainData
 
 =head2 clone
 
+    # fann_duplicate_train_data
     method clone returns AI::FANN::TrainData
 
 Returns an exact copy of the calling AI::FANN::TrainData object.
@@ -81,6 +85,7 @@ Returns the pointer to the output array of arrays.
 
 =head2 subset
 
+    # fann_subset_train_data
     method subset (
         Int $pos,
         Int $length,
@@ -91,6 +96,9 @@ elements, starting with the element at position C<$pos>.
 
 =head2 scale
 
+    # fann_scale_train_data
+    # fann_scale_input_train_data
+    # fann_scale_output_train_data
     method scale (
         Range:D $range,
         Bool() :$input,
@@ -122,6 +130,7 @@ for AI::FANN.
 
 =head2 shuffle
 
+    # fann_shuffle_train_data
     method shuffle returns self
 
 Shuffles training data, randomizing the order. This is recommended for
@@ -129,6 +138,7 @@ incremental training, while it has no influence during batch training.
 
 =head2 save
 
+    # fann_save_train
     method save ( IO() $path ) returns Bool
 
 Save the training structure to a file at the specified location. This file
@@ -136,6 +146,7 @@ is suitable to be used as the C<:path> argument to the constructor.
 
 =head2 destroy
 
+    # fann_destroy_train
     method destroy returns Nil
 
 Destroy the internal representation of this dataset. This is called
