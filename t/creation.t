@@ -58,6 +58,45 @@ subtest 'Standard' => {
         is $nn.activation-function( neuron => 2, layer => 1 ),
             FANN_ELLIOT, 'other neurons remain untouched';
     }
+
+    subtest 'training-algorithm' => {
+        is $nn.training-algorithm, FANN_TRAIN_RPROP, 'getter';
+        is $nn.training-algorithm(FANN_TRAIN_INCREMENTAL)
+            .training-algorithm, FANN_TRAIN_INCREMENTAL, 'setter';
+        is $nn.training-algorithm(1)
+            .training-algorithm, FANN_TRAIN_BATCH, 'setter with Int';
+    }
+
+    subtest 'train-error-function' => {
+        is $nn.train-error-function, FANN_ERRORFUNC_TANH, 'getter';
+        is $nn.train-error-function(FANN_ERRORFUNC_LINEAR)
+            .train-error-function, FANN_ERRORFUNC_LINEAR, 'setter';
+        is $nn.train-error-function(0)
+            .train-error-function, FANN_ERRORFUNC_LINEAR, 'setter';
+    }
+
+    subtest 'train-stop-function' => {
+        is $nn.train-stop-function, FANN_STOPFUNC_MSE, 'getter';
+        is $nn.train-stop-function(FANN_STOPFUNC_BIT)
+            .train-stop-function, FANN_STOPFUNC_BIT, 'setter';
+        is $nn.train-stop-function(0)
+            .train-stop-function, FANN_STOPFUNC_MSE, 'setter';
+    }
+
+    subtest 'bit-fail-limit' => {
+        is $nn.bit-fail-limit.round(0.01), 0.35, 'getter';
+        is $nn.bit-fail-limit(1.5).bit-fail-limit, 1.5, 'setter';
+    }
+
+    subtest 'learning-rate' => {
+        is $nn.learning-rate.round(0.1), 0.7, 'getter';
+        is $nn.learning-rate(1).learning-rate, 1, 'setter';
+    }
+
+    subtest 'learning-momentum' => {
+        is $nn.learning-momentum, 0, 'getter';
+        is $nn.learning-momentum(1).learning-momentum, 1, 'setter';
+    }
 }
 
 subtest 'Sparse' => {

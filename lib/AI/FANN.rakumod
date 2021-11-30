@@ -298,7 +298,7 @@ class AI::FANN {
 
     multi method activation-function ( $other, |c ) {
         my $value = AI::FANN::ActivationFunc.^enum_from_value($other)
-           or die "Invalid activation function: must be a value in AI::FANN::ActivationFunc";
+            // die "Invalid activation function: must be a value in AI::FANN::ActivationFunc";
         nextwith( $value, |c );
     }
 
@@ -314,10 +314,10 @@ class AI::FANN {
         self;
     }
 
-    multi method training-algorithm ( $other, |c ) {
+    multi method training-algorithm ( $other, |c --> AI::FANN ) {
         my $value = AI::FANN::Train.^enum_from_value($other)
-           or die "Invalid training algorithm: must be a value in AI::FANN::Train";
-        nextwith( $value, |c );
+            // die "Invalid training algorithm: must be a value in AI::FANN::Train";
+        $.training-algorithm: $value, |c;
     }
 
     multi method train-error-function ( --> AI::FANN::ErrorFunc ) {
@@ -332,10 +332,10 @@ class AI::FANN {
         self;
     }
 
-    multi method train-error-function ( $other, |c ) {
+    multi method train-error-function ( $other, |c --> AI::FANN ) {
         my $value = AI::FANN::ErrorFunc.^enum_from_value($other)
-           or die "Invalid error function: must be a value in AI::FANN::ErrorFunc";
-        nextwith( $value, |c );
+            // die "Invalid error function: must be a value in AI::FANN::ErrorFunc";
+        $.train-error-function: $value, |c;
     }
 
     multi method train-stop-function ( --> AI::FANN::StopFunc ) {
@@ -350,10 +350,10 @@ class AI::FANN {
         self;
     }
 
-    multi method train-stop-function ( $other, |c ) {
+    multi method train-stop-function ( $other, |c --> AI::FANN ) {
         my $value = AI::FANN::StopFunc.^enum_from_value($other)
-           or die "Invalid stop function: must be a value in AI::FANN::StopFunc";
-        nextwith( $value, |c );
+            // die "Invalid stop function: must be a value in AI::FANN::StopFunc";
+        $.train-stop-function: $value, |c;
     }
 
     multi method bit-fail-limit ( --> Num ) {
