@@ -766,7 +766,8 @@ Copyright 2021 José Joaquín Atria
 This library is free software; you can redistribute it and/or modify it under
 the Artistic License 2.0.
 
-[List]: https://docs.raku.org/type/List
 [Array]: https://docs.raku.org/type/Array
-[IO::Path]: https://docs.raku.org/type/IO::Path
 [CArray]: https://docs.raku.org/language/nativecall#Arrays
+[IO::Path]: https://docs.raku.org/type/IO::Path
+[List]: https://docs.raku.org/type/List
+[Range]: https://docs.raku.org/type/Range
