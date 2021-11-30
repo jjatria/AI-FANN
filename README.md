@@ -93,6 +93,29 @@ the input layer to the output layer.
 The `connection-rate` and `shortcut` parameters are not compatible, and using
 both is an error.
 
+### run
+
+    # fann_run
+    multi method run (
+        CArray[num32] $input
+    ) returns CArray[num32]
+
+    multi method run (
+        *@input
+    ) returns List
+
+Run the input through the neural network, returning an array of outputs. The
+output array will have one value per neuron in the output layer.
+
+The type of the return value depends on the type of the input.
+
+If the input is provided as a [CArray[num32]][CArray] object, it will be used
+as-is and the return value will be of the same type. This is the fastest way
+to call this method.
+
+If the input is passed as a [List] or [Array], it will be internally converted
+to its C representation, and the return value will be a [List] object.
+
 ### bit-fail
 
     # fann_get_bit_fail
@@ -219,29 +242,6 @@ neurons that connections can go to.
     method print-parameters returns self
 
 Prints all of the parameters and options of the network.
-
-### run
-
-    # fann_run
-    multi method run (
-        CArray[num32] $input
-    ) returns CArray[num32]
-
-    multi method run (
-        *@input
-    ) returns List
-
-Run the input through the neural network, returning an array of outputs. The
-output array will have one value per neuron in the output layer.
-
-The type of the return value depends on the type of the input.
-
-If the input is provided as a [CArray[num32]][CArray] object, it will be used
-as-is and the return value will be of the same type. This is the fastest way
-to call this method.
-
-If the input is passed as a [List] or [Array], it will be internally converted
-to its C representation, and the return value will be a [List] object.
 
 ### destroy
 
