@@ -1,7 +1,6 @@
 #!/usr/bin/env raku
 
-use AI::FANN;
-use AI::FANN::Constants;
+use AI::FANN :enum;
 
 say 'Creating network.';
 
@@ -17,14 +16,14 @@ say 'Training network.';
 
 $ann.activation-function( :hidden, FANN_SIGMOID_SYMMETRIC )
     .activation-function( :output, FANN_SIGMOID )
-    .train: :$data,
+    .train: $data,
         max-epochs             => 300,
         epochs-between-reports => 10,
         desired-error          => 0.0001;
 
 say 'Testing network.';
 
-$ann.reset-error.test: path => $dir.child('data/mushroom.test');
+$ann.reset-error.test: $dir.child('data/mushroom.test');
 
 say 'MSE error on test data: %f'.sprintf: $ann.mean-square-error;
 

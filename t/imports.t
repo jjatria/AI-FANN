@@ -1,0 +1,94 @@
+#!/usr/bin/env raku
+
+use Test;
+
+is-deeply do {
+    my @before = MY::.keys;
+    my @after  = do { use AI::FANN; MY::.keys };
+
+    @after (-) @before;
+}, < AI >.Set, 'Plain use only modifies AI namespace';
+
+my %imports = (
+    enum => <
+        FANN_COS_SYMMETRIC
+        FANN_ELLIOT
+        FANN_ELLIOT_SYMMETRIC
+        FANN_ERRORFUNC_LINEAR
+        FANN_ERRORFUNC_TANH
+        FANN_E_CANT_ALLOCATE_MEM
+        FANN_E_CANT_OPEN_CONFIG_R
+        FANN_E_CANT_OPEN_CONFIG_W
+        FANN_E_CANT_OPEN_TD_R
+        FANN_E_CANT_OPEN_TD_W
+        FANN_E_CANT_READ_CONFIG
+        FANN_E_CANT_READ_CONNECTIONS
+        FANN_E_CANT_READ_NEURON
+        FANN_E_CANT_READ_TD
+        FANN_E_CANT_TRAIN_ACTIVATION
+        FANN_E_CANT_USE_ACTIVATION
+        FANN_E_CANT_USE_TRAIN_ALG
+        FANN_E_INDEX_OUT_OF_BOUND
+        FANN_E_INPUT_NO_MATCH
+        FANN_E_NO_ERROR
+        FANN_E_OUTPUT_NO_MATCH
+        FANN_E_SCALE_NOT_PRESENT
+        FANN_E_TRAIN_DATA_MISMATCH
+        FANN_E_TRAIN_DATA_SUBSET
+        FANN_E_WRONG_CONFIG_VERSION
+        FANN_E_WRONG_NUM_CONNECTIONS
+        FANN_GAUSSIAN
+        FANN_GAUSSIAN_STEPWISE
+        FANN_GAUSSIAN_SYMMETRIC
+        FANN_LINEAR
+        FANN_LINEAR_PIECE
+        FANN_LINEAR_PIECE_SYMMETRIC
+        FANN_NETTYPE_LAYER
+        FANN_NETTYPE_SHORTCUT
+        FANN_SIGMOID
+        FANN_SIGMOID_STEPWISE
+        FANN_SIGMOID_SYMMETRIC
+        FANN_SIGMOID_SYMMETRIC_STEPWISE
+        FANN_SIN FANN_COS
+        FANN_SIN_SYMMETRIC
+        FANN_STOPFUNC_BIT
+        FANN_STOPFUNC_MSE
+        FANN_THRESHOLD
+        FANN_THRESHOLD_SYMMETRIC
+        FANN_TRAIN_BATCH
+        FANN_TRAIN_INCREMENTAL
+        FANN_TRAIN_QUICKPROP
+        FANN_TRAIN_RPROP
+        FANN_TRAIN_SARPROP
+    >,
+    error => <
+        FANN_E_CANT_ALLOCATE_MEM
+        FANN_E_CANT_OPEN_CONFIG_R
+        FANN_E_CANT_OPEN_CONFIG_W
+        FANN_E_CANT_OPEN_TD_R
+        FANN_E_CANT_OPEN_TD_W
+        FANN_E_CANT_READ_CONFIG
+        FANN_E_CANT_READ_CONNECTIONS
+        FANN_E_CANT_READ_NEURON
+        FANN_E_CANT_READ_TD
+        FANN_E_CANT_TRAIN_ACTIVATION
+        FANN_E_CANT_USE_ACTIVATION
+        FANN_E_CANT_USE_TRAIN_ALG
+        FANN_E_INDEX_OUT_OF_BOUND
+        FANN_E_INPUT_NO_MATCH
+        FANN_E_NO_ERROR
+        FANN_E_OUTPUT_NO_MATCH
+        FANN_E_SCALE_NOT_PRESENT
+        FANN_E_TRAIN_DATA_MISMATCH
+        FANN_E_TRAIN_DATA_SUBSET
+        FANN_E_WRONG_CONFIG_VERSION
+        FANN_E_WRONG_NUM_CONNECTIONS
+    >,
+);
+
+for %imports.kv -> $tag, $expected {
+    is-deeply do { EVAL "use AI::FANN :{ $tag }; MY::.keys.grep(/ 'FANN_' /).Set" },
+        $expected.Set, "Importing :{ $tag } imports correct names";
+}
+
+done-testing;

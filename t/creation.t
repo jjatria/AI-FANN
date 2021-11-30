@@ -1,8 +1,7 @@
 #!/usr/bin/env raku
 
 use Test;
-use AI::FANN;
-use AI::FANN::Constants;
+use AI::FANN :enum;
 
 #      Input     Hidden    Output
 #           \    / | \    /

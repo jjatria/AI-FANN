@@ -1,7 +1,6 @@
 #!/usr/bin/env raku
 
-use AI::FANN;
-use AI::FANN::Constants;
+use AI::FANN :enum;
 
 my $dir = $*PROGRAM.parent;
 
@@ -35,7 +34,7 @@ my $data = AI::FANN::TrainData.new:
         $output[0]            = @output[$num].Num;
     }
 
-$ann.train: :$data,
+$ann.train: $data,
     desired-error          => 0.001,
     max-epochs             => 500_000,
     epochs-between-reports => 1_000;

@@ -1,7 +1,6 @@
 #!/usr/bin/env raku
 #
-use AI::FANN;
-use AI::FANN::Constants;
+use AI::FANN :enum;
 
 unit sub MAIN (
            :$training-algorithm = FANN_TRAIN_RPROP,
@@ -56,18 +55,17 @@ $ann.save: $dir.child('output/cascade-train2.net');
 
 say 'Training network.';
 
-$ann.cascade-train:
-    data                    => $train,
+$ann.cascade-train: $train,
     max-neurons             => 30,
     neurons-between-reports => 1,
     desired-error           => 0;
 
 $ann.print-connections;
 
-my      $mse-train = $ann.test: data => $train;
+my      $mse-train = $ann.test: $train;
 my $bit-fail-train = $ann.bit-fail;
 
-my      $mse-test  = $ann.test: data => $test;
+my      $mse-test  = $ann.test: $test;
 my $bit-fail-test  = $ann.bit-fail;
 
 say Q:b'\nTrain error: %f, Train bit-fail: %d, Test error: %f, Test bit-fail: %d\n'.sprintf:

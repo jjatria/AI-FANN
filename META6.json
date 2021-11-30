@@ -20,7 +20,6 @@
     },
     "provides": {
         "AI::FANN":                "lib/AI/FANN.rakumod",
-        "AI::FANN::Constants":     "lib/AI/FANN/Constants.rakumod",
         "AI::FANN::Raw":           "lib/AI/FANN/Raw.rakumod",
         "AI::FANN::Raw::Base":     "lib/AI/FANN/Raw/Base.rakumod",
         "AI::FANN::Raw::Creation": "lib/AI/FANN/Raw/Creation.rakumod",
