@@ -6,18 +6,56 @@ AI::FANN
 
 =head1 SYNOPSIS
 
-    #                                   Hidden
-    #                             Input    |   Output
-    #                                  \   |  /
-    my $ann = AI::FANN.new: layers => [ 3, 2, 1 ];
+    # See below for details on export tags
+    use AI::FANN :enum;
 
-    $ann.set-activation-function: FANN_SIGMOID_SYMMETRIC;
+    #                               Hidden
+    #                         Input    |    Output
+    #                              \   |   /
+    given AI::FANN.new: layers => [ 2, 3, 1 ] {
+
+        # A sample data set for solving the XOR problem
+        my $data = AI::FANN::TrainData.new: pairs => [
+            [ -1, -1 ] => [ -1 ],
+            [ -1,  1 ] => [  1 ],
+            [  1, -1 ] => [  1 ],
+            [  1,  1 ] => [ -1 ],
+        ];
+
+        .activation-function: FANN_SIGMOID_SYMMETRIC;
+
+        .train: $data,
+            desired-error          => 0.001,
+            max-epochs             => 500_000,
+            epochs-between-reports => 0;       # Do not print reports
+
+        say .run: [ 1, -1 ];
+    }
+    # OUTPUT:
+    # (0.9508717060089111)
 
 =head1 DESCRIPTION
 
+This distribution provides native bindings for the Fast Artificial Neural
+Network library (FANN). The aim of the library is to be easy to use, which
+makes it a good entrypoint and suitable for working on machine learning
+prototypes.
+
+Creating networks, training them, and running them on input data can be done
+without much knowledge of the internals of ANNs, although the ANNs created
+will still be powerful and effective. Users with more experience and desiring
+more control will also find methods to parameterize most of the aspects of
+the ANNs, allowing for the creation of specialized and highly optimal ANNs.
+
+=head2 Installation
+
+The bindings for Raku make use of the system version of FANN. Please refer to
+your platform's instructions on how to install the library, or follow the
+instructions for L<compiling from source|https://github.com/libfann/fann#to-install>.
+
 =head1 METHODS
 
-Methods described below include readers, mutators, and methods that operate
+The methods described below include readers, mutators, and methods that operate
 on the internal state of the network in more complex ways.
 
 Some methods, like L<num-input|#num-input> are only for reading the
@@ -775,6 +813,122 @@ The default activation functions are [ C<FANN_SIGMOID>,
 C<FANN_SIGMOID_SYMMETRIC>, C<FANN_GAUSSIAN>, C<FANN_GAUSSIAN_SYMMETRIC>,
 C<FANN_ELLIOT>, C<FANN_ELLIOT_SYMMETRIC>, C<FANN_SIN_SYMMETRIC>,
 C<FANN_COS_SYMMETRIC>, C<FANN_SIN>, C<FANN_COS> ].
+
+=head1 EXPORT TAGS
+
+AI::FANN exports nothing by default. However, the following enums are available
+and can be exported using the C<:enum> tag to export I<all> enums, or the
+C<:error> tag to export only the AI::FANN::Error enum.
+
+=head2 AI::FANN::NetType
+
+=item FANN_NETTYPE_LAYER
+
+=item FANN_NETTYPE_SHORTCUT
+
+=head2 AI::FANN::ActivationFunc
+
+=item FANN_LINEAR
+
+=item FANN_THRESHOLD
+
+=item FANN_THRESHOLD_SYMMETRIC
+
+=item FANN_SIGMOID
+
+=item FANN_SIGMOID_STEPWISE
+
+=item FANN_SIGMOID_SYMMETRIC
+
+=item FANN_SIGMOID_SYMMETRIC_STEPWISE
+
+=item FANN_GAUSSIAN
+
+=item FANN_GAUSSIAN_SYMMETRIC
+
+=item FANN_GAUSSIAN_STEPWISE
+
+=item FANN_ELLIOT
+
+=item FANN_ELLIOT_SYMMETRIC
+
+=item FANN_LINEAR_PIECE
+
+=item FANN_LINEAR_PIECE_SYMMETRIC
+
+=item FANN_SIN_SYMMETRIC
+
+=item FANN_COS_SYMMETRIC
+
+=item FANN_SIN FANN_COS
+
+=head2 AI::FANN::Train
+
+=item FANN_TRAIN_INCREMENTAL
+
+=item FANN_TRAIN_BATCH
+
+=item FANN_TRAIN_RPROP
+
+=item FANN_TRAIN_QUICKPROP
+
+=item FANN_TRAIN_SARPROP
+
+=head2 AI::FANN::ErrorFunc
+
+=item FANN_ERRORFUNC_LINEAR
+
+=item FANN_ERRORFUNC_TANH
+
+=head2 AI::FANN::StopFunc
+
+=item FANN_STOPFUNC_MSE
+
+=item FANN_STOPFUNC_BIT
+
+=head2 AI::FANN::Error
+
+=item FANN_E_NO_ERROR
+
+=item FANN_E_CANT_OPEN_CONFIG_R
+
+=item FANN_E_CANT_OPEN_CONFIG_W
+
+=item FANN_E_WRONG_CONFIG_VERSION
+
+=item FANN_E_CANT_READ_CONFIG
+
+=item FANN_E_CANT_READ_NEURON
+
+=item FANN_E_CANT_READ_CONNECTIONS
+
+=item FANN_E_WRONG_NUM_CONNECTIONS
+
+=item FANN_E_CANT_OPEN_TD_W
+
+=item FANN_E_CANT_OPEN_TD_R
+
+=item FANN_E_CANT_READ_TD
+
+=item FANN_E_CANT_ALLOCATE_MEM
+
+=item FANN_E_CANT_TRAIN_ACTIVATION
+
+=item FANN_E_CANT_USE_ACTIVATION
+
+=item FANN_E_TRAIN_DATA_MISMATCH
+
+=item FANN_E_CANT_USE_TRAIN_ALG
+
+=item FANN_E_TRAIN_DATA_SUBSET
+
+=item FANN_E_INDEX_OUT_OF_BOUND
+
+=item FANN_E_SCALE_NOT_PRESENT
+
+=item FANN_E_INPUT_NO_MATCH
+
+=item FANN_E_OUTPUT_NO_MATCH
 
 =head1 COPYRIGHT AND LICENSE
 

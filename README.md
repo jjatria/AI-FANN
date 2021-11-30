@@ -4,19 +4,57 @@ AI::FANN
 
 # SYNOPSIS
 
-    #                                   Hidden
-    #                             Input    |   Output
-    #                                  \   |  /
-    my $ann = AI::FANN.new: layers => [ 3, 2, 1 ];
+    # See below for details on export tags
+    use AI::FANN :enum;
 
-    $ann.set-activation-function: FANN_SIGMOID_SYMMETRIC;
+    #                               Hidden
+    #                         Input    |    Output
+    #                              \   |   /
+    given AI::FANN.new: layers => [ 2, 3, 1 ] {
+
+        # A sample data set for solving the XOR problem
+        my $data = AI::FANN::TrainData.new: pairs => [
+            [ -1, -1 ] => [ -1 ],
+            [ -1,  1 ] => [  1 ],
+            [  1, -1 ] => [  1 ],
+            [  1,  1 ] => [ -1 ],
+        ];
+
+        .activation-function: FANN_SIGMOID_SYMMETRIC;
+
+        .train: $data,
+            desired-error          => 0.001,
+            max-epochs             => 500_000,
+            epochs-between-reports => 0;       # Do not print reports
+
+        say .run: [ 1, -1 ];
+    }
+    # OUTPUT:
+    # (0.9508717060089111)
 
 # DESCRIPTION
 
+This distribution provides native bindings for the Fast Artificial Neural
+Network library (FANN). The aim of the library is to be easy to use, which
+makes it a good entrypoint and suitable for working on machine learning
+prototypes.
+
+Creating networks, training them, and running them on input data can be done
+without much knowledge of the internals of ANNs, although the ANNs created
+will still be powerful and effective. Users with more experience and desiring
+more control will also find methods to parameterize most of the aspects of the
+ANNs, allowing for the creation of specialized and highly optimal ANNs.
+
+## Installation
+
+The bindings for Raku make use of the system version of FANN. Please refer to
+your platform's instructions on how to install the library, or follow the
+instructions for [compiling from source](https://github.com/libfann/fann#to-install).
+
 # METHODS
 
-Methods described below include readers, mutators, and methods that operate
-on the internal state of the network in more complex ways.
+The methods described below include readers, mutators, and methods that
+operate on the internal state of the network in more complex ways.
 
 Some methods, like [num-input](#num-input) are only for reading the
 internal state of the network, and will always return the value that was
@@ -759,7 +797,123 @@ The default activation functions are [ `FANN_SIGMOID`,
 `FANN_ELLIOT`, `FANN_ELLIOT_SYMMETRIC`, `FANN_SIN_SYMMETRIC`,
 `FANN_COS_SYMMETRIC`, `FANN_SIN`, `FANN_COS` ].
 
-## COPYRIGHT AND LICENSE
+# EXPORT TAGS
+
+AI::FANN exports nothing by default. However, the following enums are
+available and can be exported using the `:enum` tag to export *all* enums, or
+the `:error` tag to export only the AI::FANN::Error enum.
+
+## AI::FANN::NetType
+
+  * FANN_NETTYPE_LAYER
+
+  * FANN_NETTYPE_SHORTCUT
+
+## AI::FANN::ActivationFunc
+
+  * FANN_LINEAR
+
+  * FANN_THRESHOLD
+
+  * FANN_THRESHOLD_SYMMETRIC
+
+  * FANN_SIGMOID
+
+  * FANN_SIGMOID_STEPWISE
+
+  * FANN_SIGMOID_SYMMETRIC
+
+  * FANN_SIGMOID_SYMMETRIC_STEPWISE
+
+  * FANN_GAUSSIAN
+
+  * FANN_GAUSSIAN_SYMMETRIC
+
+  * FANN_GAUSSIAN_STEPWISE
+
+  * FANN_ELLIOT
+
+  * FANN_ELLIOT_SYMMETRIC
+
+  * FANN_LINEAR_PIECE
+
+  * FANN_LINEAR_PIECE_SYMMETRIC
+
+  * FANN_SIN_SYMMETRIC
+
+  * FANN_COS_SYMMETRIC
+
+  * FANN_SIN FANN_COS
+
+## AI::FANN::Train
+
+  * FANN_TRAIN_INCREMENTAL
+
+  * FANN_TRAIN_BATCH
+
+  * FANN_TRAIN_RPROP
+
+  * FANN_TRAIN_QUICKPROP
+
+  * FANN_TRAIN_SARPROP
+
+## AI::FANN::ErrorFunc
+
+  * FANN_ERRORFUNC_LINEAR
+
+  * FANN_ERRORFUNC_TANH
+
+## AI::FANN::StopFunc
+
+  * FANN_STOPFUNC_MSE
+
+  * FANN_STOPFUNC_BIT
+
+## AI::FANN::Error
+
+  * FANN_E_NO_ERROR
+
+  * FANN_E_CANT_OPEN_CONFIG_R
+
+  * FANN_E_CANT_OPEN_CONFIG_W
+
+  * FANN_E_WRONG_CONFIG_VERSION
+
+  * FANN_E_CANT_READ_CONFIG
+
+  * FANN_E_CANT_READ_NEURON
+
+  * FANN_E_CANT_READ_CONNECTIONS
+
+  * FANN_E_WRONG_NUM_CONNECTIONS
+
+  * FANN_E_CANT_OPEN_TD_W
+
+  * FANN_E_CANT_OPEN_TD_R
+
+  * FANN_E_CANT_READ_TD
+
+  * FANN_E_CANT_ALLOCATE_MEM
+
+  * FANN_E_CANT_TRAIN_ACTIVATION
+
+  * FANN_E_CANT_USE_ACTIVATION
+
+  * FANN_E_TRAIN_DATA_MISMATCH
+
+  * FANN_E_CANT_USE_TRAIN_ALG
+
+  * FANN_E_TRAIN_DATA_SUBSET
+
+  * FANN_E_INDEX_OUT_OF_BOUND
+
+  * FANN_E_SCALE_NOT_PRESENT
+
+  * FANN_E_INPUT_NO_MATCH
+
+  * FANN_E_OUTPUT_NO_MATCH
+
+# COPYRIGHT AND LICENSE
 
 Copyright 2021 José Joaquín Atria
 
