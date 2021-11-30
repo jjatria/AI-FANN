@@ -20,10 +20,20 @@ subtest 'Create ' => {
     is .input[2][0,1],    [ 255, 0 ], 'Can set input data';
     is .output[0,1]».[0], [ 0, 255 ], 'Can set output data';
 
-    is .scale( -1..1 ), $_, 'Scale returns self';
+    is .scale( -1..1, :input ), $_, 'Scale returns self';
 
-    is .input[2][0,1],    [  1, -1 ], 'Can scale input data';
-    is .output[0,1]».[0], [ -1,  1 ], 'Can scale output data';
+    is .input[2][0,1],    [   1,  -1 ], 'Can scale input data';
+    is .output[0,1]».[0], [   0, 255 ], 'Output is unchanged';
+
+    is .scale( -10..10, :output ), $_, 'Scale returns self';
+
+    is .input[2][0,1],    [   1,  -1 ], 'Input is unchanged';
+    is .output[0,1]».[0], [ -10,  10 ], 'Can scale output data';
+
+    is .scale( ^256 ), $_, 'Scale returns self';
+
+    is .input[2][0,1],    [ 255, 0 ], 'Can scale input data';
+    is .output[0,1]».[0], [ 0, 255 ], 'Can scale output data';
 
     is .shuffle, $_, 'Shuffle returns self';
 }

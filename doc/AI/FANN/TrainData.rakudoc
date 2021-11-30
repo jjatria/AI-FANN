@@ -82,13 +82,26 @@ elements, starting with the element at position C<$pos>.
 
     method scale (
         Range:D $range,
+        Bool() :$input,
+        Bool() :$output,
     ) returns self
 
-Scales the inputs and outputs in the training data to the specified range.
+Takes a L<Range|https://docs.raku.org/type/Range> object and applies it to
+either the inputs of the dataset, its outputs, or both depending on the
+state of the C<:input> and C<:output> flags. As a result, the values in
+the affected sets will be scaled to fall within the endpoints of the
+specified range.
 
-A simplified scaling method, which is mostly useful in examples where it's
-known that all the data will be in one range and it should be transformed to
-another range.
+Setting either of the flags to a value that evaluates to L<True> will
+apply the scaling to that set of data. Setting none of them applies the
+scaling to both.
+
+Using an infinite L<Range|https://docs.raku.org/type/Range> object is an
+error.
+
+This is a simplified scaling method, which is mostly useful in examples where
+it's known that all the data will be in one range and it should be transformed
+to another range.
 
 It is not recommended to use this on subsets of data as the complete input
 range might not be available in that subset.

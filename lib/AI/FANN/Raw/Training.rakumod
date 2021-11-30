@@ -112,8 +112,8 @@ sub fann_set_sarprop_temperature(fann, float) is export is native(LIB) {*}
 
 # Training data methods
 
-sub fann_scale_input_train_data(fann_train_data, fann_type, fann_type is rw) is export is native(LIB) {*}
-sub fann_scale_output_train_data(fann_train_data, fann_type, fann_type is rw) is export is native(LIB) {*}
+sub fann_scale_input_train_data(fann_train_data, fann_type, fann_type) is export is native(LIB) {*}
+sub fann_scale_output_train_data(fann_train_data, fann_type, fann_type) is export is native(LIB) {*}
 sub fann_scale_train_data(fann_train_data, fann_type, fann_type) is export is native(LIB) {*}
 
 sub fann_merge_train_data(fann_train_data, fann_train_data) is export is native(LIB) {*}

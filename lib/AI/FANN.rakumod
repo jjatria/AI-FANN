@@ -94,9 +94,21 @@ class AI::FANN {
             self.new: data => fann_subset_train_data( $!data, $pos, $length );
         }
 
-        method scale ( Range:D $range ) {
+        method scale (
+            Range:D $range,
+            Bool() :$input,
+            Bool() :$output,
+        ) {
             die 'Cannot use an infinite range to set scale' if $range.infinite;
-            fann_scale_train_data( $!data, |$range.minmax».Num );
+
+            if $input || $output {
+                fann_scale_input_train_data(  $!data, |$range.minmax».Num ) if $input;
+                fann_scale_output_train_data( $!data, |$range.minmax».Num ) if $output;
+            }
+            else {
+                fann_scale_train_data( $!data, |$range.minmax».Num );
+            }
+
             self;
         }
 
