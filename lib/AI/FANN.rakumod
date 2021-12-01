@@ -378,6 +378,63 @@ multi method activation-function ( $other, |c ) {
     nextwith( $value, |c );
 }
 
+proto method activation-steepness ( :$layer, :$neuron, | ) {
+    $!layers //= $.layer-array;
+
+    X::OutOfRange.new(
+       what  => 'Layer index',
+       got   => $layer,
+       range => 1..^$!layers.elems,
+    ).throw if $layer.defined && $layer !~~ 1..^$!layers.elems;
+
+    if $neuron.defined {
+        die "Cannot set :neuron without setting :layer" unless $layer.defined;
+
+        X::OutOfRange.new(
+           what  => 'Neuron index',
+           got   => $neuron,
+           range => 0..$!layers[$layer],
+        ).throw unless $neuron ~~ 0..$!layers[$layer];
+    }
+
+    {*}
+}
+
+multi method activation-steepness (
+    Int :$layer!,
+    Int :$neuron!,
+    --> Num
+) {
+    fann_get_activation_steepness( $!fann, $layer, $neuron );
+}
+
+multi method activation-steepness (
+    Num()  $value!,
+    Int:D :$layer!,
+    Int   :$neuron,
+    --> ::?CLASS:D
+) {
+    $neuron.defined
+        ?? fann_set_activation_steepness( $!fann, $value, $layer, $neuron )
+        !! fann_set_activation_steepness_layer( $!fann, $value, $layer );
+
+    self;
+}
+
+multi method activation-steepness (
+    Num()   $value!,
+    Bool() :$hidden is copy,
+    Bool() :$output is copy,
+    --> ::?CLASS:D
+) {
+    $hidden = $output = True unless $hidden || $output;
+
+    fann_set_activation_steepness_hidden( $!fann, $value ) if $hidden;
+    fann_set_activation_steepness_output( $!fann, $value ) if $output;
+
+    self;
+}
+
 multi method training-algorithm ( --> AI::FANN::Train ) {
     AI::FANN::Train.^enum_from_value: fann_get_training_algorithm($!fann);
 }

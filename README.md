@@ -467,25 +467,69 @@ These candidates return the updated mean square error for the network.
     ) returns self
 
 If called with no positional arguments, this method returns the activation
-function for neuron number and layer specified in the `neuron` and `layer`
-parameters respectively, counting the input layer as layer 0. It is not
-possible to get activation functions for the neurons in the input layer:
-doing so is an error.
+function for the neuron number and layer specified in the `:neuron` and
+`:layer` parameters respectively, counting the input layer as layer 0. It is
+not possible to get activation functions for the neurons in the input layer:
+trying to do so is an error.
 
 If called with a member of the AI::FANN::ActivationFunc enum as the first
 positional argument, then this function will instead _set_ this as the
 activation function for the specified layer and neuron, and return the
-value that has been set.
+calling AI::FANN object.
 
 When used as a setter, specifying the layer is always required. This can
-be done with the `layer` parameter, as described above, or with the `hidden`
-or `output` flags. The `hidden` flag will set the activation function for
+be done with the `:layer` parameter, as described above, or with the `:hidden`
+or `:output` flags. The `:hidden` flag will set the activation function for
+all neurons in _all_ hidden layers, while the `:output` flag will do so only
+for those in the output layer.
+
+When setting the activation function using the `:layer` parameter, the
+`:neuron` parameter is optional. If none is set, all neurons in the specified
+layer will be modified.
+
+### activation-steepness
+
+    # fann_get_activation_steepness
+    multi method activation-steepness (
+        Int    :$layer!,
+        Int    :$neuron!,
+    ) returns Num
+
+    # fann_set_activation_steepness
+    # fann_set_activation_steepness_layer
+    multi method activation-steepness (
+        Num()   $steepness,
+        Int    :$layer!,
+        Int    :$neuron,
+    ) returns self
+
+    # fann_set_activation_steepness_hidden
+    # fann_set_activation_steepness_output
+    multi method activation-steepness (
+        Num()   $steepness,
+        Bool() :$hidden,
+        Bool() :$output,
+    ) returns self
+
+If called with no positional arguments, this method returns the activation
+steepness for the neuron number and layer specified in the `:neuron` and
+`:layer` parameters respectively, counting the input layer as layer 0. It is
+not possible to get activation functions for the neurons in the input layer:
+trying to do so is an error.
+
+If called with a positional argument, it will be coerced to a [Num] and this
+function will instead _set_ this as the activation steepenss for the specified
+layer and neuron and return the calling AI::FANN object.
+
+When used as a setter, specifying the layer is always required. This can
+be done with the `:layer` parameter, as described above, or with the `:hidden`
+or `output` flags. The `:hidden` flag will set the activation function for
 all neurons in _all_ hidden layers, while the `output` flag will do so only
 for those in the output layer.
 
-When setting the activation function using the `layer` parameter, the `neuron`
-parameter is optional. If none is set, all neurons in the specified layer
-will be modified.
+When setting the activation steepness using the `:layer` parameter, the
+`:neuron` parameter is optional. If none is set, all neurons in the specified
+layer will be modified.
 
 ### training-algorithm
 

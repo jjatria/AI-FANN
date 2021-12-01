@@ -58,6 +58,23 @@ subtest 'Standard' => {
             FANN_ELLIOT, 'other neurons remain untouched';
     }
 
+    subtest 'activation-steepness' => {
+        my &get-hidden = { .activation-steepness( :0neuron, :1layer ).round: 0.1 };
+        my &get-output = { .activation-steepness( :0neuron, layer => @layers.elems - 1 ).round: 0.1 };
+
+        is $nn.&get-hidden, 0.5, 'getter';
+
+        is $nn.activation-steepness( 0.3, :hidden ).&get-hidden, 0.3, 'hidden setter';
+        is $nn.activation-steepness( 0.7, :output ).&get-output, 0.7, 'output setter';
+        is $nn.activation-steepness( 0.2, :1layer ).&get-hidden, 0.2, 'layer setter';
+
+        ok $nn.activation-steepness( 0.1, layer => 1, neuron => 0 );
+        is $nn.&get-hidden, 0.1, 'setter';
+
+        is $nn.activation-steepness( :2neuron, :1layer ).round(0.1),
+            0.2, 'other neurons remain untouched';
+    }
+
     subtest 'training-algorithm' => {
         is $nn.training-algorithm, FANN_TRAIN_RPROP, 'getter';
         is $nn.training-algorithm(FANN_TRAIN_INCREMENTAL)
