@@ -136,10 +136,10 @@ subtest 'Standard' => {
 subtest 'Sparse' => {
     my $connection-rate = 0.75;
 
-    ok my $nn = AI::FANN.new( :@layers, :$connection-rate ), 'new';
-    LEAVE $nn.destroy;
+    ok $_ = AI::FANN.new( :@layers, :$connection-rate ), 'new';
+    LEAVE .?destroy;
 
-    $nn.&test: {
+    .&test: {
         bias-array        => @layers.List,
         bit-fail          => 0,
         connection-rate   => $connection-rate,
@@ -152,16 +152,16 @@ subtest 'Sparse' => {
         total-neurons     => @layers.sum + @layers - 1,
     };
 
-    is-deeply $nn.connection-array.map(*.^name),
-        [ 'AI::FANN::Connection' xx $nn.total-connections ].List,
+    is-deeply .connection-array.map(*.^name),
+        [ 'AI::FANN::Connection' xx .total-connections ].List,
         'connection-array';
 }
 
 subtest 'Shortcut' => {
-    ok my $nn = AI::FANN.new( :@layers, :shortcut ), 'new';
-    LEAVE $nn.destroy;
+    ok $_ = AI::FANN.new( :@layers, :shortcut ), 'new';
+    LEAVE .?destroy;
 
-    $nn.&test: {
+    .&test: {
         bias-array        => @layers.List,
         bit-fail          => 0,
         connection-rate   => 1,
@@ -174,9 +174,52 @@ subtest 'Shortcut' => {
         total-neurons     => 15,
     };
 
-    is-deeply $nn.connection-array.map(*.^name),
-        [ 'AI::FANN::Connection' xx $nn.total-connections ].List,
+    is-deeply .connection-array.map(*.^name),
+        [ 'AI::FANN::Connection' xx .total-connections ].List,
         'connection-array';
+}
+
+subtest 'Train' => {
+    $_ = AI::FANN.new: layers => [ 2, 3, 1 ];
+    LEAVE .?destroy;
+
+    my $data = AI::FANN::TrainData.new: pairs => [
+        [ -1, -1 ] => [ -1 ],
+        [ -1,  1 ] => [  1 ],
+        [  1, -1 ] => [  1 ],
+        [  1,  1 ] => [ -1 ],
+    ];
+
+    LEAVE $data.?destroy;
+
+    my @epochs;
+    my $callback = sub (
+            $data,
+        Int $max-epochs,
+        Int $epochs-between-reports,
+        Num $desired-error,
+        Int $epoch,
+        --> Int
+    ) {
+        @epochs.push: $epoch;
+        return $epoch >= 8 ?? -1 !! 1; # Stop at epoch 8
+    }
+
+    is .callback($callback), $_, 'callback returns self';
+
+    my $train = .train: $data,
+        desired-error          => 0.001,
+        max-epochs             => 500_000,
+        epochs-between-reports => 2;
+
+    is $train, $_, 'train returns self';
+    is @epochs, [ 1, 2, 4, 6, 8 ],
+        'Callback ran every 2 epochs and could be stopped';
+
+
+    is .callback(:delete), $_, 'Clearing a callback returns self';
+
+    throws-like { .callback }, X::AdHoc, message => /'The callback method'/;
 }
 
 done-testing;

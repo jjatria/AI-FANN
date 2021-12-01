@@ -453,6 +453,50 @@ used as above.
 
 These candidates return the updated mean square error for the network.
 
+=head3 callback
+
+    multi method callback (
+        :$delete where :so,
+    ) returns self
+
+    # fann_set_callback
+    method callback (
+        &callback where {
+            .cando: \(
+                AI::FANN::TrainData $data,
+                uint32              $max-epochs,
+                uint32              $epochs-between-reports,
+                num32               $desired-error,
+                uint32              $epoch,
+            );
+        }
+    ) returns self
+
+If called with a L<Callable|https://docs.raku.org/type/Callable> as the first
+positional argument, this method will set that as the training callback. If
+called with a single C<:delete> argument that evaluates to
+L<True|https://docs.raku.org/type/Bool>, any previously set callback will be
+cleared, and the default callback will be restored.
+
+The default callback function simply prints out some status information.
+
+The callback will be called during training if using a AI::FANN::TrainData
+object either directly (with the C<:data> argument to L<train|#train>) or
+indirectly (with the C<:path> argument to the same method). It will be called
+once during the first epoch, and again every time the epoch is divisible by
+the value provided in the C<:epochs-between-reports> argument to
+L<train|#train>.
+
+The callback will be called with the AI::FANN::TrainData object that is being
+used for training, as well as the maximum number of allowed training epochs,
+the number of epochs between reports, and the target error for training that
+were set when training started as positional arguments. Additionally, the
+current epoch will also be passed as the final argument to the callback.
+
+The callback can interrupt the training by returning
+L<False|https://docs.raku.org/type/Bool> or a value that, when coerced into
+an L<Int|https://docs.raku.org/type/Int> evaluates to -1.
+
 =head3 activation-function
 
     # fann_get_activation_function

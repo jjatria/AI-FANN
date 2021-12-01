@@ -75,7 +75,7 @@ sub fann_set_train_stop_function(fann, fann_stopfunc) is export is native(LIB) {
 sub fann_get_bit_fail_limit(fann) returns fann_type is export is native(LIB) {*}
 sub fann_set_bit_fail_limit(fann, fann_type) is export is native(LIB) {*}
 
-#sub fann_set_callback(fann, fann_callback) is export is native(LIB) {*}       # TODO
+sub fann_set_callback(fann, & ( fann, fann_train_data, uint32, uint32, num32, uint32 --> int ) ) is export is native(LIB) {*}
 
 sub fann_get_quickprop_decay(fann) returns float is export is native(LIB) {*}
 sub fann_set_quickprop_decay(fann, float) is export is native(LIB) {*}

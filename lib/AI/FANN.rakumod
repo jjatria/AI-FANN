@@ -285,6 +285,30 @@ method print-parameters ( --> ::?CLASS:D ) {
     self;
 }
 
+multi method callback () {
+    die 'The callback method can only be used to set the callback, or clear it with :delete';
+}
+
+multi method callback ( :$delete! where :so --> AI::FANN ) {
+    fann_set_callback( $!fann, Code );
+    self;
+}
+
+multi method callback ( &cb --> AI::FANN ) {
+    die 'Unsupported callback: it must be able to accept '
+        ~ :( AI::FANN::TrainData, uint32, uint32, num32, uint32 ).raku
+        unless &cb.cando: \( AI::FANN::TrainData, uint32, uint32, num32, uint32 );
+
+    fann_set_callback( $!fann, sub ( $, $data, |c ) {
+        given cb( AI::FANN::TrainData.new( :$data ), |c ) {
+            return .so ?? 0 !! -1 when Bool;
+            return .Int;
+        }
+    });
+
+    self;
+}
+
 method randomise-weights ( |c --> AI::FANN ) { $.randomize-weights: |c } # We love our British users
 method randomize-weights ( Range:D $range  --> AI::FANN ) {
     die 'Cannot use an infinite range to randomize weights' if $range.infinite;

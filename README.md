@@ -442,6 +442,48 @@ internally read from the contents of this file and used as above.
 
 These candidates return the updated mean square error for the network.
 
+### callback
+
+    multi method callback (
+        :$delete where :so,
+    ) returns self
+
+    # fann_set_callback
+    method callback (
+        &callback where {
+            .cando: \(
+                AI::FANN::TrainData $data,
+                uint32              $max-epochs,
+                uint32              $epochs-between-reports,
+                num32               $desired-error,
+                uint32              $epoch,
+            );
+        }
+    ) returns self
+
+If called with a [Callable] as the first positional argument, this method
+will set that as the training callback. If called with a single `:delete`
+argument that evaluates to [True], any previously set callback will be
+cleared, and the default callback will be restored.
+
+The default callback function simply prints out some status information.
+
+The callback will be called during training if using a AI::FANN::TrainData
+object either directly (with the `:data` argument to [train](#train)) or
+indirectly (with the `:path` argument to the same method). It will be called
+once during the first epoch, and again every time the epoch is divisible by
+the value provided in the `:epochs-between-reports` argument to
+[train](#train).
+
+The callback will be called with the AI::FANN::TrainData object that is being
+used for training, as well as the maximum number of allowed training epochs,
+the number of epochs between reports, and the target error for training that
+were set when training started as positional arguments. Additionally, the
+current epoch will also be passed as the final argument to the callback.
+
+The callback can interrupt the training by returning [False] or a value that,
+when coerced into an [Int] evaluates to -1.
+
 ### activation-function
 
     # fann_get_activation_function
@@ -1199,7 +1241,12 @@ the Artistic License 2.0.
 
 [Array]: https://docs.raku.org/type/Array
 [CArray]: https://docs.raku.org/language/nativecall#Arrays
+[Callable]: https://docs.raku.org/type/Callable
+[False]: https://docs.raku.org/type/Bool
 [IO::Path]: https://docs.raku.org/type/IO::Path
+[Int]: https://docs.raku.org/type/Int
 [List]: https://docs.raku.org/type/List
+[Num]: https://docs.raku.org/type/Num
 [Range]: https://docs.raku.org/type/Range
 [SARPROP]: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.47.8197&rep=rep1&type=pdf
+[True]: https://docs.raku.org/type/Bool
