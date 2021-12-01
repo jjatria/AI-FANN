@@ -705,8 +705,7 @@ multi method bit-fail-limit (
 
 If called with no positional arguments, this method returns the bit fail limit
 used during training. If called with a positional argument, it will be coerced
-to a [Num] and set as the new limit. In that case, this method returns the
-value that has been set.
+to a [Num] and set as the new limit.
 
 The bit fail limit is used during training when the stop function is set to
 `FANN_STOPFUNC_BIT` (see [train-stop-function](#train-stop-function)).
@@ -850,8 +849,7 @@ multi method cascade-num-candidates ( Int $groups ) returns self
 
 If called with no positional arguments, this method returns the number of
 candidates used during training. If called with an Int as a positional
-argument, it will be set as the new value. In that case, this method returns
-the value that has been set.
+argument, it will be set as the new value.
 
 The number of candidates is calculated by multiplying the value returned by
 [cascade-activation-functions-count](#cascade-activation-functions-count),
@@ -885,8 +883,7 @@ multi method cascade-num-candidate-groups ( Int $groups ) returns self
 
 If called with no positional arguments, this method returns the number of
 candidate groups used during training. If called with an Int as a positional
-argument, it will be set as the new value. In that case, this method returns
-the value that has been set.
+argument, it will be set as the new value.
 
 The number of candidate groups is the number of groups of identical candidates
 which will be used during training.

@@ -791,8 +791,7 @@ be used when invoking L<new|#new>, like this
 
 If called with no positional arguments, this method returns the number of
 candidates used during training. If called with an Int as a positional
-argument, it will be set as the new value. In that case, this method returns
-the value that has been set.
+argument, it will be set as the new value.
 
 The number of candidates is calculated by multiplying the value returned by
 L<cascade-activation-functions-count|#cascade-activation-functions-count>,
@@ -824,8 +823,7 @@ The default number of candidates is 6x4x2 = 48
 
 If called with no positional arguments, this method returns the number of
 candidate groups used during training. If called with an Int as a positional
-argument, it will be set as the new value. In that case, this method returns
-the value that has been set.
+argument, it will be set as the new value.
 
 The number of candidate groups is the number of groups of identical candidates
 which will be used during training.
