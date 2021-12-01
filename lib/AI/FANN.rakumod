@@ -205,7 +205,7 @@ class TrainData {
     }
 
     method save ( IO() $path --> Bool() ) {
-        die "Cannot write to file: '$path'" unless $path.w;
+        die "Cannot write to file: '$path'" unless $path.parent.w;
         !fann_save_train("$!data");
     }
 
@@ -306,7 +306,7 @@ method clone ( --> AI::FANN ) {
 }
 
 method save ( IO() $path --> Bool() ) {
-    die "Cannot write to file: '$path'" unless $path.w;
+    die "Cannot write to file: '$path'" unless $path.parent.w;
     !fann_save($!fann, "$path")
 }
 
