@@ -903,11 +903,6 @@ functions can either be defined for a group of neurons by calling
 parameters or it can be defined for a single neuron or layer with the `:layer`
 and `:neuron` parameters.
 
-The steepness of an activation function is defined in the same way by calling
-[activation-steepness](#activation-steepness).
-
-See the documentation for those functions for details.
-
 The functions are described with functions where
 
   * `x` is the input to the activation function
@@ -918,7 +913,10 @@ The functions are described with functions where
 
   * `d` is the derivation.
 
-<!-- -->
+The steepness of an activation function is defined in the same way by calling
+[activation-steepness](#activation-steepness).
+
+See the documentation for those functions for details.
 
   * FANN_LINEAR
 
