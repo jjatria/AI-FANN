@@ -4,33 +4,35 @@ AI::FANN
 
 # SYNOPSIS
 
-    # See below for details on export tags
-    use AI::FANN :enum;
+``` raku
+# See below for details on export tags
+use AI::FANN :enum;
 
-    #                               Hidden
-    #                         Input    |    Output
-    #                              \   |   /
-    given AI::FANN.new: layers => [ 2, 3, 1 ] {
+#                               Hidden
+#                         Input    |    Output
+#                              \   |   /
+given AI::FANN.new: layers => [ 2, 3, 1 ] {
 
-        # A sample data set for solving the XOR problem
-        my $data = AI::FANN::TrainData.new: pairs => [
-            [ -1, -1 ] => [ -1 ],
-            [ -1,  1 ] => [  1 ],
-            [  1, -1 ] => [  1 ],
-            [  1,  1 ] => [ -1 ],
-        ];
+    # A sample data set for solving the XOR problem
+    my $data = AI::FANN::TrainData.new: pairs => [
+        [ -1, -1 ] => [ -1 ],
+        [ -1,  1 ] => [  1 ],
+        [  1, -1 ] => [  1 ],
+        [  1,  1 ] => [ -1 ],
+    ];
 
-        .activation-function: FANN_SIGMOID_SYMMETRIC;
+    .activation-function: FANN_SIGMOID_SYMMETRIC;
 
-        .train: $data,
-            desired-error          => 0.001,
-            max-epochs             => 500_000,
-            epochs-between-reports => 0;       # Do not print reports
+    .train: $data,
+        desired-error          => 0.001,
+        max-epochs             => 500_000,
+        epochs-between-reports => 0;       # Do not print reports
 
-        say .run: [ 1, -1 ];
-    }
-    # OUTPUT:
-    # (0.9508717060089111)
+    say .run: [ 1, -1 ];
+}
+# OUTPUT:
+# (0.9508717060089111)
+```
 
 # DESCRIPTION
 
@@ -89,17 +91,19 @@ Please refer to the libfann documentation for additional details.
 
 ### new
 
-    # fann_create_standard
-    multi method new (
-               :@layers,
-        Num()  :$connection-rate,
-        Bool() :$shortcut,
-    ) returns AI::FANN
+``` raku
+# fann_create_standard
+multi method new (
+           :@layers,
+    Num()  :$connection-rate,
+    Bool() :$shortcut,
+) returns AI::FANN
 
-    # fann_create_from_file
-    multi method new (
-        IO()   :$path,
-    ) returns AI::FANN
+# fann_create_from_file
+multi method new (
+    IO()   :$path,
+) returns AI::FANN
+```
 
 Creates a new AI::FANN neural network. The constructor can be called in one
 of two ways.
@@ -133,14 +137,16 @@ both is an error.
 
 ### run
 
-    # fann_run
-    multi method run (
-        CArray[num32] $input
-    ) returns CArray[num32]
+``` raku
+# fann_run
+multi method run (
+    CArray[num32] $input
+) returns CArray[num32]
 
-    multi method run (
-        *@input
-    ) returns List
+multi method run (
+    *@input
+) returns List
+```
 
 Run the input through the neural network, returning an array of outputs. The
 output array will have one value per neuron in the output layer.
@@ -156,8 +162,10 @@ to its C representation, and the return value will be a [List] object.
 
 ### bit-fail
 
-    # fann_get_bit_fail
-    method bit-fail returns Int
+``` raku
+# fann_get_bit_fail
+method bit-fail returns Int
+```
 
 Returns the number of fail bits, or the number of output neurons which
 differ more than the bit fail limit (see [bit-fail-limit](#bit-fail-limit)).
@@ -169,43 +177,55 @@ same functions which also update the mean square error (eg. [test](#test)).
 
 ### connection-rate
 
-    # fann_get_connection_rate
-    method connection-rate returns Num
+``` raku
+# fann_get_connection_rate
+method connection-rate returns Num
+```
 
 Get the connection rate used when the network was created.
 
 ### num-input
 
-    # fann_get_num_input
-    method num-input returns Int
+``` raku
+# fann_get_num_input
+method num-input returns Int
+```
 
 Get the number of input neurons.
 
 ### num-layers
 
-    # fann_get_num_layers
-    method num-layers returns Int
+``` raku
+# fann_get_num_layers
+method num-layers returns Int
+```
 
 Get the number of layers in the network.
 
 ### num-output
 
-    # fann_get_num_output
-    method num-output returns Int
+``` raku
+# fann_get_num_output
+method num-output returns Int
+```
 
 Get the number of output neurons.
 
 ### total-connections
 
-    # fann_get_total_connection
-    method total-connections returns Int
+``` raku
+# fann_get_total_connection
+method total-connections returns Int
+```
 
 Get the total number of connections in the entire network.
 
 ### total-neurons
 
-    # fann_get_total_neurons
-    method total-neurons returns Int
+``` raku
+# fann_get_total_neurons
+method total-neurons returns Int
+```
 
 Get the total number of neurons in the entire network. This number includes
 the bias neurons, so a 2-4-2 network has 2+4+2 neurons, plus 2 bias neurons
@@ -213,15 +233,19 @@ the bias neurons, so a 2-4-2 network has 2+4+2 neurons, plus 2 bias neurons
 
 ### network-type
 
-    # fann_get_network_type
-    method network-type returns AI::FANN::NetType
+``` raku
+# fann_get_network_type
+method network-type returns AI::FANN::NetType
+```
 
 Get the type of neural network it was created as.
 
 ### layer-array
 
-    # fann_get_layer_array
-    method layer-array returns List
+``` raku
+# fann_get_layer_array
+method layer-array returns List
+```
 
 Get the number of neurons in each layer in the network.
 
@@ -229,24 +253,30 @@ Bias is not included so the layers match the ones used in the constructor.
 
 ### bias-array
 
-    # fann_get_bias_array
-    method bias-array returns List
+``` raku
+# fann_get_bias_array
+method bias-array returns List
+```
 
 Get the number of bias in each layer in the network.
 
 ### connection-array
 
-    # fann_get_connection_array
-    method connection-array returns [List] of AI::FANN::Connection
+``` raku
+# fann_get_connection_array
+method connection-array returns [List] of AI::FANN::Connection
+```
 
 Get the connections in the network.
 
 ### randomize-weights
 
-    # fann_randomize_weights
-    method randomize-weights (
-        Range:D $range,
-    ) returns self
+``` raku
+# fann_randomize_weights
+method randomize-weights (
+    Range:D $range,
+) returns self
+```
 
 Give each connection a random weight between the endpoints of the specified
 [Range] object.
@@ -257,10 +287,12 @@ This method is an alias for [randomise-weights](#randomise-weights).
 
 ### randomise-weights
 
-    # fann_randomize_weights
-    method randomise-weights (
-        Range:D $range,
-    ) returns self
+``` raku
+# fann_randomize_weights
+method randomise-weights (
+    Range:D $range,
+) returns self
+```
 
 Give each connection a random weight between the endpoints of the specified
 [Range] object.
@@ -271,8 +303,10 @@ This method is an alias for [randomize-weights](#randomize-weights).
 
 ### print-connections
 
-    # fann_print_connections
-    method print-connections returns self
+``` raku
+# fann_print_connections
+method print-connections returns self
+```
 
 Will print the connections of the network in a compact matrix, for easy
 viewing of its internals.
@@ -304,21 +338,28 @@ neurons that connections can go to.
 
 ### print-parameters
 
-    # fann_print_parameters
-    method print-parameters returns self
+``` raku
+# fann_print_parameters
+method print-parameters returns self
+```
 
 Prints all of the parameters and options of the network.
 
 ### clone
 
-    # fann_copy
-    method clone returns AI::FANN
+``` raku
+# fann_copy
+method clone returns AI::FANN
+```
 
 Returns an exact copy of the calling AI::FANN object.
 
 ### destroy
 
-    method destroy returns Nil
+``` raku
+# fann_destroy
+method destroy returns Nil
+```
 
 Destroy the internal representation of this dataset. This is called
 automatically by the garbage collector, but can be called manually.
@@ -327,8 +368,10 @@ automatically by the garbage collector, but can be called manually.
 
 ### save
 
-    # fann_save
-    method save ( IO() $path ) returns Bool
+``` raku
+# fann_save
+method save ( IO() $path ) returns Bool
+```
 
 Save the entire network to a configuration file.
 
@@ -354,32 +397,34 @@ section below.
 
 ### train
 
-    multi method train (
-        @input,
-        @output,
-    ) returns self
+``` raku
+multi method train (
+    @input,
+    @output,
+) returns self
 
-    # fann_train
-    multi method train (
-        CArray[num32] $input,
-        CArray[num32] $output,
-    ) returns self
+# fann_train
+multi method train (
+    CArray[num32] $input,
+    CArray[num32] $output,
+) returns self
 
-    # fann_train_on_data
-    multi method train (
-        AI::FANN::TrainData:D $data,
-        Int() :$max-epochs!,
-        Int() :$epochs-between-reports!,
-        Num() :$desired-error!,
-    ) returns self
+# fann_train_on_data
+multi method train (
+    AI::FANN::TrainData:D $data,
+    Int() :$max-epochs!,
+    Int() :$epochs-between-reports!,
+    Num() :$desired-error!,
+) returns self
 
-    # fann_train_on_file
-    multi method train (
-        IO() $path,
-        Int() :$max-epochs!,
-        Int() :$epochs-between-reports!,
-        Num() :$desired-error!,
-    ) returns self
+# fann_train_on_file
+multi method train (
+    IO() $path,
+    Int() :$max-epochs!,
+    Int() :$epochs-between-reports!,
+    Num() :$desired-error!,
+) returns self
+```
 
 This method is used to train the neural network.
 
@@ -403,24 +448,26 @@ these training algorithms.
 
 ### test
 
-    multi method test (
-        @input,
-        @output,
-    ) returns List
+``` raku
+multi method test (
+    @input,
+    @output,
+) returns List
 
-    # fann_test
-    multi method test (
-        CArray[num32] $input,
-        CArray[num32] $output,
-    ) returns CArray[num32]
+# fann_test
+multi method test (
+    CArray[num32] $input,
+    CArray[num32] $output,
+) returns CArray[num32]
 
-    multi method test (
-        AI::FANN::TrainData $data,
-    ) returns Num
+multi method test (
+    AI::FANN::TrainData $data,
+) returns Num
 
-    multi method train (
-        IO() $path,
-    ) returns Num
+multi method train (
+    IO() $path,
+) returns Num
+```
 
 Test the network with a set of inputs and desired outputs. This operation
 updates the mean square error, but does not change the network in any way.
@@ -444,22 +491,24 @@ These candidates return the updated mean square error for the network.
 
 ### callback
 
-    multi method callback (
-        :$delete where :so,
-    ) returns self
+``` raku
+multi method callback (
+    :$delete where :so,
+) returns self
 
-    # fann_set_callback
-    method callback (
-        &callback where {
-            .cando: \(
-                AI::FANN::TrainData $data,
-                uint32              $max-epochs,
-                uint32              $epochs-between-reports,
-                num32               $desired-error,
-                uint32              $epoch,
-            );
-        }
-    ) returns self
+# fann_set_callback
+method callback (
+    &callback where {
+        .cando: \(
+            AI::FANN::TrainData $data,
+            uint32              $max-epochs,
+            uint32              $epochs-between-reports,
+            num32               $desired-error,
+            uint32              $epoch,
+        );
+    }
+) returns self
+```
 
 If called with a [Callable] as the first positional argument, this method
 will set that as the training callback. If called with a single `:delete`
@@ -486,27 +535,29 @@ when coerced into an [Int] evaluates to -1.
 
 ### activation-function
 
-    # fann_get_activation_function
-    multi method activation-function (
-        Int    :$layer!,
-        Int    :$neuron!,
-    ) returns AI::FANN::ActivationFunc
+``` raku
+# fann_get_activation_function
+multi method activation-function (
+    Int    :$layer!,
+    Int    :$neuron!,
+) returns AI::FANN::ActivationFunc
 
-    # fann_set_activation_function
-    # fann_set_activation_function_layer
-    multi method activation-function (
-        AI::FANN::ActivationFunc $function,
-        Int    :$layer!,
-        Int    :$neuron,
-    ) returns self
+# fann_set_activation_function
+# fann_set_activation_function_layer
+multi method activation-function (
+    AI::FANN::ActivationFunc $function,
+    Int    :$layer!,
+    Int    :$neuron,
+) returns self
 
-    # fann_set_activation_function_hidden
-    # fann_set_activation_function_output
-    multi method activation-function (
-        AI::FANN::ActivationFunc $function,
-        Bool() :$hidden,
-        Bool() :$output,
-    ) returns self
+# fann_set_activation_function_hidden
+# fann_set_activation_function_output
+multi method activation-function (
+    AI::FANN::ActivationFunc $function,
+    Bool() :$hidden,
+    Bool() :$output,
+) returns self
+```
 
 If called with no positional arguments, this method returns the activation
 function for the neuron number and layer specified in the `:neuron` and
@@ -531,27 +582,29 @@ layer will be modified.
 
 ### activation-steepness
 
-    # fann_get_activation_steepness
-    multi method activation-steepness (
-        Int    :$layer!,
-        Int    :$neuron!,
-    ) returns Num
+``` raku
+# fann_get_activation_steepness
+multi method activation-steepness (
+    Int    :$layer!,
+    Int    :$neuron!,
+) returns Num
 
-    # fann_set_activation_steepness
-    # fann_set_activation_steepness_layer
-    multi method activation-steepness (
-        Num()   $steepness,
-        Int    :$layer!,
-        Int    :$neuron,
-    ) returns self
+# fann_set_activation_steepness
+# fann_set_activation_steepness_layer
+multi method activation-steepness (
+    Num()   $steepness,
+    Int    :$layer!,
+    Int    :$neuron,
+) returns self
 
-    # fann_set_activation_steepness_hidden
-    # fann_set_activation_steepness_output
-    multi method activation-steepness (
-        Num()   $steepness,
-        Bool() :$hidden,
-        Bool() :$output,
-    ) returns self
+# fann_set_activation_steepness_hidden
+# fann_set_activation_steepness_output
+multi method activation-steepness (
+    Num()   $steepness,
+    Bool() :$hidden,
+    Bool() :$output,
+) returns self
+```
 
 If called with no positional arguments, this method returns the activation
 steepness for the neuron number and layer specified in the `:neuron` and
@@ -575,13 +628,15 @@ layer will be modified.
 
 ### training-algorithm
 
-    # fann_get_training_algorithm
-    multi method training-algorithm returns AI::FANN::Train
+``` raku
+# fann_get_training_algorithm
+multi method training-algorithm returns AI::FANN::Train
 
-    # fann_set_training_algorithm
-    multi method training-algorithm (
-        AI::FANN::Train $algorithm,
-    ) returns self
+# fann_set_training_algorithm
+multi method training-algorithm (
+    AI::FANN::Train $algorithm,
+) returns self
+```
 
 If called with no positional arguments, this method returns the training
 algorithm as per the AI::FANN::Train enum. The training algorithm is used
@@ -598,13 +653,15 @@ The default training algorithm is `FANN_TRAIN_RPROP`.
 
 ### train-error-function
 
-    # fann_get_train_error_function
-    multi method train-error-function returns AI::FANN::ErrorFunc
+``` raku
+# fann_get_train_error_function
+multi method train-error-function returns AI::FANN::ErrorFunc
 
-    # fann_set_train_error_function
-    multi method train-error-function (
-        AI::FANN::ErrorFunc $function,
-    ) returns self
+# fann_set_train_error_function
+multi method train-error-function (
+    AI::FANN::ErrorFunc $function,
+) returns self
+```
 
 If called with no positional arguments, this method returns the error function
 used during training as per the AI::FANN::ErrorFunc enum.
@@ -616,13 +673,15 @@ The default training error function if `FANN_ERRORFUNC_TANH`.
 
 ### train-stop-function
 
-    # fann_get_train_stop_function
-    multi method train-stop-function returns AI::FANN::StopFunc
+``` raku
+# fann_get_train_stop_function
+multi method train-stop-function returns AI::FANN::StopFunc
 
-    # fann_set_train_stop_function
-    multi method train-stop-function (
-        AI::FANN::StopFunc $function,
-    ) returns self
+# fann_set_train_stop_function
+multi method train-stop-function (
+    AI::FANN::StopFunc $function,
+) returns self
+```
 
 If called with no positional arguments, this method returns the stop function
 used during training as per the AI::FANN::StopFunc enum.
@@ -634,13 +693,15 @@ The default training stop function if `FANN_STOPFUNC_MSE`.
 
 ### bit-fail-limit
 
-    # fann_get_bit_fail_limit
-    multi method bit-fail-limit returns Num
+``` raku
+# fann_get_bit_fail_limit
+multi method bit-fail-limit returns Num
 
-    # fann_set_bit_fail_limit
-    multi method bit-fail-limit (
-        Num() $limit,
-    ) returns self
+# fann_set_bit_fail_limit
+multi method bit-fail-limit (
+    Num() $limit,
+) returns self
+```
 
 If called with no positional arguments, this method returns the bit fail limit
 used during training. If called with a positional argument, it will be coerced
@@ -660,11 +721,13 @@ The default bit fail limit is 0.35.
 
 ### learning-rate
 
-    multi method learning-rate returns Num
+``` raku
+multi method learning-rate returns Num
 
-    multi method learning-rate (
-        Num() $rate,
-    ) returns self
+multi method learning-rate (
+    Num() $rate,
+) returns self
+```
 
 If called with no positional arguments, this method returns the learning rate
 used during training. If called with a positional argument, it will be coerced
@@ -679,11 +742,13 @@ The default learning rate is 0.7.
 
 ### learning-momentum
 
-    multi method learning-momentum returns Num
+``` raku
+multi method learning-momentum returns Num
 
-    multi method learning-momentum (
-        Num() $momentum,
-    ) returns self
+multi method learning-momentum (
+    Num() $momentum,
+) returns self
+```
 
 If called with no positional arguments, this method returns the learning
 momentum used during training. If called with a positional argument, it will
@@ -698,16 +763,20 @@ The default momentum is 0.
 
 ### reset-error
 
-    # fann_reset_MSE
-    method reset-error returns self
+``` raku
+# fann_reset_MSE
+method reset-error returns self
+```
 
 Resets the mean square error from the network, and the number of bits that
 fail.
 
 ### mean-square-error
 
-    # fann_get_MSE
-    method mean-square-error returns Num
+``` raku
+# fann_get_MSE
+method mean-square-error returns Num
+```
 
 Reads the mean square error from the network. This value is calculated during
 training or testing (see [train](#train) and [test](#test) above), and can
@@ -735,21 +804,23 @@ For methods supporting ordinary, or fixed topology training, see the
 
 ### cascade-train
 
-    # fann_cascadetrain_on_data
-    multi method cascade-train (
-        AI::FANN::TrainData:D $data,
-        Int() :$max-neurons!,
-        Int() :$neurons-between-reports!,
-        Num() :$desired-error!,
-    ) returns self
+``` raku
+# fann_cascadetrain_on_data
+multi method cascade-train (
+    AI::FANN::TrainData:D $data,
+    Int() :$max-neurons!,
+    Int() :$neurons-between-reports!,
+    Num() :$desired-error!,
+) returns self
 
-    # fann_cascadetrain_on_file
-    multi method cascade-train (
-        IO() $path,
-        Int() :$max-neurons!,
-        Int() :$neurons-between-reports!,
-        Num() :$desired-error!,
-    ) returns self
+# fann_cascadetrain_on_file
+multi method cascade-train (
+    IO() $path,
+    Int() :$max-neurons!,
+    Int() :$neurons-between-reports!,
+    Num() :$desired-error!,
+) returns self
+```
 
 Trains the network on an entire dataset for a period of time using the
 Cascade2 training algorithm. The dataset can be passed as an
@@ -762,16 +833,20 @@ that it needs to start with an ANN without any hidden layers. The neural
 network should also use shortcut connections, so the `shortcut` flag should
 be used when invoking [new](#new), like this
 
-    my $ann = AI::FANN.new: :shortcut,
-        layers => [ $data.num-input, $data.num-output ];
+``` raku
+my $ann = AI::FANN.new: :shortcut,
+    layers => [ $data.num-input, $data.num-output ];
+```
 
 ### cascade-num-candidates
 
-    # fann_get_cascade_num_candidates
-    multi method cascade-num-candidates returns Int
+``` raku
+# fann_get_cascade_num_candidates
+multi method cascade-num-candidates returns Int
 
-    # fann_set_cascade_num_candidates
-    multi method cascade-num-candidates ( Int $groups ) returns self
+# fann_set_cascade_num_candidates
+multi method cascade-num-candidates ( Int $groups ) returns self
+```
 
 If called with no positional arguments, this method returns the number of
 candidates used during training. If called with an Int as a positional
@@ -800,11 +875,13 @@ The default number of candidates is 6x4x2 = 48
 
 ### cascade-num-candidate-groups
 
-    # fann_get_cascade_num_candidate_groups
-    multi method cascade-num-candidate-groups returns Int
+``` raku
+# fann_get_cascade_num_candidate_groups
+multi method cascade-num-candidate-groups returns Int
 
-    # fann_set_cascade_num_candidate_groups
-    multi method cascade-num-candidate-groups ( Int $groups ) returns self
+# fann_set_cascade_num_candidate_groups
+multi method cascade-num-candidate-groups ( Int $groups ) returns self
+```
 
 If called with no positional arguments, this method returns the number of
 candidate groups used during training. If called with an Int as a positional
@@ -824,17 +901,19 @@ The default number of candidate groups is 2
 
 ### cascade-activation-steepnesses
 
-    # fann_get_cascade_activation_steepnesses
-    multi method cascade-activation-steepnesses returns List
+``` raku
+# fann_get_cascade_activation_steepnesses
+multi method cascade-activation-steepnesses returns List
 
-    # fann_set_cascade_activation_steepnesses
-    multi method cascade-activation-steepnesses (
-        CArray[num32] $steepnesses,
-    ) returns self
+# fann_set_cascade_activation_steepnesses
+multi method cascade-activation-steepnesses (
+    CArray[num32] $steepnesses,
+) returns self
 
-    multi method cascade-activation-steepnesses (
-        *@steepnesses,
-    ) returns self
+multi method cascade-activation-steepnesses (
+    *@steepnesses,
+) returns self
+```
 
 If called with no positional arguments, this method returns the array of
 activation steepnesses used by the candidates. See
@@ -853,17 +932,19 @@ The default activation steepnesses are [ 0.25, 0.50, 0.75, 1.00 ].
 
 ### cascade-activation-functions
 
-    # fann_get_cascade_activation_functions
-    multi method cascade-activation-functions returns List
+``` raku
+# fann_get_cascade_activation_functions
+multi method cascade-activation-functions returns List
 
-    # fann_set_cascade_activation_functions
-    multi method cascade-activation-functions (
-        CArray[num32] $functions,
-    ) returns self
+# fann_set_cascade_activation_functions
+multi method cascade-activation-functions (
+    CArray[num32] $functions,
+) returns self
 
-    multi method cascade-activation-functions (
-        *@functions,
-    ) returns self
+multi method cascade-activation-functions (
+    *@functions,
+) returns self
+```
 
 If called with no positional arguments, this method returns the array of
 activation functions used by the candidates. See
