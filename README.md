@@ -36,7 +36,7 @@ AI::FANN
 
 This distribution provides native bindings for the Fast Artificial Neural
 Network library (FANN). The aim of the library is to be easy to use, which
-makes it a good entrypoint and suitable for working on machine learning
+makes it a good entry point and suitable for working on machine learning
 prototypes.
 
 Creating networks, training them, and running them on input data can be done
@@ -644,7 +644,7 @@ neurons are created as shortcut connected neurons in a new hidden layer, which
 means that the final neural network will consist of a number of hidden layers
 with one shortcut connected neuron in each.
 
-For methods suporting ordinary, or fixed topology training, see the
+For methods supporting ordinary, or fixed topology training, see the
 [Training](#training) section above.
 
 ### cascade-train
@@ -811,107 +811,340 @@ the `:error` tag to export only the AI::FANN::Error enum.
 
 ## AI::FANN::ActivationFunc
 
+The activation functions used for the neurons during training. The activation
+functions can either be defined for a group of neurons by calling
+[activation-function](#activation-function) with the `:hidden` or `:output`
+parameters or it can be defined for a single neuron or layer with the `:layer`
+and `:neuron` parameters.
+
+The steepness of an activation function is defined in the same way by calling
+[activation-steepness](#activation-steepness).
+
+See the documentation for those functions for details.
+
+The functions are described with functions where
+
+  * `x` is the input to the activation function
+
+  * `y` is the output
+
+  * `s` is the steepness
+
+  * `d` is the derivation.
+
+<!-- -->
+
   * FANN_LINEAR
+
+    Linear activation function.
+
+        -∞ < y < ∞
+        y = x⋅s
+        d = s
 
   * FANN_THRESHOLD
 
+    Threshold activation function. Cannot be used during training.
+
+        y = 0 if x < 0
+        y = 1 if x ≥ 0
+
   * FANN_THRESHOLD_SYMMETRIC
+
+    Symmetric threshold activation function. Cannot be used during training.
+
+        y = -1 if x < 0
+        y =  1 if x ≥ 0
 
   * FANN_SIGMOID
 
+    Sigmoid activation function. This function is very commonly used.
+
+        0 < y < 1
+        y = 1 / ( 1 + exp( -2⋅s⋅x ) ) - 1
+        d = 2⋅s⋅y⋅( 1 - y² )
+
   * FANN_SIGMOID_STEPWISE
+
+    Stepwise linear approximation to sigmoid. Faster than sigmoid, but a
+    little less precise.
 
   * FANN_SIGMOID_SYMMETRIC
 
+    Symmetric sigmoid activation function, also known as "tanh". This function
+    is very commonly used.
+
+        -1 < y < 1
+        y = tanh(s⋅x) = 2 / ( 1 + exp( -2⋅s⋅x ) ) - 1
+        d = s⋅( 1 - y² )
+
   * FANN_SIGMOID_SYMMETRIC_STEPWISE
+
+    Stepwise linear approximation to symmetric sigmoid. Faster than symmetric
+    sigmoid, but a little less precise.
 
   * FANN_GAUSSIAN
 
+    Gaussian activation function.
+
+        0 < y < 1
+        y = 0 when x = -∞
+        y = 1 when x = 0
+        y = 0 when x = ∞
+        y = exp( -x⋅s⋅x⋅s )
+        d = -2⋅x⋅s⋅y⋅s
+
   * FANN_GAUSSIAN_SYMMETRIC
+
+    Symmetric Gaussian activation function.
+
+        -1 < y < 1
+        y = -1 when x = -∞
+        y =  1 when x = 0
+        y = -1 when x = ∞
+        y = exp( -x⋅s⋅x⋅s )⋅2 - 1
+        d = -2⋅x⋅s⋅y⋅s
 
   * FANN_GAUSSIAN_STEPWISE
 
+    Not yet implemented.
+
   * FANN_ELLIOT
+
+    Fast (sigmoid like) activation function defined by David Elliott.
+
+        0 < y < 1
+        y = x⋅s / 2 / ( 1 + |x⋅s| ) + 0.5
+        d = s / ( 2 ⋅ ( 1 + |x⋅s| )² )
 
   * FANN_ELLIOT_SYMMETRIC
 
+    Fast (symmetric sigmoid like) activation function defined by David Elliott.
+
+        -1 < y < 1
+        y = x⋅s  / ( 1 + |x⋅s| )
+        d = s / ( 1 + |x⋅s| )²
+
   * FANN_LINEAR_PIECE
+
+    Bounded linear activation function.
+
+        0 ≤ y ≤ 1
+        y = x⋅s
+        d = s
 
   * FANN_LINEAR_PIECE_SYMMETRIC
 
+    Bounded linear activation function.
+
+        -1 ≤ y ≤ 1
+        y = x⋅s
+        d = s
+
   * FANN_SIN_SYMMETRIC
+
+    Periodical sinus activation function.
+
+        -1 ≤ y ≤ 1
+        y = sin( x⋅s )
+        d = s⋅cos( x⋅s )
 
   * FANN_COS_SYMMETRIC
 
-  * FANN_SIN FANN_COS
+    Periodical cosinus activation function.
+
+        -1 ≤ y ≤ 1
+        y = cos( x⋅s )
+        d = s⋅-sin( x⋅s )
+
+  * FANN_SIN
+
+    Periodical sinus activation function.
+
+        0 ≤ y ≤ 1
+        y = sin( x⋅s ) / 2 + 0.5
+        d = s⋅cos( x⋅s ) / 2
+
+  * FANN_COS
+
+    Periodical cosinus activation function.
+
+        0 ≤ y ≤ 1
+        y = cos( x⋅s ) / 2 + 0.5
+        d = s⋅-sin( x⋅s ) / 2
 
 ## AI::FANN::Train
 
+The training algorithms used when training on AI::FANN::TrainData with
+functions like [train](#train) with the `:path` or `:data` arguments.  The
+incremental training alters the weights after each time it is presented an
+input pattern, while batch only alters the weights once after it has been
+presented to all the patterns.
+
   * FANN_TRAIN_INCREMENTAL
+
+    Standard backpropagation algorithm, where the weights are updated after
+    each training pattern. This means that the weights are updated many
+    times during a single epoch. For this reason some problems will train very
+    fast with this algorithm, while other more advanced problems will not
+    train very well.
 
   * FANN_TRAIN_BATCH
 
-  * FANN_TRAIN_RPROP
+    Standard backpropagation algorithm, where the weights are updated after
+    calculating the mean square error for the whole training set. This means
+    that the weights are only updated once during an epoch. For this reason
+    some problems will train slower with this algorithm. But since the mean
+    square error is calculated more correctly than in incremental training,
+    some problems will reach better solutions with this algorithm.
 
-  * FANN_TRAIN_QUICKPROP
+* FANN_TRAIN_RPROP
 
-  * FANN_TRAIN_SARPROP
+    A more advanced batch training algorithm which achieves good results for
+    many problems. The RPROP training algorithm is adaptive, and does
+    therefore not use the value set with [learning-rate](#learning-rate).
+    Some other parameters can however be set to change the way the RPROP
+    algorithm works, but it is only recommended for users with insight in how
+    the RPROP training algorithm works. The RPROP training algorithm is
+    described by [Riedmiller and Braun, 1993], but the actual learning
+    algorithm used here is the iRPROP- training algorithm which is described
+    by [Igel and Husken, 2000] which is a variant of the standard RPROP
+    training algorithm.
+
+* FANN_TRAIN_QUICKPROP
+
+    A more advanced batch training algorithm which achieves good results
+    for many problems. The quickprop training algorithm uses the
+    [learning-rate](#learning-rate) parameter along with other more
+    advanced parameters, but it is only recommended to change these advanced
+    parameters, for users with insight in how the quickprop training
+    algorithm works. The quickprop training algorithm is described by
+    [Fahlman, 1988].
+
+* FANN_TRAIN_SARPROP
+
+    This is the same algorithm described in
+    ["The SARPROP algorithm: a simulated annealing enhancement to resilient back propagation"][SARPROP]
 
 ## AI::FANN::ErrorFunc
 
+Error function used during training.
+
   * FANN_ERRORFUNC_LINEAR
+
+    Standard linear error function.
 
   * FANN_ERRORFUNC_TANH
 
+    Tanh error function, usually better but can require a lower learning
+    rate. This error function aggressively targets outputs that differ much
+    from the desired, while not targeting outputs that only differ a little
+    that much. This activation function is not recommended for cascade
+    training and incremental training.
+
 ## AI::FANN::StopFunc
+
+Stop criteria used during training.
 
   * FANN_STOPFUNC_MSE
 
+    Stop criterion is Mean Square Error (MSE) value.
+
   * FANN_STOPFUNC_BIT
+
+    Stop criterion is number of bits that fail. The number of bits means the
+    number of output neurons which differ more than the bit fail limit (see
+    [bit-fail-limit](#bit-fail-limit)). The bits are counted in all of the
+    training data, so this number can be higher than the number of training
+    data.
 
 ## AI::FANN::Error
 
+Used to define error events on AI::FANN and AI::FANN::TrainData objects.
+
   * FANN_E_NO_ERROR
+
+    No error.
 
   * FANN_E_CANT_OPEN_CONFIG_R
 
+    Unable to open configuration file for reading.
+
   * FANN_E_CANT_OPEN_CONFIG_W
+
+    Unable to open configuration file for writing.
 
   * FANN_E_WRONG_CONFIG_VERSION
 
+    Wrong version of configuration file.
+
   * FANN_E_CANT_READ_CONFIG
+
+    Error reading info from configuration file.
 
   * FANN_E_CANT_READ_NEURON
 
+    Error reading neuron info from configuration file.
+
   * FANN_E_CANT_READ_CONNECTIONS
+
+    Error reading connections from configuration file.
 
   * FANN_E_WRONG_NUM_CONNECTIONS
 
+    Number of connections not equal to the number expected.
+
   * FANN_E_CANT_OPEN_TD_W
+
+    Unable to open train data file for writing.
 
   * FANN_E_CANT_OPEN_TD_R
 
+    Unable to open train data file for reading.
+
   * FANN_E_CANT_READ_TD
+
+    Error reading training data from file.
 
   * FANN_E_CANT_ALLOCATE_MEM
 
+    Unable to allocate memory.
+
   * FANN_E_CANT_TRAIN_ACTIVATION
+
+    Unable to train with the selected activation function.
 
   * FANN_E_CANT_USE_ACTIVATION
 
+    Unable to use the selected activation function.
+
   * FANN_E_TRAIN_DATA_MISMATCH
+
+    Irreconcilable differences between two AI::FANN::TrainData objects.
 
   * FANN_E_CANT_USE_TRAIN_ALG
 
+    Unable to use the selected training algorithm.
+
   * FANN_E_TRAIN_DATA_SUBSET
+
+    Trying to take subset which is not within the training set.
 
   * FANN_E_INDEX_OUT_OF_BOUND
 
+    Index is out of bound.
+
   * FANN_E_SCALE_NOT_PRESENT
+
+    Scaling parameters not present.
 
   * FANN_E_INPUT_NO_MATCH
 
+    The number of input neurons in the ANN and data don’t match.
+
   * FANN_E_OUTPUT_NO_MATCH
+
+    The number of output neurons in the ANN and data don’t match.
 
 # COPYRIGHT AND LICENSE
 
@@ -925,3 +1158,4 @@ the Artistic License 2.0.
 [IO::Path]: https://docs.raku.org/type/IO::Path
 [List]: https://docs.raku.org/type/List
 [Range]: https://docs.raku.org/type/Range
+[SARPROP]: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.47.8197&rep=rep1&type=pdf
