@@ -194,6 +194,7 @@ subtest 'Train' => {
 
     my @epochs;
     my $callback = sub (
+            $fann,
             $data,
         Int $max-epochs,
         Int $epochs-between-reports,

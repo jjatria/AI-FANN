@@ -296,11 +296,11 @@ multi method callback ( :$delete! where :so --> AI::FANN ) {
 
 multi method callback ( &cb --> AI::FANN ) {
     die 'Unsupported callback: it must be able to accept '
-        ~ :( AI::FANN::TrainData, uint32, uint32, num32, uint32 ).raku
-        unless &cb.cando: \( AI::FANN::TrainData, uint32, uint32, num32, uint32 );
+        ~ :( AI::FANN, AI::FANN::TrainData, uint32, uint32, num32, uint32 ).raku
+        unless &cb.cando: \( AI::FANN, AI::FANN::TrainData, uint32, uint32, num32, uint32 );
 
-    fann_set_callback( $!fann, sub ( $, $data, |c ) {
-        given cb( AI::FANN::TrainData.new( :$data ), |c ) {
+    fann_set_callback( $!fann, sub ( $fann, $data, |c ) {
+        given cb( AI::FANN.new(:$fann), AI::FANN::TrainData.new(:$data), |c ) {
             return .so ?? 0 !! -1 when Bool;
             return .Int;
         }
