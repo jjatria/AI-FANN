@@ -206,7 +206,7 @@ class TrainData {
 
     method save ( IO() $path --> Bool() ) {
         die "Cannot write to file: '$path'" unless $path.parent.w;
-        !fann_save_train("$!data");
+        !fann_save_train($!data, "$path");
     }
 
     method shuffle ( --> ::?CLASS:D ) {

@@ -222,4 +222,38 @@ subtest 'Train' => {
     throws-like { .callback }, X::AdHoc, message => /'The callback method'/;
 }
 
+subtest 'File I/O' => {
+    use File::Temp;
+
+    ok my $src = AI::FANN.new: layers => [ 2, 3, 1 ];
+    LEAVE $src.?destroy;
+
+    my ( $path, $handle ) = tempfile;
+    is $src.save($path),    True, 'Can save with Str';
+    is $src.save($path.IO), True, 'Can save with IO::Path';
+
+    given AI::FANN.new: :$path {
+        ok .defined, 'Can read from Str';
+        is .num-input, $src.num-input, 'Read data is equivalent';
+
+        LEAVE .?destroy;
+    }
+
+    given AI::FANN.new: path => $path.IO {
+        ok .defined, 'Can read from IO::Path';
+        LEAVE .?destroy;
+    }
+
+    subtest 'File must be writable to save' => {
+        throws-like { $src.save: $*HOME.parent.child('forbidden') },
+            X::AdHoc, message => /'Cannot write to file: '/;
+    }
+
+    subtest 'File must be readable to read' => {
+        my ($dir) = tempdir;
+        throws-like { AI::FANN::TrainData.new: path => $dir.IO.child('missing.net') },
+            X::AdHoc, message => /'Cannot read from file: '/;
+    }
+}
+
 done-testing;
