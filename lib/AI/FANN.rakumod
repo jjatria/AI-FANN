@@ -118,7 +118,7 @@ class AI::FANN {
     class Connection is repr('CStruct') {
         has uint32    $.from-neuron;
         has uint32    $.to-neuron;
-        has fann_type $.weight;
+        has fann_type $.weight is rw;
     }
 
     class TrainData {
@@ -295,6 +295,43 @@ class AI::FANN {
         AI::FANN::NetType.^enum_from_value: fann_get_network_type($!fann);
     }
 
+    multi method weights ( --> List ) {
+        my @connections = $.connection-array;
+        @connections».weight.List
+    }
+
+    multi method weights (
+        Num()  $weight,
+        Int() :$from! where * >= 0,
+        Int() :$to!   where * >= 0,
+        --> ::?CLASS:D
+    ) {
+        fann_set_weight( $!fann, $from, $to, $weight );
+        self;
+    }
+
+    multi method weights (
+        *@connections where { .all ~~ AI::FANN::Connection },
+        --> ::?CLASS:D
+    ) {
+        for @connections -> $c {
+            fann_set_weight( $!fann, $c.from-neuron, $c.to-neuron, $c.weight )
+        }
+        self;
+    }
+
+    method randomise-weights ( |c --> ::?CLASS:D ) { $.randomize-weights: |c } # We love our British users
+    method randomize-weights ( Range:D $range  --> ::?CLASS:D ) { # no error
+        die 'Cannot use an infinite range to randomize weights' if $range.infinite;
+        fann_randomize_weights($!fann, |$range.minmax».Num);
+        self;
+    }
+
+    method init-weights ( AI::FANN::TrainData:D $data --> ::?CLASS:D ) {
+        fann_init_weights( $!fann, $data!AI::FANN::TrainData::data );
+        self;
+    }
+
     method layer-array ( --> List ) { # no error
         my $out = CArray[uint32].allocate($.num-layers);
         fann_get_layer_array($!fann, $out);
@@ -345,18 +382,6 @@ class AI::FANN {
             }
         });
 
-        self;
-    }
-
-    method randomise-weights ( |c --> ::?CLASS:D ) { $.randomize-weights: |c } # We love our British users
-    method randomize-weights ( Range:D $range  --> ::?CLASS:D ) { # no error
-        die 'Cannot use an infinite range to randomize weights' if $range.infinite;
-        fann_randomize_weights($!fann, |$range.minmax».Num);
-        self;
-    }
-
-    method init-weights ( AI::FANN::TrainData:D $data --> ::?CLASS:D ) {
-        fann_init_weights( $!fann, $data!AI::FANN::TrainData::data );
         self;
     }
 

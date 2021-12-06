@@ -278,10 +278,52 @@ Get the number of bias in each layer in the network.
 
 ``` raku
 # fann_get_connection_array
-method connection-array returns [List] of AI::FANN::Connection
+method connection-array returns List
 ```
 
-Get the connections in the network.
+Get the connections in the network as a [List] of AI::FANN::Connection.
+
+These objects encapsulate a connection between two neurons. They hold a
+number identifying the source and target neurons, which can be read with the
+`from-neuron` and `to-neuron` methods respectively; and the weight of the
+connection, which can be read with the `weight` method.
+
+The `weight` method returns a writable container, which means that a new value
+can be set by using it on the left side of an assignment. Connection objects
+thus modified can then be passed to the [weights](#weights) method described
+below to update the connections of the network.
+
+### weights
+
+``` raku
+multi method weights () returns List
+
+# fann_set_weight
+multi method weights (
+    Num()  $weight,
+    Int() :$from! where * >= 0,
+    Int() :$to!   where * >= 0,
+) returns self
+
+multi method weights (
+    *@connections where { .all ~~ AI::FANN::Connection },
+) returns self
+```
+
+Called with no arguments, returns the list of all connection weights as a
+[List] of [Num]. The weights will be in the same order as the connections
+returned by [connection-array](#connection-array).
+
+This method can also be used as a setter if called with either a weight as
+a positional argument and the numbers identifying the source and target
+neurons as the `:from` and `:to` named parameters respectively.
+
+Alternatively, one or more AI::FANN::Connection objects (such as those
+returned by [connection-array](#connection-array) can be passed as positional
+arguments, in which case the weight in each connection will be used as the new
+value. See the documentation of that method for details.
+
+Using this method as a setter returns the calling ANN, to allow for chaining.
 
 ### randomize-weights
 

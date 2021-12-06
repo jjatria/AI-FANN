@@ -20,6 +20,24 @@ sub test ( $o, $checks ) {
     }
 }
 
+subtest 'Weights with connection' => {
+    my $nn = AI::FANN.new: layers => [ 1, 1 ];
+    LEAVE $nn.?destroy;
+
+    my @connections = $nn.connection-array;
+    for @connections.kv -> $i, $c {
+        $c.weight = $i.Num;
+    }
+
+    is $nn.weights(@connections), $nn, 'weights with list returns self';
+    is $nn.weights, @connections».weight, 'Can set weights with connections';
+
+    @connections[0].weight = 42.Num;
+
+    is $nn.weights(@connections[0]), $nn, 'weights with connection returns self';
+    is $nn.weights, @connections».weight.List, 'Can set weights with connections';
+}
+
 subtest 'Standard' => {
     ok my $nn = AI::FANN.new( :@layers ), 'new';
     LEAVE $nn.destroy;
