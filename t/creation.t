@@ -127,6 +127,11 @@ subtest 'Standard' => {
         is $_».weight.max.round(1), 2, 'Scaled maximum weight';
     }
 
+    given AI::FANN::TrainData.new: pairs => [ 0 => 1 ] {
+        is $nn.init-weights($_), $nn, 'init-weights returns self';
+        .?destroy;
+    }
+
     with $nn.clone {
         is .num-input, $nn.num-input, 'Can clone network';
         .?destroy;

@@ -315,6 +315,27 @@ From the beginning the weights are random between -0.1 and 0.1.
 
 This method is an alias for [randomize-weights](#randomize-weights).
 
+### init-weights
+
+``` raku
+# fann_init_weights
+method init-weights (
+    AI::FANN::TrainData:D $data,
+) returns self
+```
+Initialize the weights using Widrow + Nguyen’s algorithm.
+
+This function behaves similarly to [randomize-weights](#randomize-weights).
+It will use the algorithm developed by Derrick Nguyen and Bernard Widrow to
+set the weights in such a way as to speed up training. This technique is not
+always successful, and in some cases can be less efficient than a purely
+random initialization.
+
+The algorithm requires access to the range of the input data (ie, largest and
+smallest input), and therefore requires an AI::FANN::TrainData as its only
+positional argument. This should be the same data set used to train the
+network.
+
 ### print-connections
 
 ``` raku

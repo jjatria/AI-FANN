@@ -355,6 +355,11 @@ class AI::FANN {
         self;
     }
 
+    method init-weights ( AI::FANN::TrainData:D $data --> ::?CLASS:D ) {
+        fann_init_weights( $!fann, $data!AI::FANN::TrainData::data );
+        self;
+    }
+
     multi method run ( CArray[fann_type] $input --> CArray[fann_type] ) {
         LEAVE self!error.throw;
         fann_run( $!fann, $input )
