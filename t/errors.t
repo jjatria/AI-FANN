@@ -1,7 +1,7 @@
 #!/usr/bin/env raku
 
 use Test;
-use AI::FANN;
+use AI::FANN :error;
 
 my $ann = AI::FANN.new: layers => [ 2, 3, 1 ];
 END $ann.destroy;
@@ -15,7 +15,7 @@ subtest 'save' => sub {
     throws-like {
         AI::FANN.new( layers => [ 1, 1 ] ).save:
             $*HOME.parent.child('forbidden') # Hopefully...
-    }, X::AdHoc, message => /'Cannot write to file: '/;
+    }, X::AI::FANN, code => FANN_E_CANT_OPEN_CONFIG_W;
 }
 
 subtest 'activation-function' => sub {
@@ -38,6 +38,26 @@ subtest 'activation-function' => sub {
         X::AdHoc, message => 'Invalid activation function: must be a value in AI::FANN::ActivationFunc';
 
     lives-ok { $ann.activation-function: 5, :hidden },
+        'Accepts plain numeric values';
+}
+
+subtest 'activation-steepness' => sub {
+    throws-like { $ann.activation-steepness: layer => -1, neuron => 1 },
+        X::OutOfRange, what => 'Layer index', range => '1 2';
+
+    throws-like { $ann.activation-steepness: layer => 0, neuron => 1 },
+        X::OutOfRange, what => 'Layer index', range => '1 2';
+
+    throws-like { $ann.activation-steepness: layer => 4, neuron => 1 },
+        X::OutOfRange, what => 'Layer index', range => '1 2';
+
+    throws-like { $ann.activation-steepness: layer => 1, neuron => 4 },
+        X::OutOfRange, what => 'Neuron index', range => '0 1 2 3';
+
+    throws-like { $ann.activation-steepness: layer => 1, neuron => -1 },
+        X::OutOfRange, what => 'Neuron index', range => '0 1 2 3';
+
+    lives-ok { $ann.activation-steepness: 5, :hidden },
         'Accepts plain numeric values';
 }
 

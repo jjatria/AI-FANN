@@ -53,6 +53,18 @@ The bindings for Raku make use of the system version of FANN. Please refer to
 your platform's instructions on how to install the library, or follow the
 instructions for [compiling from source](https://github.com/libfann/fann#to-install).
 
+## Error handling
+
+The default behaviour for libfann is to print errors to standard error.
+In order to give the user more control over how to handle these errors,
+AI::FANN will raise exceptions whenever an error is encountered. When
+possible, these will be raised before an actual call to libfann is ever made.
+
+When this is not possible, errors raised by libfann will be wrapped into
+exceptions of type X::AI::FANN. When capturing these, a string version of
+the error will be available in its `message` method, while its `code` method
+will return the error as a member of the [AI::FANN::Error](#aifannerror) enum.
+
 # METHODS
 
 The methods described below include readers, mutators, and methods that
@@ -435,7 +447,8 @@ of numeric values, which will be converted internally to their C
 representation.
 
 Since only one pattern is presented, training done this way is always
-incremental training (`FANN_TRAIN_INCREMENTAL` in the AI::FANN::Train enum).
+incremental training (`FANN_TRAIN_INCREMENTAL` in the
+[AI::FANN::Train](#aifanntrain) enum).
 
 The last two candidates train instead on an entire dataset, for a period of
 time. The first one takes an AI::FANN::TrainData object in the `data`
@@ -565,10 +578,11 @@ function for the neuron number and layer specified in the `:neuron` and
 not possible to get activation functions for the neurons in the input layer:
 trying to do so is an error.
 
-If called with a member of the AI::FANN::ActivationFunc enum as the first
-positional argument, then this function will instead _set_ this as the
-activation function for the specified layer and neuron, and return the
-calling AI::FANN object.
+If called with a member of the
+[AI::FANN::ActivationFunc](#aifannactivationfunc) enum as the first positional
+argument, then this function will instead _set_ this as the activation
+function for the specified layer and neuron, and return the calling AI::FANN
+object.
 
 When used as a setter, specifying the layer is always required. This can
 be done with the `:layer` parameter, as described above, or with the `:hidden`
@@ -639,9 +653,9 @@ multi method training-algorithm (
 ```
 
 If called with no positional arguments, this method returns the training
-algorithm as per the AI::FANN::Train enum. The training algorithm is used
-eg. when running [train](#train) or [cascade-train](#cascade-train) with
-a AI::FANN::TrainData object.
+algorithm as per the [AI::FANN::Train](#aifanntrain) enum. The training
+algorithm is used eg. when running [train](#train) or
+[cascade-train](#cascade-train) with a AI::FANN::TrainData object.
 
 If a member of that enum is passed as the first positional argument, this
 method instead sets that as the new training algorithm and returns it.
@@ -664,7 +678,7 @@ multi method train-error-function (
 ```
 
 If called with no positional arguments, this method returns the error function
-used during training as per the AI::FANN::ErrorFunc enum.
+used during training as per the [AI::FANN::ErrorFunc](#aifannerrorfunc) enum.
 
 If a member of that enum is passed as the first positional argument, this
 method instead sets that as the new training error function and returns it.
@@ -684,7 +698,7 @@ multi method train-stop-function (
 ```
 
 If called with no positional arguments, this method returns the stop function
-used during training as per the AI::FANN::StopFunc enum.
+used during training as per the [AI::FANN::StopFunc](#aifannstopfunc) enum.
 
 If a member of that enum is passed as the first positional argument, this
 method instead sets that as the new training stop function and returns it.
@@ -965,7 +979,7 @@ The default activation functions are [ `FANN_SIGMOID`,
 
 AI::FANN exports nothing by default. However, the following enums are
 available and can be exported using the `:enum` tag to export *all* enums, or
-the `:error` tag to export only the AI::FANN::Error enum.
+the `:error` tag to export only the [AI::FANN::Error](#aifannerror) enum.
 
 ## AI::FANN::NetType
 

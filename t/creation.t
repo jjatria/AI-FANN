@@ -230,8 +230,8 @@ subtest 'File I/O' => {
     LEAVE $src.?destroy;
 
     my ( $path, $handle ) = tempfile;
-    is $src.save($path),    True, 'Can save with Str';
-    is $src.save($path.IO), True, 'Can save with IO::Path';
+    is $src.save($path),    $src, 'Can save with Str';
+    is $src.save($path.IO), $src, 'Can save with IO::Path';
 
     given AI::FANN.new: :$path {
         ok .defined, 'Can read from Str';
@@ -247,7 +247,7 @@ subtest 'File I/O' => {
 
     subtest 'File must be writable to save' => {
         throws-like { $src.save: $*HOME.parent.child('forbidden') },
-            X::AdHoc, message => /'Cannot write to file: '/;
+            X::AI::FANN, code => FANN_E_CANT_OPEN_CONFIG_W;
     }
 
     subtest 'File must be readable to read' => {

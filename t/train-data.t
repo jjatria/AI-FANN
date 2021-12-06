@@ -1,7 +1,7 @@
 #!/usr/bin/env raku
 
 use Test;
-use AI::FANN;
+use AI::FANN :error;
 
 subtest 'Create ' => {
     ok $_ = AI::FANN::TrainData.new(
@@ -119,6 +119,22 @@ subtest 'Subset and merge' => {
         .?destroy;
     }
 
+    subtest 'Input data must match when merging' => {
+        my $a = AI::FANN::TrainData.new: pairs => [ [1   ] => [1] ];
+        my $b = AI::FANN::TrainData.new: pairs => [ [1, 1] => [1] ];
+
+        throws-like { AI::FANN::TrainData.new: data => [ $a, $b ] },
+            X::AI::FANN, code => FANN_E_TRAIN_DATA_MISMATCH;
+    }
+
+    subtest 'Output data must match when merging' => {
+        my $a = AI::FANN::TrainData.new: pairs => [ [1   ] => [1] ];
+        my $b = AI::FANN::TrainData.new: pairs => [ [1] => [1, 1] ];
+
+        throws-like { AI::FANN::TrainData.new: data => [ $a, $b ] },
+            X::AI::FANN, code => FANN_E_TRAIN_DATA_MISMATCH;
+    }
+
     subtest 'Subset position must be positive' => {
         throws-like { $a.subset: -1, 2 },
             X::OutOfRange, what => 'Subset position', range => '0 1 2 3';
@@ -148,8 +164,8 @@ subtest 'File I/O' => {
     LEAVE $src.?destroy;
 
     my ( $path, $handle ) = tempfile;
-    is $src.save($path),    True, 'Can save with Str';
-    is $src.save($path.IO), True, 'Can save with IO::Path';
+    is $src.save($path),    $src, 'Can save with Str';
+    is $src.save($path.IO), $src, 'Can save with IO::Path';
 
     given AI::FANN::TrainData.new: :$path {
         ok .defined, 'Can read from Str';
@@ -165,7 +181,7 @@ subtest 'File I/O' => {
 
     subtest 'File must be writable to save' => {
         throws-like { $src.save: $*HOME.parent.child('forbidden') },
-            X::AdHoc, message => /'Cannot write to file: '/;
+            X::AI::FANN, code => FANN_E_CANT_OPEN_TD_W;
     }
 
     subtest 'File must be readable to read' => {
