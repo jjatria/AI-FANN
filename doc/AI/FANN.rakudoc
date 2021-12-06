@@ -103,6 +103,8 @@ Please refer to the libfann documentation for additional details.
 
 =head3 new
 
+    # fann_create_shortcut
+    # fann_create_sparse
     # fann_create_standard
     multi method new (
                :@layers,

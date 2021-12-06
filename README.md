@@ -104,6 +104,8 @@ Please refer to the libfann documentation for additional details.
 ### new
 
 ``` raku
+# fann_create_shortcut
+# fann_create_sparse
 # fann_create_standard
 multi method new (
            :@layers,
