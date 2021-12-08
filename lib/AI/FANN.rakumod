@@ -295,10 +295,7 @@ class AI::FANN {
         AI::FANN::NetType.^enum_from_value: fann_get_network_type($!fann);
     }
 
-    multi method weights ( --> List ) {
-        my @connections = $.connection-array;
-        @connections».weight.List
-    }
+    multi method weights ( --> List() ) { $.connection-array».weight }
 
     multi method weights (
         Num()  $weight,
