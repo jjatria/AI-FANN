@@ -34,10 +34,10 @@ sub fann_set_output_scaling_params(fann, fann_train_data, float, float) returns 
 sub fann_set_scaling_params(fann, fann_train_data, float, float, float, float) returns int32 is export is native(LIB) {*}
 sub fann_clear_scaling_params(fann) returns int32 is export is native(LIB) {*}
 
-sub fann_scale_input(fann, fann_type is rw) is export is native(LIB) {*}
-sub fann_scale_output(fann, fann_type is rw) is export is native(LIB) {*}
-sub fann_descale_input(fann, fann_type is rw) is export is native(LIB) {*}
-sub fann_descale_output(fann, fann_type is rw) is export is native(LIB) {*}
+sub fann_scale_input(fann, CArray[fann_type] ) is export is native(LIB) {*}
+sub fann_scale_output(fann, CArray[fann_type] ) is export is native(LIB) {*}
+sub fann_descale_input(fann, CArray[fann_type] ) is export is native(LIB) {*}
+sub fann_descale_output(fann, CArray[fann_type] ) is export is native(LIB) {*}
 
 sub fann_get_training_algorithm(fann) returns fann_train_enum is export is native(LIB) {*}
 sub fann_set_training_algorithm(fann, fann_train_enum) is export is native(LIB) {*}

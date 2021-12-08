@@ -202,50 +202,6 @@ subtest 'Shortcut' => {
         'connection-array';
 }
 
-subtest 'Train' => {
-    $_ = AI::FANN.new: layers => [ 2, 3, 1 ];
-    LEAVE .?destroy;
-
-    my $data = AI::FANN::TrainData.new: pairs => [
-        [ -1, -1 ] => [ -1 ],
-        [ -1,  1 ] => [  1 ],
-        [  1, -1 ] => [  1 ],
-        [  1,  1 ] => [ -1 ],
-    ];
-
-    LEAVE $data.?destroy;
-
-    my @epochs;
-    my $callback = sub (
-            $fann,
-            $data,
-        Int $max-epochs,
-        Int $epochs-between-reports,
-        Num $desired-error,
-        Int $epoch,
-        --> Int
-    ) {
-        @epochs.push: $epoch;
-        return $epoch >= 8 ?? -1 !! 1; # Stop at epoch 8
-    }
-
-    is .callback($callback), $_, 'callback returns self';
-
-    my $train = .train: $data,
-        desired-error          => 0.001,
-        max-epochs             => 500_000,
-        epochs-between-reports => 2;
-
-    is $train, $_, 'train returns self';
-    is @epochs, [ 1, 2, 4, 6, 8 ],
-        'Callback ran every 2 epochs and could be stopped';
-
-
-    is .callback(:delete), $_, 'Clearing a callback returns self';
-
-    throws-like { .callback }, X::AdHoc, message => /'The callback method'/;
-}
-
 subtest 'File I/O' => {
     use File::Temp;
 

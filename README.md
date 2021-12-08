@@ -839,6 +839,105 @@ recommended value of this parameter is between 0 and 1.
 
 The default momentum is 0.
 
+### scale
+
+``` raku
+# fann_scale_train
+multi method scale (
+    AI::FANN::TrainData:D $data,
+) returns self
+
+# fann_scale_input
+# fann_scale_output
+multi method scale (
+    CArray[num32] :$input,
+    CArray[num32] :$output,
+) returns self
+
+# fann_scale_input
+# fann_scale_output
+multi method scale (
+    :@input,
+    :@output,
+) returns self
+```
+
+This method will scale a set of inputs and outputs according to the scaling
+parameters set in this network (see [scaling](#scaling) for how these are
+calculated and set).
+
+If called with an AI::FANN::TrainData object, the scaling will apply to its
+input and output data. Alternatively, the `:input` and `:output` named
+parameters can be set to either [CArray[num32]] or to [Array] objects with
+the data to scale, which will be modified in-place according to the scaling
+parameters calculated for inputs and outputs respectively. See
+[descale](#descale) for a way to reverse this manipulation.
+
+Calling this method before setting scaling parameters (with
+[scaling](#scaling)) is an error. Calling this method after clearing the
+scaling parameters is not.
+
+### descale
+
+``` raku
+# fann_descale_train
+multi method descale (
+    AI::FANN::TrainData:D $data,
+) returns self
+
+# fann_descale_input
+# fann_descale_output
+multi method descale (
+    CArray[num32] :$input,
+    CArray[num32] :$output,
+) returns self
+
+# fann_descale_input
+# fann_descale_output
+multi method descale (
+    :@input,
+    :@output,
+) returns self
+```
+
+This method will reverse the scaling performed by [scale](#scale).
+
+If called with an AI::FANN::TrainData object, the descaling will apply to its
+input and output data. Alternatively, the `:input` and `:output` named
+parameters can be set to either [CArray[num32]] or to [Array] objects with
+the data to descale, which will be modified in-place according to the scaling
+parameters calculated for inputs and outputs respectively.
+
+Calling this method before setting scaling parameters (with
+[scaling](#scaling)) is an error. Calling this method after clearing the
+scaling parameters is not.
+
+### scaling
+
+``` raku
+# fann_set_scaling_params
+# fann_set_input_scaling_params
+# fann_set_output_scaling_params
+multi method scaling (
+    AI::FANN::TrainData:D $data,
+    Range :$output,
+    Range :$input,
+) returns self
+
+# fann_clear_scaling_params
+multi method scaling (
+    :$delete! where :so,
+) returns self
+```
+
+Takes an AI::FANN::TrainData object that will be used to calculate the
+scaling parameters as a positional parameter, and [Range] objects representing
+the desired range for input and output values in the `:input` and `:output`
+named parameters respectively. At least one of these must be specified.
+
+The scaling parameters set by this method can be cleared with the `:delete`
+flag. This will reset them a default value of -1..1.
+
 ### reset-error
 
 ``` raku

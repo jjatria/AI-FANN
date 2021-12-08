@@ -401,6 +401,122 @@ class AI::FANN {
         self.new: fann => fann_copy($!fann);
     }
 
+    multi method scale ( TrainData:D $data --> ::?CLASS:D ) {
+        LEAVE self!error.throw;
+        fann_scale_train( $!fann, $data!AI::FANN::TrainData::data );
+        self;
+    }
+
+    multi method descale ( TrainData:D $data --> ::?CLASS:D ) {
+        LEAVE self!error.throw;
+        fann_descale_train( $!fann, $data!AI::FANN::TrainData::data );
+        self;
+    }
+
+    multi method scale (
+        CArray[fann_type] :$input,
+        CArray[fann_type] :$output,
+        --> ::?CLASS:D
+    ) {
+        LEAVE self!error.throw;
+        die 'Must specify input or output data to scale' unless $input || $output;
+
+        fann_scale_input(  $!fann, $input  ) if $input;
+        fann_scale_output( $!fann, $output ) if $output;
+
+        self;
+    }
+
+    multi method descale (
+        CArray[fann_type] :$input,
+        CArray[fann_type] :$output,
+        --> ::?CLASS:D
+    ) {
+        LEAVE self!error.throw;
+        die 'Must specify input or output data to descale' unless $input || $output;
+
+        fann_descale_input(  $!fann, $input  ) if $input;
+        fann_descale_output( $!fann, $output ) if $output;
+
+        self;
+    }
+
+    multi method scale (
+        :@input,
+        :@output,
+        --> ::?CLASS:D
+    ) {
+        LEAVE self!error.throw;
+        die 'Must specify input or output data to scale' unless @input || @output;
+
+        if @input {
+            my $data = CArray[fann_type].new: |@input».Num;
+            fann_scale_input( $!fann, $data );
+            @input[*] = |$data.list;
+        }
+
+        if @output {
+            my $data = CArray[fann_type].new: |@output».Num;
+            fann_scale_output( $!fann, $data );
+            @output[*] = $data.list;
+        }
+
+        self;
+    }
+
+    multi method descale (
+        :@input,
+        :@output,
+        --> ::?CLASS:D
+    ) {
+        LEAVE self!error.throw;
+        die 'Must specify input or output data to descale' unless @input || @output;
+
+        if @input {
+            my $data = CArray[fann_type].new: |@input».Num;
+            fann_descale_input( $!fann, $data );
+            @input[*] = |$data.list;
+        }
+
+        if @output {
+            my $data = CArray[fann_type].new: |@output».Num;
+            fann_descale_output( $!fann, $data );
+            @output[*] = $data.list;
+        }
+
+        self;
+    }
+
+    multi method scaling (
+        TrainData:D $train,
+        Range      :$output,
+        Range      :$input,
+        --> ::?CLASS:D
+    ) {
+        LEAVE self!error.throw;
+        die 'Must specify input or output scaling parameters'
+            unless $input || $output;
+
+        die 'Cannot use an infinite range to set input scaling parameters'
+            if $input && $input.infinite;
+
+        die 'Cannot use an infinite range to set output scaling parameters'
+            if $output && $output.infinite;
+
+        my $ret = 0;
+
+        $ret = fann_set_input_scaling_params(  $!fann, $train!AI::FANN::TrainData::data, |$input.minmax».Num ) if $input && $ret == 0;
+        $ret = fann_set_output_scaling_params( $!fann, $train!AI::FANN::TrainData::data, |$output.minmax».Num ) if $output && $ret == 0;
+
+        self;
+    }
+
+    multi method scaling ( :$delete! where :so --> ::?CLASS:D ) {
+        LEAVE self!error.throw;
+        fann_clear_scaling_params( $!fann );
+        self;
+    }
+
     method save ( IO() $path --> ::?CLASS:D ) {
         LEAVE self!error.throw;
         fann_save($!fann, "$path");
