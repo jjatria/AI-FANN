@@ -1020,14 +1020,9 @@ my $ann = AI::FANN.new: :shortcut,
 ``` raku
 # fann_get_cascade_num_candidates
 multi method cascade-num-candidates returns Int
-
-# fann_set_cascade_num_candidates
-multi method cascade-num-candidates ( Int $groups ) returns self
 ```
 
-If called with no positional arguments, this method returns the number of
-candidates used during training. If called with an Int as a positional
-argument, it will be set as the new value.
+Returns the number of candidates used during training.
 
 The number of candidates is calculated by multiplying the value returned by
 [cascade-activation-functions-count](#cascade-activation-functions-count),

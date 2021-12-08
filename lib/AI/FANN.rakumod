@@ -738,6 +738,10 @@ class AI::FANN {
         self;
     }
 
+    method cascade-num-candidates ( --> Int ) { # no error
+        fann_get_cascade_num_candidates($!fann);
+    }
+
     multi method cascade-num-candidate-groups ( --> Int ) { # no error
         fann_get_cascade_num_candidate_groups($!fann);
     }
