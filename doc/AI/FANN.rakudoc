@@ -659,7 +659,7 @@ trying to do so is an error.
 
 If called with a positional argument, it will be coerced to a
 L<Num|https://docs.raku.org/type/Num> and this function will instead I<set>
-this as the activation steepenss for the specified layer and neuron and
+this as the activation steepness for the specified layer and neuron and
 return the calling AI::FANN object.
 
 When used as a setter, specifying the layer is always required. This can
@@ -927,7 +927,7 @@ neurons are created as shortcut connected neurons in a new hidden layer, which
 means that the final neural network will consist of a number of hidden layers
 with one shortcut connected neuron in each.
 
-For methods suporting ordinary, or fixed topology training, see the
+For methods supporting ordinary, or fixed topology training, see the
 L<Training|#training> section above.
 
 =head3 cascade-train

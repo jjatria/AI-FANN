@@ -692,7 +692,7 @@ not possible to get activation functions for the neurons in the input layer:
 trying to do so is an error.
 
 If called with a positional argument, it will be coerced to a [Num] and this
-function will instead _set_ this as the activation steepenss for the specified
+function will instead _set_ this as the activation steepness for the specified
 layer and neuron and return the calling AI::FANN object.
 
 When used as a setter, specifying the layer is always required. This can
