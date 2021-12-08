@@ -273,7 +273,7 @@ class AI::FANN {
               !! $rate.defined ?? fann_create_sparse_array( $rate, $n, $layers )
               !!                  fann_create_standard_array(      $n, $layers );
 
-        'Unable to create train data' unless $!fann;
+        die 'Unable to create network' unless $!fann;
     }
 
     multi method BUILD ( fann:D :$fann! ) {
