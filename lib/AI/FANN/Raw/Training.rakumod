@@ -5,9 +5,6 @@ use AI::FANN::Raw::Base;
 
 my constant LIB = 'fann';
 
-constant fann_errorfunc is export = int32;
-constant fann_stopfunc  is export = int32;
-
 ## http://leenissen.dk/fann/html/files/fann_train-h.html
 ## FANN Training
 
@@ -27,7 +24,6 @@ sub fann_test_data(fann, fann_train_data) returns float is export is native(LIB)
 sub fann_read_train_from_file(Str) returns fann_train_data is export is native(LIB) {*}
 sub fann_create_train(uint32, uint32, uint32) returns fann_train_data is export is native(LIB) {*}
 sub fann_create_train_from_callback(uint32, uint32, uint32, & ( uint32, uint32, uint32, CArray[fann_type], CArray[fann_type] ) ) returns fann_train_data is export is native(LIB) {*}
-sub fann_train_data(uint32, uint32, uint32, & (uint32, uint32,uint32,fann_type)) returns fann_train_data is export is native(LIB) {*}
 
 sub fann_destroy_train(fann_train_data) is export is native(LIB) {*}
 sub fann_shuffle_train_data(fann_train_data) is export is native(LIB) {*}
@@ -66,11 +62,11 @@ sub fann_set_activation_steepness_layer(fann, fann_type, int32) is export is nat
 sub fann_set_activation_steepness_hidden(fann, fann_type) is export is native(LIB) {*}
 sub fann_set_activation_steepness_output(fann, fann_type) is export is native(LIB) {*}
 
-sub fann_get_train_error_function(fann) returns fann_errorfunc is export is native(LIB) {*}
-sub fann_set_train_error_function(fann, fann_errorfunc) is export is native(LIB) {*}
+sub fann_get_train_error_function(fann) returns fann_errorfunc_enum is export is native(LIB) {*}
+sub fann_set_train_error_function(fann, fann_errorfunc_enum) is export is native(LIB) {*}
 
-sub fann_get_train_stop_function(fann) returns fann_stopfunc is export is native(LIB) {*}
-sub fann_set_train_stop_function(fann, fann_stopfunc) is export is native(LIB) {*}
+sub fann_get_train_stop_function(fann) returns fann_stopfunc_enum is export is native(LIB) {*}
+sub fann_set_train_stop_function(fann, fann_stopfunc_enum) is export is native(LIB) {*}
 
 sub fann_get_bit_fail_limit(fann) returns fann_type is export is native(LIB) {*}
 sub fann_set_bit_fail_limit(fann, fann_type) is export is native(LIB) {*}
