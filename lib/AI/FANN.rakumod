@@ -699,63 +699,126 @@ class AI::FANN {
         $.train-stop-function: $value, |c;
     }
 
-    multi method bit-fail-limit ( --> Num ) { # no error
-        fann_get_bit_fail_limit($!fann);
-    }
-
-    multi method bit-fail-limit ( # no error
-        Num() $limit,
-        --> ::?CLASS:D
-    ) {
-        fann_set_bit_fail_limit( $!fann, $limit );
+    # no error
+    multi method bit-fail-limit ( --> Num ) { fann_get_bit_fail_limit($!fann) }
+    multi method bit-fail-limit ( Num() $value --> ::?CLASS:D ) {
+        fann_set_bit_fail_limit( $!fann, $value );
         self;
     }
 
-    multi method learning-rate ( --> Num ) { # no error
-        fann_get_learning_rate($!fann);
-    }
-
-    multi method learning-rate ( # no error
-        Num() $rate,
-        --> ::?CLASS:D
-    ) {
-        fann_set_learning_rate( $!fann, $rate );
+    # no error
+    multi method learning-rate ( --> Num ) { fann_get_learning_rate($!fann) }
+    multi method learning-rate ( Num() $value --> ::?CLASS:D ) {
+        fann_set_learning_rate( $!fann, $value );
         self;
     }
 
-    multi method learning-momentum ( --> Num ) { # no error
-        fann_get_learning_momentum($!fann);
-    }
-
-    multi method learning-momentum ( # no error
-        Num() $momentum,
-        --> ::?CLASS:D
-    ) {
-        fann_set_learning_momentum( $!fann, $momentum );
+    # no error
+    multi method learning-momentum ( --> Num ) { fann_get_learning_momentum($!fann) }
+    multi method learning-momentum ( Num() $value --> ::?CLASS:D ) {
+        fann_set_learning_momentum( $!fann, $value );
         self;
     }
 
-    method cascade-num-candidates ( --> Int ) { # no error
-        fann_get_cascade_num_candidates($!fann);
-    }
-
-    multi method cascade-num-candidate-groups ( --> Int ) { # no error
-        fann_get_cascade_num_candidate_groups($!fann);
-    }
-
-    multi method cascade-num-candidate-groups ( # no error
-        Int:D $groups,
-        --> ::?CLASS:D
-    ) {
-        fann_set_cascade_num_candidate_groups( $!fann, $groups );
+    # no error
+    multi method quickprop-decay ( --> Num ) { fann_get_quickprop_decay($!fann) }
+    multi method quickprop-decay ( Num() $value --> ::?CLASS:D ) {
+        die "The decay value must be less than or equal to 0; got instead $value" if $value > 0;
+        fann_set_quickprop_decay( $!fann, $value );
         self;
     }
 
-    multi method cascade-activation-steepnesses-count ( --> Int ) { # no error
-        fann_get_cascade_activation_steepnesses_count($!fann);
+    # no error
+    multi method quickprop-mu ( --> Num ) { fann_get_quickprop_mu($!fann) }
+    multi method quickprop-mu ( Num() $value --> ::?CLASS:D ) {
+        fann_set_quickprop_mu( $!fann, $value );
+        self;
     }
 
-    multi method cascade-activation-steepnesses ( --> List() ) { # no error
+    # no error
+    multi method quickprop-mu ( --> Num ) { fann_get_quickprop_mu($!fann) }
+    multi method quickprop-mu ( Num() $value --> ::?CLASS:D ) {
+        fann_set_quickprop_mu( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method rprop-increase ( --> Num ) { fann_get_rprop_increase_factor($!fann) }
+    multi method rprop-increase ( Num() $value --> ::?CLASS:D ) {
+        die "The RPROP increase value must be greater than 1; got instead $value" if $value <= 1;
+        fann_set_rprop_increase_factor( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method rprop-decrease ( --> Num ) { fann_get_rprop_decrease_factor($!fann) }
+    multi method rprop-decrease ( Num() $value --> ::?CLASS:D ) {
+        die "The RPROP increase value must be smaller than 1; got instead $value" if $value >= 1;
+        fann_set_rprop_decrease_factor( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method rprop-delta-range ( --> Range ) {
+        fann_get_rprop_delta_min($!fann) .. fann_get_rprop_delta_max($!fann)
+    }
+
+    multi method rprop-delta-range ( Range:D $value --> ::?CLASS:D ) {
+        die 'Cannot use an infinite range to set scale' if $value.infinite;
+        fann_set_rprop_delta_min( $!fann, $value.min );
+        self;
+    }
+
+    # no error
+    multi method rprop-delta-zero ( --> Range ) { fann_get_rprop_delta_zero($!fann) }
+    multi method rprop-delta-zero ( Num() $value --> ::?CLASS:D ) {
+        die "The delta zero must be greater than 0; got instead $value" if $value <= 0;
+        fann_set_rprop_delta_zero( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method sarprop-weight-decay-shift ( --> Range ) { fann_get_sarprop_weight_decay_shift($!fann) }
+    multi method sarprop-weight-decay-shift ( Num() $value --> ::?CLASS:D ) {
+        fann_set_sarprop_weight_decay_shift( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method sarprop-step-error-threshold ( --> Range ) { fann_get_sarprop_step_error_threshold_factor($!fann) }
+    multi method sarprop-step-error-threshold ( Num() $value --> ::?CLASS:D ) {
+        fann_set_sarprop_step_error_threshold_factor( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method sarprop-step-error-shift ( --> Range ) { fann_get_sarprop_step_error_shift($!fann) }
+    multi method sarprop-step-error-shift ( Num() $value --> ::?CLASS:D ) {
+        fann_set_sarprop_step_error_shift( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method sarprop-temperature ( --> Range ) { fann_get_sarprop_temperature($!fann) }
+    multi method sarprop-temperature ( Num() $value --> ::?CLASS:D ) {
+        fann_set_sarprop_temperature( $!fann, $value );
+        self;
+    }
+
+    # no error
+    method cascade-num-candidates ( --> Int ) { fann_get_cascade_num_candidates($!fann) }
+
+
+    # no error
+    multi method cascade-num-candidate-groups ( --> Int ) { fann_get_cascade_num_candidate_groups($!fann) }
+    multi method cascade-num-candidate-groups ( Int:D $value --> ::?CLASS:D ) {
+        fann_set_cascade_num_candidate_groups( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method cascade-activation-steepnesses-count ( --> Int ) { fann_get_cascade_activation_steepnesses_count($!fann) }
+    multi method cascade-activation-steepnesses ( --> List() ) {
         .[ ^$.cascade-activation-steepnesses-count ]
             with fann_get_cascade_activation_steepnesses($!fann)
     }

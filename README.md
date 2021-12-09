@@ -528,7 +528,8 @@ executed to generate this report.
 
 In both cases, the training uses the algorithm set with
 [training-algorithm](#training-algorithm), and the parameters set for
-these training algorithms.
+these training algorithms (see
+[Training Algorithm Parameters](#training-algorithm-parameters) below).
 
 ### test
 
@@ -965,6 +966,192 @@ Reads the mean square error from the network. This value is calculated during
 training or testing (see [train](#train) and [test](#test) above), and can
 therefore sometimes be a bit off if the weights have been changed since the
 last calculation of the value.
+
+## Training Algorithm Parameters
+
+These methods control the parameters used for specific training algorithms.
+
+### quickprop-decay
+
+``` raku
+multi method quickprop-decay returns Num
+
+multi method quickprop-decay (
+    Num() $value where * <= 0,
+) returns self
+```
+
+The decay is a small negative valued number which is the factor that the
+weights should become smaller in each iteration during quickprop training.
+This is used to make sure that the weights do not become too high during
+training.
+
+If called with no positional arguments, this method returns the current
+decay value. If called with a positional argument, it will be coerced
+to a [Num] and set as the new decay.
+
+The default decay is -0.0001.
+
+### quickprop-mu
+
+``` raku
+multi method quickprop-mu returns Num
+
+multi method quickprop-mu (
+    Num() $value,
+) returns self
+```
+
+The mu factor is used to increase and decrease the step-size during quickprop
+training. The mu factor should always be above 1, since it would otherwise
+decrease the step-size when it was supposed to increase it.
+
+If called with no positional arguments, this method returns the current
+mu factor. If called with a positional argument, it will be coerced
+to a [Num] and set as the new mu factor.
+
+The default mu factor is 1.75.
+
+### rprop-increase
+
+``` raku
+multi method rprop-increase returns Num
+
+multi method rprop-increase (
+    Num() $value where * > 1,
+) returns self
+```
+
+The increase factor is a value larger than 1, which is used to increase the
+step-size during RPROP training.
+
+If called with no positional arguments, this method returns the current
+increase factor. If called with a positional argument, it will be coerced
+to a [Num] and set as the new increase factor.
+
+The default increase factor is 1.2.
+
+### rprop-decrease
+
+``` raku
+multi method rprop-decrease returns Num
+
+multi method rprop-decrease (
+    Num() $value where * < 1,
+) returns self
+```
+
+The increase factor is a value larger than 1, which is used to decrease the
+step-size during RPROP training.
+
+If called with no positional arguments, this method returns the current
+decrease factor. If called with a positional argument, it will be coerced
+to a [Num] and set as the new decrease factor.
+
+The default increase factor is 0.5.
+
+### rprop-delta-range
+
+``` raku
+multi method rprop-delta-range returns Range
+
+multi method rprop-delta-range (
+    Range $value where { not .infinite },
+) returns self
+```
+
+The delta range determines the minimum and maximum allowed values for the
+step-size used during RPROP training.
+
+If called with no positional arguments, this method returns the current
+delta range. If called with a [Range] as a positional argument, it will be
+set as the new delta range.
+
+The default delta range is 0..50.
+
+### rprop-delta-zero
+
+``` raku
+multi method rprop-delta-zero returns Num
+
+multi method rprop-delta-zero (
+    Num() $value where * > 0,
+) returns self
+```
+
+The delta zero is a positive number determining the initial step size used
+during RPROP training.
+
+If called with no positional arguments, this method returns the current
+initial step size. If called with a positional argument, it will be coerced
+to a [Num] and set as the new initial step size.
+
+The default delta zero is 0.1.
+
+### sarprop-weight-decay-shift
+
+``` raku
+multi method sarprop-weight-decay-shift returns Num
+
+multi method sarprop-weight-decay-shift (
+    Num() $value,
+) returns self
+```
+
+If called with no positional arguments, this method returns the current
+weight decay shift used during SARPROP training. If called with a positional
+argument, it will be coerced to a [Num] and set as the new weight decay shift.
+
+The default value is -6.644.
+
+### sarprop-error-threshold
+
+``` raku
+multi method sarprop-error-threshold returns Num
+
+multi method sarprop-error-threshold (
+    Num() $value,
+) returns self
+```
+
+If called with no positional arguments, this method returns the current error
+threshold factor used during SARPROP training. If called with a positional
+argument, it will be coerced to a [Num] and set as the new error threshold
+factor.
+
+The default value is 0.1.
+
+### sarprop-step-error-shift
+
+``` raku
+multi method sarprop-step-error-shift returns Num
+
+multi method sarprop-step-error-shift (
+    Num() $value,
+) returns self
+```
+
+If called with no positional arguments, this method returns the current step
+error shift used during SARPROP training. If called with a positional
+argument, it will be coerced to a [Num] and set as the new step error shift.
+
+The default value is 1.385.
+
+### sarprop-temperature
+
+``` raku
+multi method sarprop-temperature returns Num
+
+multi method sarprop-temperature (
+    Num() $value,
+) returns self
+```
+
+If called with no positional arguments, this method returns the current decay
+shift used during SARPROP training. If called with a positional argument, it
+will be coerced to a [Num] and set as the new decay shift.
+
+The default value is 0.015.
 
 ## Cascade Training
 
