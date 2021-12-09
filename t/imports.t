@@ -44,7 +44,7 @@ is-deeply do {
     &fann_get_cascade_activation_functions_count
     &fann_get_cascade_activation_steepnesses
     &fann_get_cascade_activation_steepnesses_count
-    &fann_get_cascade_candidate_change_function
+    &fann_get_cascade_candidate_change_fraction
     &fann_get_cascade_candidate_limit
     &fann_get_cascade_candidate_stagnation_epochs
     &fann_get_cascade_max_cand_epochs
@@ -53,7 +53,7 @@ is-deeply do {
     &fann_get_cascade_min_out_epochs
     &fann_get_cascade_num_candidate_groups
     &fann_get_cascade_num_candidates
-    &fann_get_cascade_output_change_function
+    &fann_get_cascade_output_change_fraction
     &fann_get_cascade_output_stagnation_epochs
     &fann_get_cascade_weight_multiplier
     &fann_get_connection_array
@@ -119,7 +119,7 @@ is-deeply do {
     &fann_set_callback
     &fann_set_cascade_activation_functions
     &fann_set_cascade_activation_steepnesses
-    &fann_set_cascade_candidate_change_function
+    &fann_set_cascade_candidate_change_fraction
     &fann_set_cascade_candidate_limit
     &fann_set_cascade_candidate_stagnation_epochs
     &fann_set_cascade_max_cand_epochs
@@ -127,7 +127,7 @@ is-deeply do {
     &fann_set_cascade_min_cand_epochs
     &fann_set_cascade_min_out_epochs
     &fann_set_cascade_num_candidate_groups
-    &fann_set_cascade_output_change_function
+    &fann_set_cascade_output_change_fraction
     &fann_set_cascade_output_stagnation_epochs
     &fann_set_cascade_weight_multiplier
     &fann_set_error_log

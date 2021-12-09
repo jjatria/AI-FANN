@@ -805,75 +805,6 @@ class AI::FANN {
         self;
     }
 
-    # no error
-    method cascade-num-candidates ( --> Int ) { fann_get_cascade_num_candidates($!fann) }
-
-
-    # no error
-    multi method cascade-num-candidate-groups ( --> Int ) { fann_get_cascade_num_candidate_groups($!fann) }
-    multi method cascade-num-candidate-groups ( Int:D $value --> ::?CLASS:D ) {
-        fann_set_cascade_num_candidate_groups( $!fann, $value );
-        self;
-    }
-
-    # no error
-    multi method cascade-activation-steepnesses-count ( --> Int ) { fann_get_cascade_activation_steepnesses_count($!fann) }
-    multi method cascade-activation-steepnesses ( --> List() ) {
-        .[ ^$.cascade-activation-steepnesses-count ]
-            with fann_get_cascade_activation_steepnesses($!fann)
-    }
-
-    multi method cascade-activation-steepnesses (
-        CArray[fann_type] $steepnesses,
-        --> ::?CLASS:D
-    ) {
-        LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM
-        fann_set_cascade_activation_steepnesses(
-            $!fann, $steepnesses, $steepnesses.elems );
-        self;
-    }
-
-    multi method cascade-activation-steepnesses (
-        *@steepnesses,
-        --> ::?CLASS:D
-    ) {
-        LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM
-        fann_set_cascade_activation_steepnesses(
-            $!fann,
-            CArray[fann_type].new(|@steepnesses».Num),
-            @steepnesses.elems
-        );
-        self;
-    }
-
-    multi method cascade-activation-functions ( --> List() ) { # no error
-        .[ ^$.cascade-activation-functions-count ]
-            with fann_get_cascade_activation_functions($!fann)
-    }
-
-    multi method cascade-activation-functions (
-        CArray[fann_activationfunc_enum] $functions,
-        --> ::?CLASS:D
-    ) {
-        LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM
-        fann_set_cascade_activation_functions(
-            $!fann, $functions, $functions.elems );
-        self;
-    }
-
-    multi method cascade-activation-functions (
-        *@functions,
-        --> ::?CLASS:D
-    ) {
-        LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM
-        fann_set_cascade_activation_functions(
-            $!fann,
-            CArray[fann_activationfunc_enum].new(|@functions».Int),
-            @functions.elems
-        );
-        self;
-    }
-
     multi method train ( @input, @output --> ::?CLASS:D ) {
         LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM FANN_E_CANT_TRAIN_ACTIVATION ...
         fann_train( $!fann,
@@ -953,6 +884,36 @@ class AI::FANN {
         nextsame;
     }
 
+    multi method test ( @input, @output --> List() ) {
+        LEAVE self!error.throw; # FANN_E_CANT_USE_ACTIVATION ...
+        fann_test( $!fann,
+            CArray[fann_type].new(|@input».Num),
+            CArray[fann_type].new(|@output».Num),
+        ).[ ^$.num-output ]
+    }
+
+    multi method test (
+        CArray[fann_type] $input,
+        CArray[fann_type] $output,
+        --> CArray[fann_type]
+    ) {
+        LEAVE self!error.throw; # FANN_E_CANT_USE_ACTIVATION ...
+        fann_test( $!fann, $input, $output );
+    }
+
+    multi method test ( TrainData:D $data --> Num ) {
+        LEAVE self!error.throw; # FANN_E_CANT_USE_ACTIVATION ...
+        fann_test_data( $!fann, $data!AI::FANN::TrainData::data );
+    }
+
+    multi method test ( IO() $path --> Num ) {
+        my $data = AI::FANN::TrainData.new: :$path;
+        LEAVE $data.?destroy;
+        $.test: $data;
+    }
+
+    # Cascade methods
+
     multi method cascade-train (
         TrainData:D $data,
         Int() :$max-neurons!,
@@ -990,32 +951,163 @@ class AI::FANN {
         self;
     }
 
-    multi method test ( @input, @output --> List() ) {
-        LEAVE self!error.throw; # FANN_E_CANT_USE_ACTIVATION ...
-        fann_test( $!fann,
-            CArray[fann_type].new(|@input».Num),
-            CArray[fann_type].new(|@output».Num),
-        ).[ ^$.num-output ]
+    # no error
+    method cascade-num-candidates ( --> Int ) { fann_get_cascade_num_candidates($!fann) }
+
+    # no error
+    multi method cascade-candidate-limit ( --> Num ) { fann_get_cascade_candidate_limit($!fann) }
+    multi method cascade-candidate-limit ( Num() $value --> ::?CLASS:D ) {
+        fann_set_cascade_candidate_limit( $!fann, $value );
+        self;
     }
 
-    multi method test (
-        CArray[fann_type] $input,
-        CArray[fann_type] $output,
-        --> CArray[fann_type]
+    # no error
+    multi method cascade-weight-multiplier ( --> Num ) { fann_get_cascade_weight_multiplier($!fann) }
+    multi method cascade-weight-multiplier ( Num() $value --> ::?CLASS:D ) {
+        fann_set_cascade_weight_multiplier( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method cascade-output-change-fraction ( --> Num ) { fann_get_cascade_output_change_fraction($!fann) }
+    multi method cascade-output-change-fraction ( Num() $value --> ::?CLASS:D ) {
+        fann_set_cascade_output_change_fraction( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method cascade-candidate-change-fraction ( --> Num ) { fann_get_cascade_candidate_change_fraction($!fann) }
+    multi method cascade-candidate-change-fraction ( Num() $value --> ::?CLASS:D ) {
+        fann_set_cascade_candidate_change_fraction( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method cascade-num-candidate-groups ( --> Int ) { fann_get_cascade_num_candidate_groups($!fann) }
+    multi method cascade-num-candidate-groups ( Int:D $value --> ::?CLASS:D ) {
+        fann_set_cascade_num_candidate_groups( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method cascade-candidate-stagnation-epochs ( --> Int ) { fann_get_cascade_candidate_stagnation_epochs($!fann) }
+    multi method cascade-candidate-stagnation-epochs ( Int:D $value --> ::?CLASS:D ) {
+        fann_set_cascade_candidate_stagnation_epochs( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method cascade-output-stagnation-epochs ( --> Int ) { fann_get_cascade_output_stagnation_epochs($!fann) }
+    multi method cascade-output-stagnation-epochs ( Int:D $value --> ::?CLASS:D ) {
+        fann_set_cascade_output_stagnation_epochs( $!fann, $value );
+        self;
+    }
+
+    # no error
+    multi method cascade-activation-steepnesses-count ( --> Int ) { fann_get_cascade_activation_steepnesses_count($!fann) }
+
+    multi method cascade-candidate-epochs ( --> Range ) {
+        fann_get_cascade_max_cand_epochs($!fann) .. fann_get_cascade_min_cand_epochs($!fann);
+    }
+
+    multi method cascade-candidate-epochs (
+        Range $value,
+        --> ::?CLASS:D
     ) {
-        LEAVE self!error.throw; # FANN_E_CANT_USE_ACTIVATION ...
-        fann_test( $!fann, $input, $output );
+        die 'Cannot use an infinite range to set cascade candidate epochs' if $value.infinite;
+        fann_set_cascade_max_cand_epochs($!fann, $value.min.Int);
+        fann_set_cascade_min_cand_epochs($!fann, $value.max.Int);
+        self;
     }
 
-    multi method test ( TrainData:D $data --> Num ) {
-        LEAVE self!error.throw; # FANN_E_CANT_USE_ACTIVATION ...
-        fann_test_data( $!fann, $data!AI::FANN::TrainData::data );
+    multi method cascade-candidate-epochs (
+        Int :$min,
+        Int :$max,
+        --> ::?CLASS:D
+    ) {
+        fann_set_cascade_min_cand_epochs($!fann, $min) if $min.defined;
+        fann_set_cascade_max_cand_epochs($!fann, $max) if $max.defined;
+        self;
     }
 
-    multi method test ( IO() $path --> Num ) {
-        my $data = AI::FANN::TrainData.new: :$path;
-        LEAVE $data.?destroy;
-        $.test: $data;
+    multi method cascade-output-epochs ( --> Range ) {
+        fann_get_cascade_max_out_epochs($!fann) .. fann_get_cascade_min_out_epochs($!fann);
+    }
+
+    multi method cascade-output-epochs (
+        Range $value,
+        --> ::?CLASS:D
+    ) {
+        die 'Cannot use an infinite range to set cascade output epochs' if $value.infinite;
+        fann_set_cascade_max_out_epochs($!fann, $value.min.Int);
+        fann_set_cascade_min_out_epochs($!fann, $value.max.Int);
+        self;
+    }
+
+    multi method cascade-output-epochs (
+        Int :$min,
+        Int :$max,
+        --> ::?CLASS:D
+    ) {
+        fann_set_cascade_min_out_epochs($!fann, $min) if $min.defined;
+        fann_set_cascade_max_out_epochs($!fann, $max) if $max.defined;
+        self;
+    }
+
+    multi method cascade-activation-steepnesses ( --> List() ) {
+        .[ ^$.cascade-activation-steepnesses-count ]
+            with fann_get_cascade_activation_steepnesses($!fann)
+    }
+
+    multi method cascade-activation-steepnesses (
+        CArray[fann_type] $steepnesses,
+        --> ::?CLASS:D
+    ) {
+        LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM
+        fann_set_cascade_activation_steepnesses(
+            $!fann, $steepnesses, $steepnesses.elems );
+        self;
+    }
+
+    multi method cascade-activation-steepnesses (
+        *@steepnesses,
+        --> ::?CLASS:D
+    ) {
+        LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM
+        fann_set_cascade_activation_steepnesses(
+            $!fann,
+            CArray[fann_type].new(|@steepnesses».Num),
+            @steepnesses.elems
+        );
+        self;
+    }
+
+    multi method cascade-activation-functions ( --> List() ) { # no error
+        .[ ^$.cascade-activation-functions-count ]
+            with fann_get_cascade_activation_functions($!fann)
+    }
+
+    multi method cascade-activation-functions (
+        CArray[fann_activationfunc_enum] $functions,
+        --> ::?CLASS:D
+    ) {
+        LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM
+        fann_set_cascade_activation_functions(
+            $!fann, $functions, $functions.elems );
+        self;
+    }
+
+    multi method cascade-activation-functions (
+        *@functions,
+        --> ::?CLASS:D
+    ) {
+        LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM
+        fann_set_cascade_activation_functions(
+            $!fann,
+            CArray[fann_activationfunc_enum].new(|@functions».Int),
+            @functions.elems
+        );
+        self;
     }
 
     method destroy ( --> Nil ) { $.DESTROY }

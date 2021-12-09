@@ -5,17 +5,17 @@ use AI::FANN::Raw::Base;
 
 my constant LIB = 'fann';
 
-sub fann_cascadetrain_on_data( fann, fann_train_data, uint32, uint32, float) is export is native(LIB) {*}
-sub fann_cascadetrain_on_file( fann, Str, uint32, uint32, float) is export is native(LIB) {*}
+sub fann_cascadetrain_on_data(fann, fann_train_data, uint32, uint32, float) is export is native(LIB) {*}
+sub fann_cascadetrain_on_file(fann, Str, uint32, uint32, float) is export is native(LIB) {*}
 
-sub fann_get_cascade_output_change_function(fann) returns float is export is native(LIB) {*}
-sub fann_set_cascade_output_change_function(fann, float) is export is native(LIB) {*}
+sub fann_get_cascade_output_change_fraction(fann) returns float is export is native(LIB) {*}
+sub fann_set_cascade_output_change_fraction(fann, float) is export is native(LIB) {*}
 
 sub fann_get_cascade_output_stagnation_epochs(fann) returns uint32 is export is native(LIB) {*}
 sub fann_set_cascade_output_stagnation_epochs(fann, uint32) is export is native(LIB) {*}
 
-sub fann_get_cascade_candidate_change_function(fann) returns float is export is native(LIB) {*}
-sub fann_set_cascade_candidate_change_function(fann, float) is export is native(LIB) {*}
+sub fann_get_cascade_candidate_change_fraction(fann) returns float is export is native(LIB) {*}
+sub fann_set_cascade_candidate_change_fraction(fann, float) is export is native(LIB) {*}
 
 sub fann_get_cascade_candidate_stagnation_epochs(fann) returns uint32 is export is native(LIB) {*}
 sub fann_set_cascade_candidate_stagnation_epochs(fann, uint32) is export is native(LIB) {*}
