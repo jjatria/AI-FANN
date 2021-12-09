@@ -246,9 +246,10 @@ class AI::FANN {
             self;
         }
 
-        method destroy ( --> Nil ) { $.DESTROY }
-
-        submethod DESTROY { fann_destroy_train($!data) if $!data; $!data = Nil }
+        method destroy ( --> Nil ) {
+            fann_destroy_train($!data) if $!data;
+            $!data = Nil;
+        }
     }
 
     multi method BUILD ( IO() :$path! ) {
@@ -1110,7 +1111,8 @@ class AI::FANN {
         self;
     }
 
-    method destroy ( --> Nil ) { $.DESTROY }
-
-    submethod DESTROY { fann_destroy($!fann) if $!fann; $!fann = Nil }
+    method destroy ( --> Nil ) {
+        fann_destroy($!fann) if $!fann;
+        $!fann = Nil;
+    }
 }

@@ -20,7 +20,6 @@ sub test ( $o, $checks ) {
     }
 }
 
-todo 'Weights sometimes misbehave';
 subtest 'Weights with connection' => {
     my $nn = AI::FANN.new: layers => [ 1, 1 ];
     LEAVE $nn.?destroy;

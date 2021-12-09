@@ -149,8 +149,8 @@ is suitable to be used as the C<:path> argument to the constructor.
     # fann_destroy_train
     method destroy returns Nil
 
-Destroy the internal representation of this dataset. This is called
-automatically by the garbage collector, but can be called manually.
+Destroy the internal representation of this dataset. It's a good idea to make
+sure to call this for every object that has been created.
 
 =head1 COPYRIGHT AND LICENSE
 

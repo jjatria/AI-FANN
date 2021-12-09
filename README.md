@@ -438,8 +438,8 @@ Returns an exact copy of the calling AI::FANN object.
 method destroy returns Nil
 ```
 
-Destroy the internal representation of this dataset. This is called
-automatically by the garbage collector, but can be called manually.
+Destroy the internal representation of this network. It's a good idea to make
+sure to call this for every object that has been created.
 
 ## File Input / Output
 
