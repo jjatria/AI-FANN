@@ -55,7 +55,7 @@ jobs:
         run: prove6 -l
 
       - if: ${{ matrix.cover }}
-        run: racoco --exec='prove6 -l' --fix-compunit --html
+        run: racoco --exec='prove6 -l' --html
 
       - if: ${{ matrix.cover }}
         uses: actions/upload-artifact@v2
