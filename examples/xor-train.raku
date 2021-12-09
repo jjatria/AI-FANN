@@ -12,12 +12,14 @@ END $ann.?destroy;
 my $data = AI::FANN::TrainData.new: path => $dir.child('/data/xor.data');
 END $data.?destroy;
 
-$ann.activation-steepness: 1;
-$ann.activation-function: FANN_SIGMOID_SYMMETRIC, :hidden, :output;
-$ann.train-stop-function: FANN_STOPFUNC_BIT;
-$ann.bit-fail-limit: 0.01;
-$ann.training-algorithm: FANN_TRAIN_RPROP;
-$ann.init-weights: $data;
+given $ann {
+    .activation-steepness: 1;
+    .activation-function: FANN_SIGMOID_SYMMETRIC, :hidden, :output;
+    .train-stop-function: FANN_STOPFUNC_BIT;
+    .bit-fail-limit: 0.01;
+    .training-algorithm: FANN_TRAIN_RPROP;
+    .init-weights: $data;
+}
 
 say 'Training network.';
 
