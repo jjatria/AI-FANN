@@ -486,20 +486,22 @@ multi method train (
     CArray[num32] $output,
 ) returns self
 
+# fann_train_epoch
 # fann_train_on_data
 multi method train (
     AI::FANN::TrainData:D $data,
-    Int() :$max-epochs!,
-    Int() :$epochs-between-reports!,
-    Num() :$desired-error!,
+    Int() :$max-epochs,
+    Int() :$epochs-between-reports,
+    Num() :$desired-error,
 ) returns self
 
+# fann_train_epoch
 # fann_train_on_file
 multi method train (
     IO() $path,
-    Int() :$max-epochs!,
-    Int() :$epochs-between-reports!,
-    Num() :$desired-error!,
+    Int() :$max-epochs,
+    Int() :$epochs-between-reports,
+    Num() :$desired-error,
 ) returns self
 ```
 
@@ -515,10 +517,14 @@ Since only one pattern is presented, training done this way is always
 incremental training (`FANN_TRAIN_INCREMENTAL` in the
 [AI::FANN::Train](#aifanntrain) enum).
 
-The last two candidates train instead on an entire dataset, for a period of
-time. The first one takes an AI::FANN::TrainData object in the `data`
-parameter, while the second generates one internally from the file specified
-in the `path` parameter.
+The last two candidates train instead on an entire dataset. The first one
+takes a mandatory AI::FANN::TrainData object, while the second takes instead
+a filename that will be used to generate a training dataset internally.
+Both of these candidates will default to running a single iteration or
+"epoch". They can instead be used to train for a period of time by specifying
+the maximum number of iterations, the target error, and the number of
+iterations between reports. See [callback](#callback) for the code that gets
+executed to generate this report.
 
 In both cases, the training uses the algorithm set with
 [training-algorithm](#training-algorithm), and the parameters set for

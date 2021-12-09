@@ -16,7 +16,7 @@ sub fann_reset_MSE(fann) is export is native(LIB) {*}
 
 sub fann_train_on_data(fann, fann_train_data, uint32, uint32, float) is export is native(LIB) {*}
 sub fann_train_on_file(fann, Str, uint32, uint32, float) is export is native(LIB) {*}
-sub fann_train_epoch(fann, fann_train_data) is export is native(LIB) {*}
+sub fann_train_epoch(fann, fann_train_data) returns float is export is native(LIB) {*}
 sub fann_test_data(fann, fann_train_data) returns float is export is native(LIB) {*}
 
 ## Training Data Manipulation

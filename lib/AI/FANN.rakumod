@@ -830,11 +830,23 @@ class AI::FANN {
         self;
     }
 
+    multi method train ( TrainData:D $data --> ::?CLASS:D ) {
+        LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM FANN_E_CANT_TRAIN_ACTIVATION ...
+        fann_train_epoch( $!fann, $data!AI::FANN::TrainData::data );
+        self;
+    }
+
+    multi method train ( IO() $path --> ::?CLASS:D ) {
+        my $data = AI::FANN::TrainData.new: :$path;
+        LEAVE $data.?destroy;
+        $.train: $data;
+    }
+
     multi method train (
         TrainData:D $data,
-        Int() :$max-epochs!,
-        Int() :$epochs-between-reports!,
-        Num() :$desired-error!,
+        Int() :$max-epochs             where *.defined,
+        Int() :$epochs-between-reports where *.defined,
+        Num() :$desired-error          where *.defined,
         --> ::?CLASS:D
     ) {
         LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM FANN_E_CANT_TRAIN_ACTIVATION ...
@@ -850,9 +862,9 @@ class AI::FANN {
 
     multi method train (
         IO()   $path,
-        Int() :$max-epochs!,
-        Int() :$epochs-between-reports!,
-        Num() :$desired-error!,
+        Int() :$max-epochs             where *.defined,
+        Int() :$epochs-between-reports where *.defined,
+        Num() :$desired-error          where *.defined,
         --> ::?CLASS:D
     ) {
         LEAVE self!error.throw; # FANN_E_CANT_ALLOCATE_MEM FANN_E_CANT_TRAIN_ACTIVATION ...
@@ -865,6 +877,17 @@ class AI::FANN {
             $desired-error,
         );
         self;
+    }
+
+    multi method train (
+        Int() :$max-epochs,
+        Int() :$epochs-between-reports,
+        Num() :$desired-error,
+        |c
+    ) {
+        die 'You must specify none or all three of :max-epochs, :epochs-between-reports, and :desired-error'
+            if ( $max-epochs, $epochs-between-reports, $desired-error ).grep(*.defined) != 3;
+        nextsame;
     }
 
     multi method cascade-train (
