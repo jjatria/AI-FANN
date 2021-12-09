@@ -875,9 +875,9 @@ calculated and set).
 
 If called with an AI::FANN::TrainData object, the scaling will apply to its
 input and output data. Alternatively, the `:input` and `:output` named
-parameters can be set to either [CArray[num32]] or to [Array] objects with
-the data to scale, which will be modified in-place according to the scaling
-parameters calculated for inputs and outputs respectively. See
+parameters can be set to either [CArray[num32]][CArray] or to [Array] objects
+with the data to scale, which will be modified in-place according to the
+scaling parameters calculated for inputs and outputs respectively. See
 [descale](#descale) for a way to reverse this manipulation.
 
 Calling this method before setting scaling parameters (with
@@ -911,9 +911,9 @@ This method will reverse the scaling performed by [scale](#scale).
 
 If called with an AI::FANN::TrainData object, the descaling will apply to its
 input and output data. Alternatively, the `:input` and `:output` named
-parameters can be set to either [CArray[num32]] or to [Array] objects with
-the data to descale, which will be modified in-place according to the scaling
-parameters calculated for inputs and outputs respectively.
+parameters can be set to either [CArray[num32]][CArray] or to [Array] objects
+with the data to descale, which will be modified in-place according to the
+scaling parameters calculated for inputs and outputs respectively.
 
 Calling this method before setting scaling parameters (with
 [scaling](#scaling)) is an error. Calling this method after clearing the
