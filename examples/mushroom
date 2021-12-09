@@ -2,6 +2,12 @@
 
 use AI::FANN :enum;
 
+unit sub MAIN (
+    :$max-epochs             = 300,
+    :$epochs-between-reports = 10,
+    :$desired-error          = 0.0001,
+);
+
 say 'Creating network.';
 
 my $dir = $*PROGRAM.parent;
@@ -16,10 +22,7 @@ say 'Training network.';
 
 $ann.activation-function( :hidden, FANN_SIGMOID_SYMMETRIC )
     .activation-function( :output, FANN_SIGMOID )
-    .train: $data,
-        max-epochs             => 300,
-        epochs-between-reports => 10,
-        desired-error          => 0.0001;
+    .train: $data, :$max-epochs, :$epochs-between-reports, :$desired-error;
 
 say 'Testing network.';
 

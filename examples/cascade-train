@@ -14,12 +14,12 @@ say 'Reading data.';
 my $train = AI::FANN::TrainData.new:
     path => $dir.child('data/parity8.train');
 
-END $train.destroy;
+END $train.?destroy;
 
 my $test = AI::FANN::TrainData.new:
     path => $dir.child('data/parity8.test');
 
-END $test.destroy;
+END $test.?destroy;
 
 $train.scale: -1 .. 1;
 $test.scale:  -1 .. 1;
@@ -29,7 +29,7 @@ say 'Creating network.';
 my $ann = AI::FANN.new: :shortcut,
     layers => [ $train.num-input, $train.num-output ];
 
-END $ann.destroy;
+END $ann.?destroy;
 
 $ann.training-algorithm:   $training-algorithm;
 $ann.activation-function:  FANN_SIGMOID_SYMMETRIC, :hidden;

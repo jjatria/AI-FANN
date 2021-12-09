@@ -2,10 +2,12 @@
 
 use AI::FANN;
 
+unit sub MAIN;
+
 my $ann = AI::FANN.new:
     path => $*PROGRAM.parent.child('output/xor-float.net');
 
-END $ann.destroy;
+END $ann.?destroy;
 
 for (
     [ -1,  1 ],

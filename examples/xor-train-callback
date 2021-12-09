@@ -2,11 +2,17 @@
 
 use AI::FANN :enum;
 
+unit sub MAIN (
+    Num() :$desired-error          = 0.001,
+    Int   :$max-epochs             = 500_000,
+    Int   :$epochs-between-reports = 1_000,
+);
+
 my $dir = $*PROGRAM.parent;
 
 my $ann = AI::FANN.new: layers => [ 2, 3, 1 ];
 
-END $ann.destroy;
+END $ann.?destroy;
 
 $ann.activation-function: FANN_SIGMOID_SYMMETRIC, :hidden, :output;
 
@@ -34,10 +40,7 @@ my $data = AI::FANN::TrainData.new:
         $output[0]            = @output[$num].Num;
     }
 
-$ann.train: $data,
-    desired-error          => 0.001,
-    max-epochs             => 500_000,
-    epochs-between-reports => 1_000;
+$ann.train: $data, :$desired-error, :$max-epochs, :$epochs-between-reports;
 
 $ann.save: $dir.child('output/xor-float.net')
     or note 'Could not save network data';

@@ -2,6 +2,12 @@
 
 use AI::FANN :enum;
 
+unit sub MAIN (
+    Num() :$desired-error          = 0,
+    Int   :$max-epochs             = 1_000,
+    Int   :$epochs-between-reports = 10,
+);
+
 my $dir = $*PROGRAM.parent;
 
 say 'Creating network.';
@@ -23,10 +29,7 @@ given $ann {
 
 say 'Training network.';
 
-$ann.train: $data,
-    desired-error          => 0,
-    max-epochs             => 1_000,
-    epochs-between-reports => 10;
+$ann.train: $data, :$desired-error, :$max-epochs, :$epochs-between-reports;
 
 printf "Testing network. %f\n", $ann.test: $data;
 
