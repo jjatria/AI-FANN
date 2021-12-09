@@ -5,6 +5,7 @@ use AI::FANN :enum;
 #                         Input    |    Output
 #                              \   |   /
 given AI::FANN.new: layers => [ 2, 3, 1 ] {
+    LEAVE .?destroy; # Make sure to clean up after yourself
 
     # A sample data set for solving the XOR problem
     my $data = AI::FANN::TrainData.new: pairs => [
@@ -14,12 +15,17 @@ given AI::FANN.new: layers => [ 2, 3, 1 ] {
         [  1,  1 ] => [ -1 ],
     ];
 
+    LEAVE $data.?destroy;
+
     .activation-function: FANN_SIGMOID_SYMMETRIC;
 
+    # Train for up to 500,000 epochs
+    # or until the MSE is less than 0.001
+    # with no reports to STDOUT
     .train: $data,
         desired-error          => 0.001,
         max-epochs             => 500_000,
-        epochs-between-reports => 0;
+        epochs-between-reports => 10;
 
     say .run: [ 1, -1 ];
 }
