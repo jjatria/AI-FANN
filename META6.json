@@ -1,7 +1,7 @@
 {
     "perl": "6.d",
     "name": "AI::FANN",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "auth": "zef:jjatria",
     "license": "Artistic-2.0",
     "description": "Raku binding to the Fast Artificial Neural Network library",

@@ -1,0 +1,15 @@
+Revision history for AI-FANN
+
+{{$NEXT}}
+
+    - Added high-level interface
+    - Added documentation and expanded test suite
+    - Fixed issues with existant native bindings
+
+0.1.0     ???
+
+    - Mistakenly recorded as a release after adoption
+
+0.0.1     ???
+
+    - Initial version with raw native bindings to libfann
