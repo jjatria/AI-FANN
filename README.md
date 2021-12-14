@@ -591,6 +591,7 @@ multi method callback (
 method callback (
     &callback where {
         .cando: \(
+            AI::FANN            $fann,
             AI::FANN::TrainData $data,
             uint32              $max-epochs,
             uint32              $epochs-between-reports,
@@ -615,11 +616,12 @@ once during the first epoch, and again every time the epoch is divisible by
 the value provided in the `:epochs-between-reports` argument to
 [train](#train).
 
-The callback will be called with the AI::FANN::TrainData object that is being
-used for training, as well as the maximum number of allowed training epochs,
-the number of epochs between reports, and the target error for training that
-were set when training started as positional arguments. Additionally, the
-current epoch will also be passed as the final argument to the callback.
+The callback will be called with the AI::FANN object being trained, the
+AI::FANN::TrainData object that is being used for training, as well as the
+maximum number of allowed training epochs, the number of epochs between
+reports, and the target error for training that were set when training started
+as positional arguments. Additionally, the current epoch will also be passed
+as the final argument to the callback.
 
 The callback can interrupt the training by returning [False] or a value that,
 when coerced into an [Int] evaluates to -1.
