@@ -1761,10 +1761,10 @@ presented to all the patterns.
     Some other parameters can however be set to change the way the RPROP
     algorithm works, but it is only recommended for users with insight in how
     the RPROP training algorithm works. The RPROP training algorithm is
-    described by [Riedmiller and Braun, 1993], but the actual learning
-    algorithm used here is the iRPROP- training algorithm which is described
-    by [Igel and Husken, 2000] which is a variant of the standard RPROP
-    training algorithm.
+    described by [Riedmiller and Braun (1993)](#references), but the actual
+    learning algorithm used here is the iRPROP- training algorithm which is
+    described by [Igel and Hüsken (2000)](#references) which is a variant of
+    the standard RPROP training algorithm.
 
 * FANN_TRAIN_QUICKPROP
 
@@ -1774,12 +1774,12 @@ presented to all the patterns.
     advanced parameters, but it is only recommended to change these advanced
     parameters, for users with insight in how the quickprop training
     algorithm works. The quickprop training algorithm is described by
-    [Fahlman, 1988].
+    [Fahlman (1988)](#references).
 
 * FANN_TRAIN_SARPROP
 
     This is the same algorithm described in
-    ["The SARPROP algorithm: a simulated annealing enhancement to resilient back propagation"][SARPROP]
+    [Nicholas and Tamas (1998)](#references).
 
 ## AI::FANN::ErrorFunc
 
@@ -1900,6 +1900,24 @@ Used to define error events on AI::FANN and AI::FANN::TrainData objects.
   * FANN_E_OUTPUT_NO_MATCH
 
     The number of output neurons in the ANN and data don’t match.
+
+# REFERENCES
+
+  * Fahlman, S.E. (1988). "Faster-Learning Variations on Back-Propagation: An
+    Empirical Study" in I<Proceedings of the 1988 Connectionist Models Summer
+    School>, Morgan Kaufmann.
+
+  * Igel, C., Hüsken, M. (2000) "Improving the Rprop Learning Algorithm" in
+    _Proceedings of the Second International ICSC Symposium on Neural
+    Computation (NC 2000)_, pp. 115—121. ICSC Academic Press.
+
+  * Nicholas, K.T., Tamas, D.G. (1998) "Simulated Annealing and Weight Decay in
+    Adaptive Learning: The SARPROP Algorithm". IEEE Transactions on Neural
+    Networks 9(4), pp. 662—668
+
+  * Riedmiller, M., Braun, H. (1993). "A Direct Adaptive Method for Faster
+    Backpropagation Leaning: the RPROP Algorithm" in _IEEE International
+    Conference on Neural Networks_, pp. 586—591, IEEE.
 
 # COPYRIGHT AND LICENSE
 
